@@ -1,0 +1,196 @@
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Check, X, Crown, Zap, Gift, Building2, Star } from "lucide-react"
+
+export function PricingSection() {
+  const plans = [
+    {
+      name: "Free",
+      price: "0",
+      period: "sempre",
+      description: "Perfetto per testare la piattaforma",
+      icon: Gift,
+      color: "from-slate-600 to-slate-700",
+      borderColor: "border-slate-300 dark:border-slate-700",
+      bgColor: "bg-slate-50 dark:bg-slate-900/40",
+      features: [
+        { text: "1 video di prova gratuito", included: true },
+        { text: "Watermark ADS MAKER AI", included: true },
+        { text: "Download HD", included: true },
+        { text: "Sito web generato", included: true },
+        { text: "Dominio personalizzato", included: true },
+        { text: "Video extra a €9 l'uno", included: true },
+        { text: "Supporto prioritario", included: false },
+      ],
+      cta: "Inizia Gratis",
+      popular: false,
+    },
+    {
+      name: "Starter",
+      price: "39",
+      period: "mese",
+      description: "Ideale per piccoli business e content creator",
+      icon: Zap,
+      color: "from-blue-600 to-blue-700",
+      borderColor: "border-blue-300 dark:border-blue-500",
+      bgColor: "bg-blue-50 dark:bg-blue-500/5",
+      features: [
+        { text: "15 video pubblicitari al mese", included: true },
+        { text: "Rimozione watermark", included: true },
+        { text: "Sito web generato automaticamente", included: true },
+        { text: "Dominio temporaneo incluso", included: true },
+        { text: "Download HD + 4K", included: true },
+        { text: "Video extra a €7 l'uno", included: true },
+        { text: "Supporto email", included: true },
+      ],
+      cta: "Inizia Ora",
+      popular: false,
+    },
+    {
+      name: "Pro",
+      price: "79",
+      period: "mese",
+      description: "Per aziende che vogliono scalare velocemente",
+      icon: Crown,
+      color: "from-purple-600 to-pink-600",
+      borderColor: "border-purple-300 dark:border-purple-500",
+      bgColor: "bg-purple-50 dark:bg-purple-500/5",
+      features: [
+        { text: "45 video pubblicitari al mese", included: true },
+        { text: "Siti web illimitati generati", included: true },
+        { text: "2 domini personalizzati inclusi", included: true },
+        { text: "A/B Testing automatico", included: true },
+        { text: "Analytics avanzate", included: true },
+        { text: "Video extra a €4 l'uno", included: true },
+        { text: "Supporto prioritario", included: true },
+        { text: "Pubblicazione automatica social", included: true },
+      ],
+      cta: "Scegli Pro",
+      popular: true,
+    },
+    {
+      name: "Business",
+      price: "149",
+      period: "mese",
+      description: "Per aziende enterprise e agenzie",
+      icon: Building2,
+      color: "from-orange-600 to-red-600",
+      borderColor: "border-orange-300 dark:border-orange-500",
+      bgColor: "bg-orange-50 dark:bg-orange-500/5",
+      features: [
+        { text: "90 video pubblicitari al mese", included: true },
+        { text: "Siti web illimitati", included: true },
+        { text: "Domini personalizzati illimitati", included: true },
+        { text: "White-label completo", included: true },
+        { text: "API access completo", included: true },
+        { text: "Video extra a €2 l'uno", included: true },
+        { text: "Account manager dedicato", included: true },
+        { text: "Supporto prioritario 24/7", included: true },
+        { text: "Dashboard personalizzata", included: true },
+        { text: "Integrazione CRM", included: true },
+      ],
+      cta: "Contatta Vendite",
+      popular: false,
+    },
+  ]
+
+  return (
+    <section id="pricing" className="py-20 px-4 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-muted/30 to-background"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-600/10 dark:bg-green-600/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 dark:bg-purple-600/5 rounded-full blur-3xl"></div>
+
+      <div className="container mx-auto relative z-10">
+        <div className="text-center mb-16">
+          <Badge
+            variant="secondary"
+            className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 backdrop-blur-sm"
+          >
+            💰 Prezzi Competitivi
+          </Badge>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Investi nel Tuo{" "}
+            <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+              Successo
+            </span>
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Video ads professionali che costano meno di un caffè al giorno. ROI garantito o rimborso completo.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          {plans.map((plan, index) => (
+            <Card
+              key={index}
+              className={`relative p-8 ${plan.bgColor} ${plan.borderColor} border-2 hover:scale-105 transition-all duration-300 backdrop-blur-sm hover:shadow-xl`}
+            >
+              {plan.popular && (
+                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                  🔥 Più Popolare
+                </Badge>
+              )}
+
+              <div className="text-center mb-6">
+                <div
+                  className={`w-16 h-16 bg-gradient-to-r ${plan.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}
+                >
+                  <plan.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
+                <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
+                <div className="flex items-baseline justify-center">
+                  <span className="text-4xl font-bold text-foreground">€{plan.price}</span>
+                  <span className="text-muted-foreground ml-2">/{plan.period}</span>
+                </div>
+                {plan.name !== "Free" && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    ~€{plan.name === "Starter" ? "2.60" : plan.name === "Pro" ? "1.75" : "1.66"} per video
+                  </p>
+                )}
+              </div>
+
+              <ul className="space-y-3 mb-8">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-start">
+                    {feature.included ? (
+                      <Check className="w-5 h-5 text-green-600 dark:text-green-400 mr-3 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <X className="w-5 h-5 text-muted-foreground mr-3 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span className={`text-sm ${feature.included ? "text-foreground" : "text-muted-foreground"}`}>
+                      {feature.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                className={`w-full ${plan.popular
+                  ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                  : "bg-card hover:bg-accent text-foreground border border-border"
+                  }`}
+                size="lg"
+              >
+                {plan.cta}
+              </Button>
+            </Card>
+          ))}
+        </div>
+
+        {/* Comparison Section */}
+        <div className="text-center mt-16">
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground mt-8">
+            <span>✅ Nessun contratto annuale</span>
+            <span>✅ Cancellazione immediata</span>
+            <span>✅ Garanzia ROI 30 giorni</span>
+            <span>✅ Supporto in italiano</span>
+            <span>✅ Migrazione gratuita</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

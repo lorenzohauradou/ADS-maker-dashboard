@@ -1,0 +1,196 @@
+"use client"
+
+import { Badge } from "@/components/ui/badge"
+import { Play, Smartphone, Tablet } from "lucide-react"
+
+export function DeviceShowcaseSection() {
+    const devices = [
+        {
+            id: 1,
+            type: "phone",
+            position: { top: "20%", left: "15%" },
+            rotation: -8,
+            content: {
+                type: "image",
+                src: "/placeholder.svg?height=640&width=320",
+                title: "E-commerce Mobile",
+                description: "App vendite online"
+            },
+            gradient: "from-blue-500 to-cyan-500"
+        },
+        {
+            id: 2,
+            type: "tablet",
+            position: { top: "15%", left: "60%", transform: "translateX(-50%)" },
+            rotation: 0,
+            content: {
+                type: "image",
+                src: "/placeholder.svg?height=800&width=600",
+                title: "Dashboard Analytics",
+                description: "SaaS Dashboard Pro"
+            },
+            gradient: "from-purple-500 to-pink-500"
+        },
+        {
+            id: 3,
+            type: "phone",
+            position: { bottom: "25%", left: "25%" },
+            rotation: 5,
+            content: {
+                type: "image",
+                src: "/placeholder.svg?height=640&width=320",
+                title: "Social Media Feed",
+                description: "Content Creator App"
+            },
+            gradient: "from-green-500 to-emerald-500"
+        }
+    ]
+
+    return (
+        <section className="py-32 px-4 relative overflow-hidden bg-background min-h-screen">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background"></div>
+            <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-blue-600/5 dark:bg-blue-600/3 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-purple-600/5 dark:bg-purple-600/3 rounded-full blur-3xl"></div>
+
+            <div className="container mx-auto relative z-10">
+                {/* Header */}
+                <div className="text-center mb-20">
+                    <Badge
+                        variant="secondary"
+                        className="mb-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                    >
+                        <Smartphone className="w-4 h-4 mr-2" />
+                        Esperienza Multi-Device
+                    </Badge>
+
+                    <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+                        Video Ads che{" "}
+                        <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                            Funzionano
+                        </span>
+                        <br />
+                        <span className="text-3xl md:text-4xl text-muted-foreground font-normal">Su Ogni Dispositivo</span>
+                    </h2>
+
+                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                        Ottimizzazione automatica per mobile, tablet e desktop. La tua audience ti vedrà ovunque.
+                    </p>
+                </div>
+
+                {/* Device Showcase */}
+                <div className="relative h-[600px] md:h-[800px] w-full">
+                    {devices.map((device, index) => {
+                        const isPhone = device.type === "phone"
+                        const deviceWidth = isPhone ? "w-48 md:w-64" : "w-64 md:w-80"
+                        const deviceHeight = isPhone ? "h-[390px] md:h-[520px]" : "h-[435px] md:h-[580px]"
+
+                        // Mobile positioning e rotation classes
+                        let positionClasses = ""
+                        let rotationClass = ""
+
+                        if (index === 0) {
+                            // Primo phone - centrato su mobile
+                            positionClasses = "top-[25%] left-1/2 -translate-x-1/2 md:top-[20%] md:left-[15%] md:translate-x-0 z-20"
+                            rotationClass = "-rotate-[5deg] md:rotate-[-8deg]"
+                        } else if (index === 1) {
+                            // Tablet - nascosto su mobile, visibile su desktop
+                            positionClasses = "hidden md:block md:top-[15%] md:left-[70%] md:-translate-x-1/2"
+                            rotationClass = "md:rotate-0"
+                        } else if (index === 2) {
+                            // Secondo phone - parzialmente nascosto dietro su mobile  
+                            positionClasses = "top-0 left-[65%] -translate-x-1/2 md:bottom-[25%] md:left-[25%] md:translate-x-0 z-10"
+                            rotationClass = "rotate-[8deg] md:rotate-[5deg]"
+                        }
+
+                        return (
+                            <div
+                                key={device.id}
+                                className={`absolute group cursor-pointer transition-all duration-500 ${positionClasses} ${rotationClass}`}
+                            >
+                                {/* Device Frame */}
+                                <div
+                                    className={`${deviceWidth} ${deviceHeight} bg-gradient-to-br ${device.gradient} p-1 rounded-3xl shadow-2xl group-hover:shadow-4xl transition-all duration-500 group-hover:scale-105`}
+                                >
+                                    <div className="w-full h-full bg-black rounded-3xl overflow-hidden relative">
+                                        {/* Device Notch/Camera (per phone) */}
+                                        {isPhone && (
+                                            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10 border-2 border-gray-800"></div>
+                                        )}
+
+                                        {/* Content */}
+                                        <div className="w-full h-full relative">
+                                            {device.content.type === "video" ? (
+                                                <video
+                                                    src={device.content.src}
+                                                    autoPlay
+                                                    loop
+                                                    muted
+                                                    playsInline
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={device.content.src || "/placeholder.svg"}
+                                                    alt={device.content.title}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            )}
+
+                                            {/* Overlay */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                                            {/* Play button for images */}
+                                            {device.content.type === "image" && (
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                                                        <Play className="w-8 h-8 text-white ml-1" />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Content Info */}
+                                            <div className="absolute bottom-4 left-4 right-4">
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="mb-2 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white"
+                                                >
+                                                    {device.type === "phone" ? "📱 Mobile" : "📱 Tablet"}
+                                                </Badge>
+                                                <h3 className="text-white font-semibold text-sm mb-1">{device.content.title}</h3>
+                                                <p className="text-white/80 text-xs">{device.content.description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Floating Badge */}
+                                <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 animate-bounce">
+                                    <span className="text-xs">✨</span>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Bottom Stats */}
+                <div className="text-center mt-20">
+                    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">98%</div>
+                            <div className="text-muted-foreground">Compatibilità Mobile</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">4K</div>
+                            <div className="text-muted-foreground">Qualità Ultra HD</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">Auto</div>
+                            <div className="text-muted-foreground">Ottimizzazione Formati</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+} 
