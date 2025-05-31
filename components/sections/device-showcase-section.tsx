@@ -12,8 +12,8 @@ export function DeviceShowcaseSection() {
             rotation: -8,
             content: {
                 type: "image",
-                src: "/placeholder.svg?height=640&width=320",
-                title: "E-commerce Mobile",
+                src: "/saas-dashboard.png",
+                title: "E-commerce Shopify",
                 description: "Online Sales App"
             },
             gradient: "from-blue-500 to-cyan-500"

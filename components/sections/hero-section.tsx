@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Play, ArrowRight, Sparkles, Zap, Star, Menu, Sun, Moon } from "lucide-react"
+import { Play, ArrowRight, Sparkles, Zap, Star, Menu, Sun, Moon, Globe } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/theme-provider"
 import Image from "next/image"
@@ -62,6 +62,29 @@ export function HeroSection() {
           <br />
           Optimized scripts, ultra-realistic voice, and perfect output for every social platform.
         </p>
+
+        {/* Multilingual Support Badge */}
+        <div className="flex justify-center mb-8">
+          <Badge
+            variant="outline"
+            className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-6 py-3 rounded-full backdrop-blur-sm"
+          >
+            <Globe className="w-5 h-5 mr-3 text-emerald-600 dark:text-emerald-400" />
+            <span className="font-semibold mr-3">Available in 50+ Languages</span>
+            <div className="flex items-center space-x-2 ml-2 border-l border-emerald-300 dark:border-emerald-600 pl-3">
+              <span className="text-lg font-bold">🇺🇸</span>
+              <span className="text-lg font-bold">🇬🇧</span>
+              <span className="text-lg font-bold">🇪🇸</span>
+              <span className="text-lg font-bold">🇫🇷</span>
+              <span className="text-lg font-bold">🇩🇪</span>
+              <span className="text-lg font-bold">🇮🇹</span>
+              <span className="text-lg font-bold">🇵🇹</span>
+              <span className="text-lg font-bold">🇯🇵</span>
+              <span className="text-lg font-bold">🇰🇷</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">+41 more</span>
+            </div>
+          </Badge>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
           <Button
