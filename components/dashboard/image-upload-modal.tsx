@@ -44,13 +44,13 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
     const validateFile = (file: File): boolean => {
         // Verifica tipo file
         if (!file.type.startsWith('image/')) {
-            setError("Solo file immagine sono accettati")
+            setError("Only image files are accepted")
             return false
         }
 
         // Verifica dimensione (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
-            setError("File troppo grande. Massimo 10MB per immagine")
+            setError("File too large. Maximum 10MB per image")
             return false
         }
 
@@ -64,7 +64,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
 
         // Verifica limite massimo
         if (images.length + newFiles.length > 10) {
-            setError("Massimo 10 immagini consentite")
+            setError("Maximum 10 images allowed")
             return
         }
 
@@ -116,12 +116,12 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
 
     const handleSubmit = async () => {
         if (images.length === 0) {
-            setError("Carica almeno 1 immagine")
+            setError("Upload at least 1 image")
             return
         }
 
         if (!projectName.trim()) {
-            setError("Inserisci un nome per il progetto")
+            setError("Enter a project name")
             return
         }
 
@@ -146,7 +146,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
             setProjectName("")
             setError("")
         } catch (error) {
-            setError("Errore durante l'upload. Riprova.")
+            setError("Upload error. Please try again.")
         } finally {
             setIsUploading(false)
             setUploadProgress(0)
@@ -164,23 +164,29 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+            <DialogContent
+                className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+                aria-describedby="dialog-description"
+            >
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold flex items-center text-slate-900 dark:text-white">
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={34} height={34} className="mr-4" />
-                        Crea Nuovo Video Ads
+                        Create New Video Ad
                     </DialogTitle>
+                    <p id="dialog-description" className="sr-only">
+                        Upload images to create a new video advertisement project
+                    </p>
                 </DialogHeader>
 
                 <div className="space-y-6">
                     {/* Project Name */}
                     <div className="space-y-2">
                         <Label htmlFor="projectName" className="text-lg font-semibold text-slate-900 dark:text-white">
-                            Nome Progetto
+                            Project Name
                         </Label>
                         <Input
                             id="projectName"
-                            placeholder="es. iPhone 15 Pro Campaign, Scarpe Nike Air..."
+                            placeholder="e.g. iPhone 15 Pro Campaign, Nike Air Shoes..."
                             value={projectName}
                             onChange={(e) => setProjectName(e.target.value)}
                             className="text-lg p-3 rounded-xl border-2 border-slate-200 dark:border-zinc-700 focus:border-purple-500 dark:focus:border-purple-400 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-zinc-400"
@@ -192,10 +198,10 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <Label className="text-lg font-semibold text-slate-900 dark:text-white">
-                                Carica Immagini Prodotto
+                                Upload Product Images
                             </Label>
                             <Badge variant="outline" className="text-sm border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400">
-                                {images.length}/10 immagini
+                                {images.length}/10 images
                             </Badge>
                         </div>
 
@@ -216,24 +222,24 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
 
                                 <div>
                                     <p className="text-lg font-semibold text-slate-900 dark:text-white">
-                                        Trascina qui le tue immagini
+                                        Drag and drop your images here
                                     </p>
                                     <p className="text-slate-600 dark:text-zinc-400">
-                                        o{" "}
+                                        or{" "}
                                         <button
                                             onClick={() => fileInputRef.current?.click()}
                                             className="text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-700 dark:hover:text-purple-300"
                                             disabled={isUploading}
                                         >
-                                            clicca per selezionare
+                                            click here to select
                                         </button>
                                     </p>
                                 </div>
 
                                 <div className="text-sm text-slate-500 dark:text-zinc-500 space-y-1">
-                                    <p>Formati supportati: JPG, PNG, WebP</p>
-                                    <p>Dimensione massima: 10MB per immagine</p>
-                                    <p>Minimo 1 immagine, massimo 10</p>
+                                    <p>Supported formats: JPG, PNG, WebP</p>
+                                    <p>Maximum size: 10MB per image</p>
+                                    <p>Minimum 1 image, maximum 10</p>
                                 </div>
                             </div>
 
@@ -261,7 +267,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                     {images.length > 0 && (
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                                Immagini Caricate ({images.length})
+                                Uploaded Images ({images.length})
                             </h3>
 
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -301,7 +307,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                     {isUploading && (
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <span className="font-semibold text-slate-900 dark:text-white">Caricamento in corso...</span>
+                                <span className="font-semibold text-slate-900 dark:text-white">Upload in progress...</span>
                                 <span className="text-sm text-slate-600 dark:text-zinc-400">{uploadProgress}%</span>
                             </div>
                             <Progress value={uploadProgress} className="h-2" />
@@ -316,7 +322,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                             disabled={isUploading}
                             className="px-6 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800"
                         >
-                            Annulla
+                            Cancel
                         </Button>
 
                         <Button
@@ -327,11 +333,11 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                             {isUploading ? (
                                 <>
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                                    Caricamento...
+                                    Uploading...
                                 </>
                             ) : (
                                 <>
-                                    Continua
+                                    Continue
                                     <ArrowRight className="w-4 h-4 ml-2" />
                                 </>
                             )}
@@ -343,13 +349,13 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                         <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
                             <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center">
                                 <Check className="w-5 h-5 mr-2" />
-                                Cosa succederà dopo:
+                                What will happen next:
                             </h4>
                             <div className="space-y-2 text-sm text-purple-800 dark:text-purple-200">
-                                <p>• AI analizzerà le tue immagini per capire il prodotto</p>
-                                <p>• Creerà una landing page professionale automaticamente</p>
-                                <p>• Genererà un video ads ottimizzato per i social</p>
-                                <p>• Tempo stimato: 3-5 minuti</p>
+                                <p>• AI will analyze your images to understand the product</p>
+                                <p>• It will create a professional landing page automatically</p>
+                                <p>• It will generate an optimized video ads for social</p>
+                                <p>• Estimated time: 3-5 minutes</p>
                             </div>
                         </div>
                     )}
