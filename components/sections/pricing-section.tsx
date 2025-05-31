@@ -8,89 +8,89 @@ export function PricingSection() {
     {
       name: "Free",
       price: "0",
-      period: "sempre",
-      description: "Perfetto per testare la piattaforma",
+      period: "forever",
+      description: "Perfect for testing the platform",
       icon: Gift,
       color: "from-slate-600 to-slate-700",
       borderColor: "border-slate-300 dark:border-slate-700",
       bgColor: "bg-slate-50 dark:bg-slate-900/40",
       features: [
-        { text: "1 video di prova gratuito", included: true },
-        { text: "Watermark ADS MAKER AI", included: true },
-        { text: "Download HD", included: true },
-        { text: "Sito web generato", included: true },
-        { text: "Dominio personalizzato", included: true },
-        { text: "Video extra a €9 l'uno", included: true },
-        { text: "Supporto prioritario", included: false },
+        { text: "1 free trial video", included: true },
+        { text: "ADS MAKER AI watermark", included: true },
+        { text: "HD download", included: true },
+        { text: "Generated website", included: true },
+        { text: "Custom domain", included: true },
+        { text: "Extra videos at $9 each", included: true },
+        { text: "Priority support", included: false },
       ],
-      cta: "Inizia Gratis",
+      cta: "Start Free",
       popular: false,
     },
     {
       name: "Starter",
       price: "39",
-      period: "mese",
-      description: "Ideale per piccoli business e content creator",
+      period: "month",
+      description: "Ideal for small businesses and content creators",
       icon: Zap,
       color: "from-blue-600 to-blue-700",
       borderColor: "border-blue-300 dark:border-blue-500",
       bgColor: "bg-blue-50 dark:bg-blue-500/5",
       features: [
-        { text: "15 video pubblicitari al mese", included: true },
-        { text: "Rimozione watermark", included: true },
-        { text: "Sito web generato automaticamente", included: true },
-        { text: "Dominio temporaneo incluso", included: true },
-        { text: "Download HD + 4K", included: true },
-        { text: "Video extra a €7 l'uno", included: true },
-        { text: "Supporto email", included: true },
+        { text: "15 advertising videos per month", included: true },
+        { text: "Watermark removal", included: true },
+        { text: "Auto-generated website", included: true },
+        { text: "Temporary domain included", included: true },
+        { text: "HD + 4K downloads", included: true },
+        { text: "Extra videos at $7 each", included: true },
+        { text: "Email support", included: true },
       ],
-      cta: "Inizia Ora",
+      cta: "Start Now",
       popular: false,
     },
     {
       name: "Pro",
       price: "79",
-      period: "mese",
-      description: "Per aziende che vogliono scalare velocemente",
+      period: "month",
+      description: "For businesses that want to scale fast",
       icon: Crown,
       color: "from-purple-600 to-pink-600",
       borderColor: "border-purple-300 dark:border-purple-500",
       bgColor: "bg-purple-50 dark:bg-purple-500/5",
       features: [
-        { text: "45 video pubblicitari al mese", included: true },
-        { text: "Siti web illimitati generati", included: true },
-        { text: "2 domini personalizzati inclusi", included: true },
-        { text: "A/B Testing automatico", included: true },
-        { text: "Analytics avanzate", included: true },
-        { text: "Video extra a €4 l'uno", included: true },
-        { text: "Supporto prioritario", included: true },
-        { text: "Pubblicazione automatica social", included: true },
+        { text: "45 advertising videos per month", included: true },
+        { text: "Unlimited generated websites", included: true },
+        { text: "2 custom domains included", included: true },
+        { text: "Automatic A/B testing", included: true },
+        { text: "Advanced analytics", included: true },
+        { text: "Extra videos at $4 each", included: true },
+        { text: "Priority support", included: true },
+        { text: "Auto social media publishing", included: true },
       ],
-      cta: "Scegli Pro",
+      cta: "Choose Pro",
       popular: true,
     },
     {
       name: "Business",
       price: "149",
-      period: "mese",
-      description: "Per aziende enterprise e agenzie",
+      period: "month",
+      description: "For enterprise companies and agencies",
       icon: Building2,
       color: "from-orange-600 to-red-600",
       borderColor: "border-orange-300 dark:border-orange-500",
       bgColor: "bg-orange-50 dark:bg-orange-500/5",
       features: [
-        { text: "90 video pubblicitari al mese", included: true },
-        { text: "Siti web illimitati", included: true },
-        { text: "Domini personalizzati illimitati", included: true },
-        { text: "White-label completo", included: true },
-        { text: "API access completo", included: true },
-        { text: "Video extra a €2 l'uno", included: true },
-        { text: "Account manager dedicato", included: true },
-        { text: "Supporto prioritario 24/7", included: true },
-        { text: "Dashboard personalizzata", included: true },
-        { text: "Integrazione CRM", included: true },
+        { text: "90 advertising videos per month", included: true },
+        { text: "Unlimited websites", included: true },
+        { text: "Unlimited custom domains", included: true },
+        { text: "Complete white-label", included: true },
+        { text: "Full API access", included: true },
+        { text: "Extra videos at $2 each", included: true },
+        { text: "Dedicated account manager", included: true },
+        { text: "24/7 priority support", included: true },
+        { text: "Custom dashboard", included: true },
+        { text: "CRM integration", included: true },
       ],
-      cta: "Contatta Vendite",
+      cta: "Contact Sales",
       popular: false,
     },
   ]
@@ -108,16 +108,16 @@ export function PricingSection() {
             variant="secondary"
             className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 backdrop-blur-sm"
           >
-            💰 Prezzi Competitivi
+            💰 Competitive Pricing
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Investi nel Tuo{" "}
+            Invest in Your{" "}
             <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-              Successo
+              Success
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Video ads professionali che costano meno di un caffè al giorno. ROI garantito o rimborso completo.
+            Professional video ads that cost less than a coffee per day. Guaranteed ROI or full refund.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export function PricingSection() {
             >
               {plan.popular && (
                 <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                  🔥 Più Popolare
+                  🔥 Most Popular
                 </Badge>
               )}
 
@@ -142,12 +142,12 @@ export function PricingSection() {
                 <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
                 <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
                 <div className="flex items-baseline justify-center">
-                  <span className="text-4xl font-bold text-foreground">€{plan.price}</span>
+                  <span className="text-4xl font-bold text-foreground">${plan.price}</span>
                   <span className="text-muted-foreground ml-2">/{plan.period}</span>
                 </div>
                 {plan.name !== "Free" && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    ~€{plan.name === "Starter" ? "2.60" : plan.name === "Pro" ? "1.75" : "1.66"} per video
+                    ~${plan.name === "Starter" ? "2.60" : plan.name === "Pro" ? "1.75" : "1.66"} per video
                   </p>
                 )}
               </div>
@@ -183,11 +183,11 @@ export function PricingSection() {
         {/* Comparison Section */}
         <div className="text-center mt-16">
           <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground mt-8">
-            <span>✅ Nessun contratto annuale</span>
-            <span>✅ Cancellazione immediata</span>
-            <span>✅ Garanzia ROI 30 giorni</span>
-            <span>✅ Supporto in italiano</span>
-            <span>✅ Migrazione gratuita</span>
+            <span>✅ No annual contract</span>
+            <span>✅ Cancel anytime</span>
+            <span>✅ 30-day ROI guarantee</span>
+            <span>✅ English support</span>
+            <span>✅ Free migration</span>
           </div>
         </div>
       </div>

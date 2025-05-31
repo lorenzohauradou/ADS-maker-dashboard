@@ -46,13 +46,13 @@ export function Header() {
             href="#workflow"
             className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
           >
-            Come Funziona
+            How it Works
           </a>
           <a
             href="#pricing"
             className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
           >
-            Prezzi
+            Pricing
           </a>
         </nav>
 
@@ -63,12 +63,12 @@ export function Header() {
           </Button>
 
           <Button variant="ghost" className="text-muted-foreground hover:text-foreground text-lg hidden sm:block" asChild>
-            <Link href="/login">Accedi</Link>
+            <Link href="/login">Login</Link>
           </Button>
           <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 text-white" asChild>
             <Link href="/login">
               <Play className="w-5 h-5 mr-2" />
-              Prova Gratis
+              Try Free
             </Link>
           </Button>
 
@@ -90,17 +90,17 @@ export function Header() {
               Features
             </a>
             <a href="#workflow" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
-              Come Funziona
+              How it Works
             </a>
             <a href="#pricing" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
-              Prezzi
+              Pricing
             </a>
             <Button
               variant="ghost"
               className="text-muted-foreground hover:text-foreground text-lg w-full justify-start"
               asChild
             >
-              <Link href="/login">Accedi</Link>
+              <Link href="/login">Login</Link>
             </Button>
           </nav>
         </div>

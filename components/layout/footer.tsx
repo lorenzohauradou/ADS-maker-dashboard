@@ -5,26 +5,26 @@ export function Footer() {
   const links = {
     product: [
       { name: "Features", href: "#features" },
-      { name: "Prezzi", href: "#pricing" },
+      { name: "Pricing", href: "#pricing" },
       { name: "Demo", href: "#demo" },
       { name: "API", href: "#api" },
     ],
     company: [
-      { name: "Chi Siamo", href: "#about" },
+      { name: "About Us", href: "#about" },
       { name: "Blog", href: "#blog" },
-      { name: "Carriere", href: "#careers" },
-      { name: "Contatti", href: "#contact" },
+      { name: "Careers", href: "#careers" },
+      { name: "Contact", href: "#contact" },
     ],
     support: [
       { name: "Help Center", href: "#help" },
-      { name: "Documentazione", href: "#docs" },
+      { name: "Documentation", href: "#docs" },
       { name: "Status", href: "#status" },
       { name: "Community", href: "#community" },
     ],
     legal: [
       { name: "Privacy", href: "#privacy" },
-      { name: "Termini", href: "#terms" },
-      { name: "Cookie", href: "#cookies" },
+      { name: "Terms", href: "#terms" },
+      { name: "Cookies", href: "#cookies" },
       { name: "GDPR", href: "#gdpr" },
     ],
   }
@@ -50,7 +50,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm mb-6">
-              L'AI che trasforma le tue immagini in video ads professionali in 1 minuto.
+              The AI that transforms your images into professional video ads in 1 minute.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -67,7 +67,7 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Prodotto</h3>
+            <h3 className="font-semibold text-foreground mb-4">Product</h3>
             <ul className="space-y-2">
               {links.product.map((link) => (
                 <li key={link.name}>
@@ -80,7 +80,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Azienda</h3>
+            <h3 className="font-semibold text-foreground mb-4">Company</h3>
             <ul className="space-y-2">
               {links.company.map((link) => (
                 <li key={link.name}>
@@ -93,7 +93,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Supporto</h3>
+            <h3 className="font-semibold text-foreground mb-4">Support</h3>
             <ul className="space-y-2">
               {links.support.map((link) => (
                 <li key={link.name}>
@@ -106,7 +106,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Legale</h3>
+            <h3 className="font-semibold text-foreground mb-4">Legal</h3>
             <ul className="space-y-2">
               {links.legal.map((link) => (
                 <li key={link.name}>
@@ -120,7 +120,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">© 2024 ADS MAKER AI. Tutti i diritti riservati.</p>
+          <p className="text-muted-foreground text-sm">© 2024 ADS MAKER AI. All rights reserved.</p>
           <p className="text-muted-foreground text-xs mt-4 md:mt-0">Made with ❤️ in Italy</p>
         </div>
       </div>

@@ -10,36 +10,36 @@ export function FaqSection() {
 
     const faqs = [
         {
-            question: "Quanto tempo ci vuole davvero per creare un video?",
-            answer: "Il processo completo richiede 3-5 minuti: 30 secondi per l'upload delle immagini, 1-2 minuti per l'analisi AI, 1-2 minuti per la generazione del video e 30 secondi per il download. È letteralmente più veloce di preparare un caffè!"
+            question: "How long does it really take to create a video?",
+            answer: "The complete process takes 3-5 minutes: 30 seconds to upload images, 1-2 minutes for AI analysis, 1-2 minutes for video generation, and 30 seconds for download. It's literally faster than making coffee!"
         },
         {
-            question: "Quali tipi di business funzionano meglio?",
-            answer: "ADS MAKER AI è ottimizzato per e-commerce, SaaS, servizi professionali, app mobile, ristoranti e retail. L'AI riconosce automaticamente il tipo di prodotto e adatta voce, script e stile di conseguenza. Se vendi prodotti fisici o servizi digitali, funzionerà perfettamente."
+            question: "Which types of businesses work best?",
+            answer: "ADS MAKER AI is optimized for e-commerce, SaaS, professional services, mobile apps, restaurants, and retail. The AI automatically recognizes your product type and adapts voice, script, and style accordingly. If you sell physical products or digital services, it will work perfectly."
         },
         {
-            question: "La voce sembra davvero umana?",
-            answer: "Sì! Utilizziamo la tecnologia TTS più avanzata disponibile. La voce è indistinguibile da un attore professionale, con intonazione naturale, pause corrette e enfasi sui punti chiave. Molti clienti ci chiedono se usiamo veri doppiatori!"
+            question: "Does the voice really sound human?",
+            answer: "Yes! We use the most advanced TTS technology available. The voice is indistinguishable from a professional actor, with natural intonation, correct pauses, and emphasis on key points. Many clients ask us if we use real voice actors!"
         },
         {
-            question: "Posso rimuovere il watermark dal piano gratuito?",
-            answer: "Il piano gratuito include il watermark 'ADS MAKER AI' per permetterti di testare la qualità. Per rimuoverlo e avere video completamente brandizzati, è necessario il piano Starter (€39/mese) o superiore."
+            question: "Can I remove the watermark from the free plan?",
+            answer: "The free plan includes the 'ADS MAKER AI' watermark to let you test the quality. To remove it and have completely branded videos, you need the Starter plan ($39/month) or higher."
         },
         {
-            question: "Su quali social posso pubblicare i video?",
-            answer: "I video sono ottimizzati automaticamente per Instagram (Feed, Stories, Reels), TikTok, YouTube (Shorts e video standard), Facebook, LinkedIn e Pinterest. Ogni formato ha dimensioni e durata perfette per massimizzare l'engagement."
+            question: "Which social platforms can I publish videos to?",
+            answer: "Videos are automatically optimized for Instagram (Feed, Stories, Reels), TikTok, YouTube (Shorts and standard videos), Facebook, LinkedIn, and Pinterest. Each format has perfect dimensions and duration to maximize engagement."
         },
         {
-            question: "Cosa succede se non sono soddisfatto?",
-            answer: "Offriamo una garanzia ROI di 30 giorni. Se i tuoi video non generano risultati misurabili entro 30 giorni, ti rimborsiamo completamente. Inoltre, puoi cancellare in qualsiasi momento senza penali."
+            question: "What happens if I'm not satisfied?",
+            answer: "We offer a 30-day ROI guarantee. If your videos don't generate measurable results within 30 days, we'll give you a full refund. Plus, you can cancel anytime without penalties."
         },
         {
-            question: "Avete un team di supporto italiano?",
-            answer: "Assolutamente! Il nostro team di supporto parla italiano e conosce perfettamente il mercato locale. Siamo disponibili via email, chat e telefono negli orari lavorativi italiani."
+            question: "Do you have English-speaking support team?",
+            answer: "Absolutely! Our support team speaks English - French - Italian and understands the global market perfectly. We're available via email, chat, and phone during business hours."
         },
         {
-            question: "Posso integrare ADS MAKER AI con i miei tool?",
-            answer: "Sì! Dal piano Pro in su hai accesso alle API complete per integrare ADS MAKER AI nel tuo workflow. Funziona con Zapier, webhooks e la maggior parte dei CRM e e-commerce platform."
+            question: "Can I integrate ADS MAKER AI with my tools?",
+            answer: "Yes! From the Pro plan up, you get access to complete APIs to integrate ADS MAKER AI into your workflow. It works with Zapier, webhooks, and most CRM and e-commerce platforms."
         }
     ]
 
@@ -61,16 +61,16 @@ export function FaqSection() {
                         className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 backdrop-blur-sm"
                     >
                         <HelpCircle className="w-4 h-4 mr-2" />
-                        Domande Frequenti
+                        Frequently Asked Questions
                     </Badge>
                     <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        Tutto quello che devi{" "}
+                        Everything You Need to{" "}
                         <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                            Sapere
+                            Know
                         </span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Le risposte alle domande più comuni sui nostri video ads AI. Non trovi quello che cerchi? Contattaci!
+                        Answers to the most common questions about our AI video ads. Can't find what you're looking for? Contact us!
                     </p>
                 </div>
 
@@ -117,11 +117,11 @@ export function FaqSection() {
                         <div className="flex items-center justify-center mb-4">
                             <Zap className="w-6 h-6 text-yellow-500 mr-3" />
                             <span className="text-lg font-semibold text-foreground">
-                                Hai altre domande?
+                                Have more questions?
                             </span>
                         </div>
                         <p className="text-muted-foreground mb-6">
-                            Il nostro team è qui per aiutarti. Rispondiamo entro 2 ore negli orari lavorativi.
+                            Our team is here to help you. We respond within 2 hours during business hours.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a

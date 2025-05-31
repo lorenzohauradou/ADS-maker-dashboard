@@ -14,7 +14,7 @@ export function DeviceShowcaseSection() {
                 type: "image",
                 src: "/placeholder.svg?height=640&width=320",
                 title: "E-commerce Mobile",
-                description: "App vendite online"
+                description: "Online Sales App"
             },
             gradient: "from-blue-500 to-cyan-500"
         },
@@ -26,7 +26,7 @@ export function DeviceShowcaseSection() {
             content: {
                 type: "image",
                 src: "/placeholder.svg?height=800&width=600",
-                title: "Dashboard Analytics",
+                title: "Analytics Dashboard",
                 description: "SaaS Dashboard Pro"
             },
             gradient: "from-purple-500 to-pink-500"
@@ -61,20 +61,20 @@ export function DeviceShowcaseSection() {
                         className="mb-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
                     >
                         <Smartphone className="w-4 h-4 mr-2" />
-                        Esperienza Multi-Device
+                        Multi-Device Experience
                     </Badge>
 
                     <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
-                        Video Ads che{" "}
+                        Video Ads that{" "}
                         <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                            Funzionano
+                            Perform
                         </span>
                         <br />
-                        <span className="text-3xl md:text-4xl text-muted-foreground font-normal">Su Ogni Dispositivo</span>
+                        <span className="text-3xl md:text-4xl text-muted-foreground font-normal">For Every Business</span>
                     </h2>
 
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                        Ottimizzazione automatica per mobile, tablet e desktop. La tua audience ti vedrà ovunque.
+                        Gives his best performance on E-commerce, SaaS, and social media. Your audience will see you everywhere.
                     </p>
                 </div>
 
@@ -85,20 +85,20 @@ export function DeviceShowcaseSection() {
                         const deviceWidth = isPhone ? "w-48 md:w-64" : "w-64 md:w-80"
                         const deviceHeight = isPhone ? "h-[390px] md:h-[520px]" : "h-[435px] md:h-[580px]"
 
-                        // Mobile positioning e rotation classes
+                        // Mobile positioning and rotation classes
                         let positionClasses = ""
                         let rotationClass = ""
 
                         if (index === 0) {
-                            // Primo phone - centrato su mobile
+                            // First phone - centered on mobile
                             positionClasses = "top-[25%] left-1/2 -translate-x-1/2 md:top-[20%] md:left-[15%] md:translate-x-0 z-20"
                             rotationClass = "-rotate-[5deg] md:rotate-[-8deg]"
                         } else if (index === 1) {
-                            // Tablet - nascosto su mobile, visibile su desktop
+                            // Tablet - hidden on mobile, visible on desktop
                             positionClasses = "hidden md:block md:top-[15%] md:left-[70%] md:-translate-x-1/2"
                             rotationClass = "md:rotate-0"
                         } else if (index === 2) {
-                            // Secondo phone - parzialmente nascosto dietro su mobile  
+                            // Second phone - partially hidden behind on mobile  
                             positionClasses = "top-0 left-[65%] -translate-x-1/2 md:bottom-[25%] md:left-[25%] md:translate-x-0 z-10"
                             rotationClass = "rotate-[8deg] md:rotate-[5deg]"
                         }
@@ -113,7 +113,7 @@ export function DeviceShowcaseSection() {
                                     className={`${deviceWidth} ${deviceHeight} bg-gradient-to-br ${device.gradient} p-1 rounded-3xl shadow-2xl group-hover:shadow-4xl transition-all duration-500 group-hover:scale-105`}
                                 >
                                     <div className="w-full h-full bg-black rounded-3xl overflow-hidden relative">
-                                        {/* Device Notch/Camera (per phone) */}
+                                        {/* Device Notch/Camera (for phone) */}
                                         {isPhone && (
                                             <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10 border-2 border-gray-800"></div>
                                         )}
@@ -178,15 +178,15 @@ export function DeviceShowcaseSection() {
                     <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                         <div className="text-center">
                             <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">98%</div>
-                            <div className="text-muted-foreground">Compatibilità Mobile</div>
+                            <div className="text-muted-foreground">Mobile Compatibility</div>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">4K</div>
-                            <div className="text-muted-foreground">Qualità Ultra HD</div>
+                            <div className="text-muted-foreground">Ultra HD Quality</div>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">Auto</div>
-                            <div className="text-muted-foreground">Ottimizzazione Formati</div>
+                            <div className="text-muted-foreground">Format Optimization</div>
                         </div>
                     </div>
                 </div>

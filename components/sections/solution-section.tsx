@@ -7,22 +7,22 @@ export function SolutionSection() {
     {
       icon: Brain,
       title: "AI Script Generation",
-      description: "Script ottimizzati automaticamente per il tuo tipo di business",
+      description: "Scripts automatically optimized for your business type",
     },
     {
       icon: Mic,
-      title: "Voce Ultra-Realistica",
-      description: "TTS di nuova generazione indistinguibile da voce umana",
+      title: "Ultra-Realistic Voice",
+      description: "Next-gen TTS indistinguishable from human voice",
     },
     {
       icon: Video,
-      title: "Animazioni Cinematografiche",
-      description: "Transizioni e effetti professionali applicati automaticamente",
+      title: "Cinematic Animations",
+      description: "Professional transitions and effects applied automatically",
     },
     {
       icon: Smartphone,
       title: "Multi-Platform Ready",
-      description: "Output ottimizzato per TikTok, Instagram, YouTube e Facebook",
+      description: "Output optimized for TikTok, Instagram, YouTube and Facebook",
     },
   ]
 
@@ -35,17 +35,16 @@ export function SolutionSection() {
             className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
           >
             <Zap className="w-4 h-4 mr-2" />
-            La Soluzione Rivoluzionaria
+            The Game-Changing Solution
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">
               ADS MAKER AI
             </span>
-            : L'AI che Cambia Tutto
+            : The AI That Changes Everything
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Non un video editor generico, ma un'AI specializzata che comprende il tuo business e crea video ads che
-            convertono davvero.
+            Not just another generic video editor, but specialized AI that understands your business and creates video ads that actually convert.
           </p>
         </div>
 
@@ -64,16 +63,16 @@ export function SolutionSection() {
         <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">1 Minuto</div>
-              <div className="text-muted-foreground">invece di 2-4 settimane</div>
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">60 Seconds</div>
+              <div className="text-muted-foreground">instead of 2-4 weeks</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">€29/mese</div>
-              <div className="text-muted-foreground">invece di €80 per video</div>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">$39/month</div>
+              <div className="text-muted-foreground">instead of $3K per video</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">Infinite</div>
-              <div className="text-muted-foreground">varianti per A/B test</div>
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">Unlimited</div>
+              <div className="text-muted-foreground">A/B test variants</div>
             </div>
           </div>
         </div>

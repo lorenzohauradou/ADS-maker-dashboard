@@ -7,20 +7,20 @@ export function FeaturesSection() {
     {
       icon: Code,
       title: "SaaS/Tech",
-      description: "Script professionali, voce autorevole, focus su ROI e metriche",
-      example: '"Ancora perdi tempo con deployment manuali?"',
+      description: "Professional scripts, authoritative voice, ROI and metrics focus",
+      example: '"Still wasting time with manual deployments?"',
     },
     {
       icon: ShoppingCart,
       title: "E-commerce",
-      description: "Voce coinvolgente, lifestyle shots, focus su qualità prodotto",
-      example: '"Ecco perché 10K+ clienti amano questo prodotto"',
+      description: "Engaging voice, lifestyle shots, product quality focus",
+      example: '"Here\'s why 10K+ customers love this product"',
     },
     {
       icon: Briefcase,
-      title: "Servizi Professionali",
-      description: "Voce credibile, before/after, testimonianze e case study",
-      example: '"Come aziende Fortune 500 ottengono risultati straordinari"',
+      title: "Professional Services",
+      description: "Credible voice, before/after, testimonials and case studies",
+      example: '"How Fortune 500 companies achieve extraordinary results"',
     },
   ]
 
@@ -28,17 +28,17 @@ export function FeaturesSection() {
     {
       icon: Target,
       title: "vs Canva/CapCut",
-      points: ["Specializzato per ADS", "AI Script Generation", "Voce umana realistica"],
+      points: ["Specialized for ADS", "AI Script Generation", "Human-like realistic voice"],
     },
     {
       icon: Palette,
-      title: "vs Agenzie",
-      points: ["5 minuti vs 2-4 settimane", "€20/mese vs €10K", "Infinite varianti A/B"],
+      title: "vs Agencies",
+      points: ["5 minutes vs 2-4 weeks", "$39/month vs $10K", "Unlimited A/B variants"],
     },
     {
       icon: BarChart,
       title: "vs Luma/Runway",
-      points: ["Business-focused", "Immagini reali", "ROI immediato"],
+      points: ["Business-focused", "Real images", "Immediate ROI"],
     },
   ]
 
@@ -52,11 +52,11 @@ export function FeaturesSection() {
               variant="secondary"
               className="mb-4 bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
             >
-              Specializzazione AI
+              AI Specialization
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Non un Video Editor Generico</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Not a Generic Video Editor</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              AI specializzata che comprende il tuo tipo di business e crea contenuti ottimizzati
+              Specialized AI that understands your business type and creates optimized content
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export function FeaturesSection() {
                 <h3 className="text-xl font-semibold mb-3 text-foreground">{spec.title}</h3>
                 <p className="text-muted-foreground mb-4 text-sm">{spec.description}</p>
                 <div className="bg-muted/50 rounded-lg p-3 border-l-2 border-purple-500">
-                  <div className="text-xs text-muted-foreground mb-1">Esempio Script:</div>
+                  <div className="text-xs text-muted-foreground mb-1">Script Example:</div>
                   <div className="text-sm text-purple-600 dark:text-purple-400 italic">{spec.example}</div>
                 </div>
               </Card>
@@ -81,10 +81,10 @@ export function FeaturesSection() {
         <div>
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Perché ADS MAKER AI è <span className="text-yellow-600 dark:text-yellow-400">Diverso</span>
+              Why ADS MAKER AI is <span className="text-yellow-600 dark:text-yellow-400">Different</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Non siamo l'ennesimo tool di editing. Siamo la prima AI specializzata per video ads che convertono.
+              We're not another editing tool. We're the first AI specialized for video ads that actually convert.
             </p>
           </div>
 

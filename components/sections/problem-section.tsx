@@ -5,27 +5,27 @@ export function ProblemSection() {
   const problems = [
     {
       icon: DollarSign,
-      title: "Costi Proibitivi",
-      description: "Le agenzie chiedono €80-€100 per un singolo video ads",
-      stat: "80% delle PMI non può permetterselo",
+      title: "Crushing Costs",
+      description: "Agencies charge $3,000-$5,000 for a single video ad",
+      stat: "80% of SMBs can't afford it",
     },
     {
       icon: Clock,
-      title: "Tempi Lunghi",
-      description: "2-3 settimane per produrre un video pubblicitario",
-      stat: "Troppo lento per il mercato digitale",
+      title: "Endless Waiting",
+      description: "2-3 weeks to produce one advertising video",
+      stat: "Too slow for the digital market",
     },
     {
       icon: Users,
-      title: "Complessità Tecnica",
-      description: "Serve un team: video editor, voice artist, copywriter",
-      stat: "Competenze difficili da trovare",
+      title: "Complex Requirements",
+      description: "Need a full team: video editor, voice artist, copywriter",
+      stat: "Skills hard to find & expensive",
     },
     {
       icon: X,
-      title: "Non Scalabile",
-      description: "Impossibile creare varianti per A/B testing",
-      stat: "Limita l'ottimizzazione delle campagne",
+      title: "Can't Scale",
+      description: "Impossible to create variants for A/B testing",
+      stat: "Limits campaign optimization",
     },
   ]
 
@@ -34,10 +34,10 @@ export function ProblemSection() {
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Il <span className="text-red-500 dark:text-red-400">Problema</span> che Ogni Business Affronta
+            The <span className="text-red-500 dark:text-red-400">Problem</span> Every Business Faces
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ogni business ha bisogno di video ads per crescere, ma la realtà è frustrante...
+            Every business needs video ads to grow, but the reality is frustrating...
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export function ProblemSection() {
         <div className="text-center mt-12">
           <div className="inline-flex items-center px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-full">
             <span className="text-red-500 dark:text-red-400 font-semibold">
-              Risultato: 80% delle PMI rinuncia al video marketing professionale
+              Result: 80% of SMBs give up on professional video marketing
             </span>
           </div>
         </div>

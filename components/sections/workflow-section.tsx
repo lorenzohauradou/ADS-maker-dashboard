@@ -6,32 +6,32 @@ export function WorkflowSection() {
   const steps = [
     {
       icon: Upload,
-      title: "Upload Immagini",
-      description: "Carica 1-5 immagini del tuo prodotto o screenshot",
+      title: "Upload Images",
+      description: "Upload 1-5 images of your product or screenshots",
       time: "30 sec",
     },
     {
       icon: Brain,
-      title: "AI Analizza",
-      description: "L'AI comprende il tuo business e genera script ottimizzato",
+      title: "AI Analyzes",
+      description: "AI understands your business and generates optimized script",
       time: "1 min",
     },
     {
       icon: Mic,
-      title: "Voce Realistica",
-      description: "Attore AI ultra-realistico con intonazione perfetta",
+      title: "Realistic Voice",
+      description: "Ultra-realistic AI actor with perfect intonation",
       time: "1 min",
     },
     {
       icon: Video,
-      title: "Animazioni Pro",
-      description: "Effetti cinematografici e sottotitoli automatici",
+      title: "Pro Animations",
+      description: "Cinematic effects and automatic subtitles",
       time: "2 min",
     },
     {
       icon: Smartphone,
       title: "Multi-Platform",
-      description: "Pubblicazione video ottimizzati per ogni social network",
+      description: "Publish optimized videos to every social network",
       time: "30 sec",
     },
   ]
@@ -44,13 +44,13 @@ export function WorkflowSection() {
             variant="secondary"
             className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
           >
-            Workflow Magico
+            Magic Workflow
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Da Immagine a Video Ads in <span className="text-blue-600 dark:text-blue-400">5 Minuti</span>
+            From Image to Video Ads in <span className="text-blue-600 dark:text-blue-400">5 Minutes</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Il processo più semplice al mondo per creare video pubblicitari professionali
+            The world's simplest process to create professional advertising videos
           </p>
         </div>
 
@@ -105,7 +105,7 @@ export function WorkflowSection() {
         <div className="text-center mt-12">
           <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-full backdrop-blur-sm">
             <span className="text-blue-600 dark:text-blue-400 font-semibold text-lg">
-              Totale: 5 minuti vs 2-3 settimane tradizionali
+              Total: 5 minutes vs 2-3 weeks traditional
             </span>
           </div>
         </div>

@@ -60,9 +60,9 @@ export function ShowcaseSection() {
     const currentAudioState = audioStates[projectId] || false
     const newAudioState = !currentAudioState
 
-    // Se stiamo attivando questo video, disattiviamo tutti gli altri
+    // If we're enabling this video, disable all others
     if (newAudioState) {
-      // Trova tutti gli altri video e disattivali
+      // Find all other videos and disable them
       const allVideos = document.querySelectorAll('video')
       allVideos.forEach((video) => {
         if (video !== videoElement) {
@@ -70,7 +70,7 @@ export function ShowcaseSection() {
         }
       })
 
-      // Reset dello stato audio per tutti gli altri progetti
+      // Reset audio state for all other projects
       const resetStates: Record<number, boolean> = {}
       projects.forEach(project => {
         resetStates[project.id] = project.id === projectId
@@ -78,19 +78,19 @@ export function ShowcaseSection() {
 
       setAudioStates(resetStates)
     } else {
-      // Se stiamo disattivando, aggiorna solo questo video
+      // If we're disabling, update only this video
       setAudioStates(prev => ({
         ...prev,
         [projectId]: false
       }))
     }
 
-    // Toggle muted state del video corrente
+    // Toggle muted state of current video
     videoElement.muted = !newAudioState
   }
 
   const handleCardClick = (project: any, event: React.MouseEvent) => {
-    // Solo per video con audio
+    // Only for videos with audio
     if (project.thumbnail?.endsWith('.mp4') || project.thumbnail?.endsWith('.webm') || project.thumbnail?.endsWith('.mov')) {
       const videoElement = event.currentTarget.querySelector('video') as HTMLVideoElement
       if (videoElement) {
@@ -113,21 +113,20 @@ export function ShowcaseSection() {
             className="mb-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
-            Progetti Virali Creati con ADS MAKER AI
+            Viral Projects Created with ADS MAKER AI
           </Badge>
 
           <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            Video che{" "}
+            Videos that{" "}
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient">
-              Convertono
+              Convert
             </span>
             <br />
-            <span className="text-3xl md:text-4xl text-muted-foreground font-normal">Creati in 1 minuto</span>
+            <span className="text-3xl md:text-4xl text-muted-foreground font-normal">Created in 1 minute</span>
           </h2>
 
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Dai un'occhiata ai video ads che stanno generando milioni di visualizzazioni e migliaia di conversioni per i
-            nostri clienti.
+            Check out the video ads that are generating millions of views and thousands of conversions for our clients.
           </p>
         </div>
 
@@ -135,14 +134,14 @@ export function ShowcaseSection() {
         <div className="relative h-[700px] flex items-center justify-center perspective-1000 overflow-visible">
           <div className="relative w-full max-w-7xl flex items-center justify-center">
             {projects.map((project, index) => {
-              // Calcola posizione per layout a ventaglio
-              const centerIndex = Math.floor(projects.length / 2) // 2 per 5 elementi
+              // Calculate position for fan layout
+              const centerIndex = Math.floor(projects.length / 2) // 2 for 5 elements
               const offsetFromCenter = index - centerIndex
-              const xOffset = offsetFromCenter * 200 // Spazio orizzontale maggiore
-              const yOffset = Math.abs(offsetFromCenter) * 20 // Leggero offset verticale
-              const rotation = offsetFromCenter * 8 // Rotazione basata sulla posizione
-              const scale = index === centerIndex ? 1.1 : 0.95 // Elemento centrale più grande
-              const zIndex = 30 - Math.abs(offsetFromCenter) * 5 // Z-index basato sulla distanza dal centro
+              const xOffset = offsetFromCenter * 200 // Greater horizontal spacing
+              const yOffset = Math.abs(offsetFromCenter) * 20 // Slight vertical offset
+              const rotation = offsetFromCenter * 8 // Rotation based on position
+              const scale = index === centerIndex ? 1.1 : 0.95 // Center element larger
+              const zIndex = 30 - Math.abs(offsetFromCenter) * 5 // Z-index based on distance from center
 
               return (
                 <div
@@ -181,7 +180,7 @@ export function ShowcaseSection() {
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
-                        {/* Audio Toggle Button - solo per video */}
+                        {/* Audio Toggle Button - only for videos */}
                         {(project.thumbnail?.endsWith('.mp4') || project.thumbnail?.endsWith('.webm') || project.thumbnail?.endsWith('.mov')) && (
                           <div className="absolute top-4 left-4 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             {audioStates[project.id] ? (
@@ -192,7 +191,7 @@ export function ShowcaseSection() {
                           </div>
                         )}
 
-                        {/* Play Button - solo per immagini */}
+                        {/* Play Button - only for images */}
                         {!(project.thumbnail?.endsWith('.mp4') || project.thumbnail?.endsWith('.webm') || project.thumbnail?.endsWith('.mov')) && (
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
@@ -243,16 +242,15 @@ export function ShowcaseSection() {
         {/* Bottom CTA */}
         <div className="text-center mt-20">
           <p className="text-muted-foreground mb-6">
-            Questi video hanno generato oltre{" "}
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">€2.5M in vendite</span> per i nostri
-            clienti
+            These videos have generated over{" "}
+            <span className="text-blue-600 dark:text-blue-400 font-semibold">$2.5M in sales</span> for our clients
           </p>
           <Button
             size="lg"
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 text-white"
           >
             <Play className="w-5 h-5 mr-2" />
-            Crea il Tuo Video Virale
+            Create Your Viral Video
           </Button>
         </div>
       </div>
