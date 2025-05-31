@@ -13,8 +13,8 @@ export function DeviceShowcaseSection() {
             content: {
                 type: "image",
                 src: "/stripe-dash.png",
-                title: "E-commerce Shopify",
-                description: "Online Sales App"
+                title: "SaaS Platform",
+                description: "Online Web App"
             },
             gradient: "from-blue-500 to-cyan-500"
         },
