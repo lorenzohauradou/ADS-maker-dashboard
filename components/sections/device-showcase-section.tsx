@@ -12,7 +12,7 @@ export function DeviceShowcaseSection() {
             rotation: -8,
             content: {
                 type: "image",
-                src: "/saas-dashboard.png",
+                src: "/stripe-dash.png",
                 title: "E-commerce Shopify",
                 description: "Online Sales App"
             },
