@@ -530,11 +530,17 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                                     </h4>
                                     <div className="space-y-2">
                                         <Button
-                                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
+                                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white relative overflow-hidden group animate-pulse hover:animate-none hover:scale-[1.02] transition-all duration-300 hover:shadow-md hover:shadow-green-500/30"
                                             onClick={() => window.open(results.landing_url, '_blank')}
                                         >
-                                            <ExternalLink className="w-4 h-4 mr-2" />
-                                            Visit Website
+                                            {/* Contenuto del bottone */}
+                                            <div className="relative flex items-center justify-center">
+                                                <ExternalLink className="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" />
+                                                <span className="font-semibold">Visit Website</span>
+
+                                                {/* Sottile indicatore di novità */}
+                                                <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-300 rounded-full opacity-70"></div>
+                                            </div>
                                         </Button>
                                         <p className="text-xs text-slate-500 dark:text-zinc-500 truncate bg-slate-50 dark:bg-zinc-800 p-2 rounded">
                                             {results.landing_url}
