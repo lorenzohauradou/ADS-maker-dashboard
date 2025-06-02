@@ -12,6 +12,7 @@ import { CTASection } from "@/components/sections/cta-section"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Analytics } from "@vercel/analytics/next"
 
 export default function HomePage() {
   return (
@@ -31,6 +32,7 @@ export default function HomePage() {
           <CTASection />
         </main>
         <Footer />
+        <Analytics />
       </div>
     </ThemeProvider>
   )
