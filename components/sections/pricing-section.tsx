@@ -117,7 +117,7 @@ export function PricingSection() {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional video ads that cost less than a coffee per day. Guaranteed ROI or full refund.
+            Professional video ads that cost less than a coffee per day. Speed is the key for every successful business.
           </p>
         </div>
 
