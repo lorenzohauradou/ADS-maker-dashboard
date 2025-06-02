@@ -208,29 +208,34 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={34} height={34} className="mr-4" />
                         {isCompleted ? "Video Created Successfully!" : "Creating Your Video Ad"}
                     </DialogTitle>
-                    <p id="dialog-description" className="sr-only">
-                        Video creation progress and status
+                    <p id="dialog-description" className="text-slate-600 dark:text-zinc-400 mt-2">
+                        {isCompleted ? "Your professional video advertisement is ready!" : "AI is working its magic to create your perfect video advertisement"}
                     </p>
                 </DialogHeader>
 
-                <div className="space-y-6">
+                <div className="space-y-8">
                     {/* Project Overview */}
-                    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 border-blue-200 dark:border-blue-800">
+                    <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-6 border-2 border-purple-200 dark:border-purple-800 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="font-semibold text-slate-900 dark:text-white">{projectName}</h3>
-                                <p className="text-sm text-slate-600 dark:text-zinc-400">
-                                    {configuration.target_platform} • {configuration.video_length}s • {configuration.language}
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{projectName}</h3>
+                                <p className="text-slate-600 dark:text-zinc-400 mt-1">
+                                    {configuration.target_platform} • {configuration.video_length}s • {configuration.language.toUpperCase()}
                                 </p>
                             </div>
                             <div className="text-right">
-                                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                                     {Math.round(overallProgress)}%
                                 </div>
                                 <div className="text-sm text-slate-600 dark:text-zinc-400">Complete</div>
                             </div>
                         </div>
-                        <Progress value={overallProgress} className="mt-4 h-2" />
+                        <div className="mt-4">
+                            <Progress
+                                value={overallProgress}
+                                className="h-3 bg-slate-200 dark:bg-zinc-700 rounded-full"
+                            />
+                        </div>
                     </Card>
 
                     {/* Processing Steps */}
@@ -243,52 +248,58 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                             return (
                                 <Card
                                     key={step.id}
-                                    className={`p-4 border-2 transition-all ${step.status === "completed"
-                                        ? "border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800"
+                                    className={`p-6 border-2 transition-all duration-500 rounded-xl ${step.status === "completed"
+                                        ? "border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 dark:border-green-600 shadow-lg"
                                         : step.status === "processing"
-                                            ? "border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800"
+                                            ? "border-blue-400 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 dark:border-blue-600 shadow-lg"
                                             : step.status === "error"
-                                                ? "border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800"
+                                                ? "border-red-400 bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 dark:border-red-600"
                                                 : "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800"
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4">
-                                            <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${step.status === "completed"
-                                                ? "bg-green-500 text-white"
+                                            <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${step.status === "completed"
+                                                ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
                                                 : step.status === "processing"
-                                                    ? "bg-blue-500 text-white"
+                                                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
                                                     : step.status === "error"
-                                                        ? "bg-red-500 text-white"
+                                                        ? "bg-gradient-to-r from-red-500 to-rose-500 text-white"
                                                         : "bg-slate-200 dark:bg-zinc-700 text-slate-500 dark:text-zinc-400"
                                                 }`}>
-                                                {step.status === "completed" && <Check className="w-5 h-5" />}
-                                                {step.status === "processing" && <Loader2 className="w-5 h-5 animate-spin" />}
-                                                {step.status === "error" && <AlertCircle className="w-5 h-5" />}
-                                                {step.status === "waiting" && <Clock className="w-5 h-5" />}
+                                                {step.status === "completed" && <Check className="w-6 h-6" />}
+                                                {step.status === "processing" && <Loader2 className="w-6 h-6 animate-spin" />}
+                                                {step.status === "error" && <AlertCircle className="w-6 h-6" />}
+                                                {step.status === "waiting" && <Clock className="w-6 h-6" />}
                                             </div>
 
                                             <div>
-                                                <h4 className="font-semibold text-slate-900 dark:text-white">{step.title}</h4>
-                                                <p className="text-sm text-slate-600 dark:text-zinc-400">{step.description}</p>
+                                                <h4 className="text-lg font-bold text-slate-900 dark:text-white">{step.title}</h4>
+                                                <p className="text-slate-600 dark:text-zinc-400">{step.description}</p>
                                             </div>
                                         </div>
 
                                         <div className="flex items-center space-x-4">
                                             {step.status === "processing" && (
-                                                <div className="w-24">
-                                                    <Progress value={step.progress} className="h-2" />
+                                                <div className="w-32">
+                                                    <Progress
+                                                        value={step.progress}
+                                                        className="h-2 bg-slate-200 dark:bg-zinc-700"
+                                                    />
+                                                    <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1 text-center">
+                                                        {step.progress}%
+                                                    </p>
                                                 </div>
                                             )}
 
-                                            <Badge className={`${step.status === "completed" ? "bg-green-500 text-white" :
-                                                step.status === "processing" ? "bg-blue-500 text-white" :
-                                                    step.status === "error" ? "bg-red-500 text-white" :
+                                            <Badge className={`px-3 py-1 rounded-full font-semibold ${step.status === "completed" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white" :
+                                                step.status === "processing" ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white" :
+                                                    step.status === "error" ? "bg-gradient-to-r from-red-500 to-rose-500 text-white" :
                                                         "bg-slate-200 text-slate-700 dark:bg-zinc-700 dark:text-zinc-300"
                                                 }`}>
-                                                {step.status === "completed" ? "Done" :
-                                                    step.status === "processing" ? "Processing" :
-                                                        step.status === "error" ? "Error" : "Waiting"}
+                                                {step.status === "completed" ? "✅ Done" :
+                                                    step.status === "processing" ? "⚡ Processing" :
+                                                        step.status === "error" ? "❌ Error" : "⏳ Waiting"}
                                             </Badge>
                                         </div>
                                     </div>

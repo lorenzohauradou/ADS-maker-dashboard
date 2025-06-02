@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -23,153 +22,38 @@ import {
     ArrowRight,
     ArrowLeft,
     Sparkles,
-    Zap
+    Zap,
+    CheckCircle
 } from "lucide-react"
 import Image from "next/image"
 
-interface VideoConfigurationModalProps {
-    isOpen: boolean
-    onClose: () => void
-    onStartCreation: (config: VideoConfiguration) => void
-    projectName: string
-    imageCount: number
-}
-
-interface VideoConfiguration {
-    // Basic settings
-    target_platform: string
-    target_audience: string
-    language: string
-    video_length: number
-    aspect_ratio: string
-
-    // Style settings
-    script_style: string
-    visual_style: string
-
-    // Advanced settings
-    buy_custom_domain: boolean
-    custom_domain_name: string
-    landing_style: string
-    color_scheme: string
-    cta_text: string
-
-    // Audio settings
-    background_music_volume: number
-    voiceover_volume: number
-    no_background_music: boolean
-
-    // Creative controls
-    no_caption: boolean
-    no_emotion: boolean
-    no_cta: boolean
-    caption_style: string
-
-    // Override settings
-    override_script: string
-}
-
-const SCRIPT_STYLES = [
-    { value: "BenefitsV2", label: "Benefits Focus", description: "Evidenzia i benefici del prodotto" },
-    { value: "BrandStoryV2", label: "Brand Story", description: "Racconta la storia del brand" },
-    { value: "CallToActionV2", label: "Strong CTA", description: "Call-to-action potente" },
-    { value: "EmotionalWriter", label: "Emotional", description: "Tocca le emozioni" },
-    { value: "GenzWriter", label: "Gen Z Style", description: "Linguaggio giovane e trendy" },
-    { value: "ProblemSolutionV2", label: "Problem-Solution", description: "Problema + Soluzione" },
-    { value: "ProductHighlightsV2", label: "Product Features", description: "Evidenzia caratteristiche" },
-    { value: "SpecialOffersV2", label: "Special Offers", description: "Offerte speciali" }
-]
-
-const VISUAL_STYLES = [
-    { value: "AvatarBubbleTemplate", label: "Avatar Bubble", description: "Presentatore con bolla" },
-    { value: "DynamicProductTemplate", label: "Product Focus", description: "Focus sul prodotto" },
-    { value: "FullScreenTemplate", label: "Full Screen", description: "Schermo intero" },
-    { value: "VlogTemplate", label: "Vlog Style", description: "Stile vlog personale" },
-    { value: "DramaticTemplate", label: "Dramatic", description: "Cinematico drammatico" },
-    { value: "MotionCardsTemplate", label: "Motion Cards", description: "Card animate" }
-]
-
-const PLATFORMS = [
-    { value: "instagram", label: "Instagram", aspect: "9x16", icon: "📱" },
-    { value: "tiktok", label: "TikTok", aspect: "9x16", icon: "🎵" },
-    { value: "facebook", label: "Facebook", aspect: "1x1", icon: "👥" },
-    { value: "youtube", label: "YouTube", aspect: "16x9", icon: "📺" }
-]
-
-const LANGUAGES = [
-    { value: "en", label: "English", flag: "🇺🇸" },
-    { value: "it", label: "Italiano", flag: "🇮🇹" },
-    { value: "es", label: "Español", flag: "🇪🇸" },
-    { value: "fr", label: "Français", flag: "🇫🇷" },
-    { value: "de", label: "Deutsch", flag: "🇩🇪" },
-    { value: "pt", label: "Português", flag: "🇵🇹" },
-    { value: "ja", label: "日本語", flag: "🇯🇵" },
-    { value: "ko", label: "한국어", flag: "🇰🇷" }
-]
+// Import modular components
+import { VideoConfiguration, VideoConfigurationModalProps } from "./types/video-configuration"
+import { PLATFORMS } from "./constants/video-platforms"
+import { LANGUAGES } from "./constants/video-languages"
+import { SCRIPT_STYLES, VISUAL_STYLES } from "./constants/video-styles"
+import { useVideoConfiguration } from "./hooks/useVideoConfiguration"
+import { BasicConfigTab } from "./tabs/BasicConfigTab"
+import { StyleConfigTab } from "./tabs/StyleConfigTab"
+import { AdvancedConfigTab } from "./tabs/AdvancedConfigTab"
+import { PremiumConfigTab } from "./tabs/PremiumConfigTab"
 
 export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, projectName, imageCount }: VideoConfigurationModalProps) {
-    const [config, setConfig] = useState<VideoConfiguration>({
-        target_platform: "instagram",
-        target_audience: "giovani adulti",
-        language: "en",
-        video_length: 15,
-        aspect_ratio: "9x16",
-        script_style: "BenefitsV2",
-        visual_style: "AvatarBubbleTemplate",
-        buy_custom_domain: false,
-        custom_domain_name: "",
-        landing_style: "modern",
-        color_scheme: "auto",
-        cta_text: "",
-        background_music_volume: 50,
-        voiceover_volume: 80,
-        no_background_music: false,
-        no_caption: false,
-        no_emotion: false,
-        no_cta: false,
-        caption_style: "normal-black",
-        override_script: ""
-    })
-
-    const [currentTab, setCurrentTab] = useState("basic")
-
-    const updateConfig = (key: keyof VideoConfiguration, value: any) => {
-        setConfig(prev => ({ ...prev, [key]: value }))
-    }
-
-    const handlePlatformChange = (platform: string) => {
-        const platformInfo = PLATFORMS.find(p => p.value === platform)
-        updateConfig("target_platform", platform)
-        updateConfig("aspect_ratio", platformInfo?.aspect || "9x16")
-    }
+    const {
+        config,
+        currentTab,
+        setCurrentTab,
+        updateConfig,
+        handlePlatformChange,
+        resetConfig
+    } = useVideoConfiguration()
 
     const handleStartCreation = () => {
         onStartCreation(config)
     }
 
     const handleClose = () => {
-        setConfig({
-            target_platform: "instagram",
-            target_audience: "giovani adulti",
-            language: "en",
-            video_length: 15,
-            aspect_ratio: "9x16",
-            script_style: "BenefitsV2",
-            visual_style: "AvatarBubbleTemplate",
-            buy_custom_domain: false,
-            custom_domain_name: "",
-            landing_style: "modern",
-            color_scheme: "auto",
-            cta_text: "",
-            background_music_volume: 50,
-            voiceover_volume: 80,
-            no_background_music: false,
-            no_caption: false,
-            no_emotion: false,
-            no_cta: false,
-            caption_style: "normal-black",
-            override_script: ""
-        })
+        resetConfig()
         onClose()
     }
 
@@ -181,18 +65,23 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={34} height={34} className="mr-4" />
                         Configure Your Video Ad
                     </DialogTitle>
+                    <p className="text-slate-600 dark:text-zinc-400 mt-2">
+                        Customize every aspect of your professional video advertisement
+                    </p>
                 </DialogHeader>
 
-                <div className="space-y-6">
+                <div className="space-y-8">
                     {/* Project Info */}
-                    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 border-blue-200 dark:border-blue-800">
+                    <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-6 border-2 border-purple-200 dark:border-purple-800 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="font-semibold text-slate-900 dark:text-white">{projectName}</h3>
-                                <p className="text-sm text-slate-600 dark:text-zinc-400">{imageCount} images ready for processing</p>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{projectName}</h3>
+                                <p className="text-slate-600 dark:text-zinc-400 mt-1">
+                                    {imageCount} high-quality images • Ready for AI processing
+                                </p>
                             </div>
-                            <Badge className="bg-green-500 text-white">
-                                <Sparkles className="w-4 h-4 mr-1" />
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full">
+                                <Sparkles className="w-4 h-4 mr-2" />
                                 Ready to Create
                             </Badge>
                         </div>
@@ -200,372 +89,94 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
 
                     {/* Configuration Tabs */}
                     <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-                        <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="basic" className="flex items-center gap-2">
-                                <Smartphone className="w-4 h-4" />
-                                Basic
+                        <TabsList className="grid w-full grid-cols-4 bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl h-14">
+                            <TabsTrigger
+                                value="basic"
+                                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-md transition-all duration-200"
+                            >
+                                <Smartphone className="w-5 h-5" />
+                                <span className="font-semibold">Basic</span>
                             </TabsTrigger>
-                            <TabsTrigger value="style" className="flex items-center gap-2">
-                                <Palette className="w-4 h-4" />
-                                Style
+                            <TabsTrigger
+                                value="style"
+                                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-md transition-all duration-200"
+                            >
+                                <Palette className="w-5 h-5" />
+                                <span className="font-semibold">Style</span>
                             </TabsTrigger>
-                            <TabsTrigger value="advanced" className="flex items-center gap-2">
-                                <Settings className="w-4 h-4" />
-                                Advanced
+                            <TabsTrigger
+                                value="advanced"
+                                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-md transition-all duration-200"
+                            >
+                                <Settings className="w-5 h-5" />
+                                <span className="font-semibold">Advanced</span>
                             </TabsTrigger>
-                            <TabsTrigger value="premium" className="flex items-center gap-2">
-                                <Crown className="w-4 h-4" />
-                                Premium
+                            <TabsTrigger
+                                value="premium"
+                                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-md transition-all duration-200"
+                            >
+                                <Crown className="w-5 h-5" />
+                                <span className="font-semibold">Premium</span>
                             </TabsTrigger>
                         </TabsList>
 
                         {/* Basic Settings */}
-                        <TabsContent value="basic" className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Platform Selection */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Target Platform</Label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {PLATFORMS.map((platform) => (
-                                            <Card
-                                                key={platform.value}
-                                                className={`p-4 cursor-pointer transition-all border-2 ${config.target_platform === platform.value
-                                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                                                    : "border-slate-200 dark:border-zinc-700 hover:border-slate-300 dark:hover:border-zinc-600"
-                                                    }`}
-                                                onClick={() => handlePlatformChange(platform.value)}
-                                            >
-                                                <div className="text-center">
-                                                    <div className="text-2xl mb-2">{platform.icon}</div>
-                                                    <div className="font-medium">{platform.label}</div>
-                                                    <div className="text-xs text-slate-500">{platform.aspect}</div>
-                                                </div>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Language Selection */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Language</Label>
-                                    <Select value={config.language} onValueChange={(value) => updateConfig("language", value)}>
-                                        <SelectTrigger className="text-lg p-3">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {LANGUAGES.map((lang) => (
-                                                <SelectItem key={lang.value} value={lang.value}>
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-lg">{lang.flag}</span>
-                                                        {lang.label}
-                                                    </div>
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Video Length */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Video Length</Label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {[15, 30, 60].map((length) => (
-                                            <Card
-                                                key={length}
-                                                className={`p-3 cursor-pointer text-center transition-all border-2 ${config.video_length === length
-                                                    ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
-                                                    : "border-slate-200 dark:border-zinc-700 hover:border-slate-300"
-                                                    }`}
-                                                onClick={() => updateConfig("video_length", length)}
-                                            >
-                                                <div className="font-bold text-lg">{length}s</div>
-                                                <div className="text-xs text-slate-500">
-                                                    {length === 15 ? "Quick" : length === 30 ? "Standard" : "Detailed"}
-                                                </div>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Target Audience */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Target Audience</Label>
-                                    <Select value={config.target_audience} onValueChange={(value) => updateConfig("target_audience", value)}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="giovani adulti">Young Adults (18-35)</SelectItem>
-                                            <SelectItem value="famiglie">Families</SelectItem>
-                                            <SelectItem value="professionisti">Professionals</SelectItem>
-                                            <SelectItem value="anziani">Seniors (55+)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
+                        <TabsContent value="basic">
+                            <BasicConfigTab
+                                config={config}
+                                updateConfig={updateConfig}
+                                handlePlatformChange={handlePlatformChange}
+                            />
                         </TabsContent>
 
                         {/* Style Settings */}
-                        <TabsContent value="style" className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Script Style */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Script Style</Label>
-                                    <div className="space-y-3 max-h-64 overflow-y-auto">
-                                        {SCRIPT_STYLES.map((style) => (
-                                            <Card
-                                                key={style.value}
-                                                className={`p-3 cursor-pointer transition-all border-2 ${config.script_style === style.value
-                                                    ? "border-green-500 bg-green-50 dark:bg-green-900/20"
-                                                    : "border-slate-200 dark:border-zinc-700 hover:border-slate-300"
-                                                    }`}
-                                                onClick={() => updateConfig("script_style", style.value)}
-                                            >
-                                                <div className="font-medium">{style.label}</div>
-                                                <div className="text-sm text-slate-500">{style.description}</div>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Visual Style */}
-                                <div className="space-y-3">
-                                    <Label className="text-lg font-semibold text-slate-900 dark:text-white">Visual Style</Label>
-                                    <div className="space-y-3 max-h-64 overflow-y-auto">
-                                        {VISUAL_STYLES.map((style) => (
-                                            <Card
-                                                key={style.value}
-                                                className={`p-3 cursor-pointer transition-all border-2 ${config.visual_style === style.value
-                                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                                                    : "border-slate-200 dark:border-zinc-700 hover:border-slate-300"
-                                                    }`}
-                                                onClick={() => updateConfig("visual_style", style.value)}
-                                            >
-                                                <div className="font-medium">{style.label}</div>
-                                                <div className="text-sm text-slate-500">{style.description}</div>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Custom Script Override */}
-                            <div className="space-y-3">
-                                <Label className="text-lg font-semibold text-slate-900 dark:text-white">Custom Script (Optional)</Label>
-                                <Textarea
-                                    placeholder="Write your custom script here to override AI generation..."
-                                    value={config.override_script}
-                                    onChange={(e) => updateConfig("override_script", e.target.value)}
-                                    className="min-h-[100px]"
-                                />
-                            </div>
+                        <TabsContent value="style">
+                            <StyleConfigTab
+                                config={config}
+                                updateConfig={updateConfig}
+                            />
                         </TabsContent>
 
                         {/* Advanced Settings */}
-                        <TabsContent value="advanced" className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Audio Controls */}
-                                <Card className="p-4">
-                                    <h3 className="font-semibold mb-4 flex items-center text-slate-900 dark:text-white">
-                                        <Volume2 className="w-5 h-5 mr-2" />
-                                        Audio Settings
-                                    </h3>
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label>Background Music Volume: {config.background_music_volume}%</Label>
-                                            <Slider
-                                                value={[config.background_music_volume]}
-                                                onValueChange={(value) => updateConfig("background_music_volume", value[0])}
-                                                max={100}
-                                                step={5}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Voiceover Volume: {config.voiceover_volume}%</Label>
-                                            <Slider
-                                                value={[config.voiceover_volume]}
-                                                onValueChange={(value) => updateConfig("voiceover_volume", value[0])}
-                                                max={100}
-                                                step={5}
-                                            />
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="no-music"
-                                                checked={config.no_background_music}
-                                                onCheckedChange={(checked) => updateConfig("no_background_music", checked)}
-                                            />
-                                            <Label htmlFor="no-music">No background music</Label>
-                                        </div>
-                                    </div>
-                                </Card>
-
-                                {/* Creative Controls */}
-                                <Card className="p-4">
-                                    <h3 className="font-semibold mb-4 text-slate-900 dark:text-white">Creative Controls</h3>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="no-caption"
-                                                checked={config.no_caption}
-                                                onCheckedChange={(checked) => updateConfig("no_caption", checked)}
-                                            />
-                                            <Label htmlFor="no-caption">No captions/subtitles</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="no-emotion"
-                                                checked={config.no_emotion}
-                                                onCheckedChange={(checked) => updateConfig("no_emotion", checked)}
-                                            />
-                                            <Label htmlFor="no-emotion">No avatar emotions</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="no-cta"
-                                                checked={config.no_cta}
-                                                onCheckedChange={(checked) => updateConfig("no_cta", checked)}
-                                            />
-                                            <Label htmlFor="no-cta">No call-to-action</Label>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label>Caption Style</Label>
-                                            <Select value={config.caption_style} onValueChange={(value) => updateConfig("caption_style", value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="normal-black">Normal Black</SelectItem>
-                                                    <SelectItem value="normal-white">Normal White</SelectItem>
-                                                    <SelectItem value="glow">Glow Effect</SelectItem>
-                                                    <SelectItem value="neo">Futuristic</SelectItem>
-                                                    <SelectItem value="brick">Bold Brick</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </div>
-
-                            {/* Landing Page Settings */}
-                            <Card className="p-4">
-                                <h3 className="font-semibold mb-4 text-slate-900 dark:text-white">Landing Page Customization</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label>Landing Style</Label>
-                                        <Select value={config.landing_style} onValueChange={(value) => updateConfig("landing_style", value)}>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="modern">Modern</SelectItem>
-                                                <SelectItem value="minimal">Minimal</SelectItem>
-                                                <SelectItem value="bold">Bold</SelectItem>
-                                                <SelectItem value="elegant">Elegant</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Color Scheme</Label>
-                                        <Select value={config.color_scheme} onValueChange={(value) => updateConfig("color_scheme", value)}>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="auto">Auto (AI Choice)</SelectItem>
-                                                <SelectItem value="blue">Blue</SelectItem>
-                                                <SelectItem value="green">Green</SelectItem>
-                                                <SelectItem value="red">Red</SelectItem>
-                                                <SelectItem value="purple">Purple</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Custom CTA Text</Label>
-                                        <Input
-                                            placeholder="e.g. Buy Now, Learn More"
-                                            value={config.cta_text}
-                                            onChange={(e) => updateConfig("cta_text", e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                            </Card>
+                        <TabsContent value="advanced">
+                            <AdvancedConfigTab
+                                config={config}
+                                updateConfig={updateConfig}
+                            />
                         </TabsContent>
 
                         {/* Premium Settings */}
-                        <TabsContent value="premium" className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Custom Domain */}
-                                <Card className="p-4 border-2 border-yellow-200 dark:border-yellow-800 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20">
-                                    <h3 className="font-semibold mb-4 flex items-center text-slate-900 dark:text-white">
-                                        <Crown className="w-5 h-5 mr-2 text-yellow-600" />
-                                        Custom Domain
-                                    </h3>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="custom-domain"
-                                                checked={config.buy_custom_domain}
-                                                onCheckedChange={(checked) => updateConfig("buy_custom_domain", checked)}
-                                            />
-                                            <Label htmlFor="custom-domain">Purchase custom domain (+$12/year)</Label>
-                                        </div>
-                                        {config.buy_custom_domain && (
-                                            <Input
-                                                placeholder="yourbrand.com"
-                                                value={config.custom_domain_name}
-                                                onChange={(e) => updateConfig("custom_domain_name", e.target.value)}
-                                            />
-                                        )}
-                                    </div>
-                                </Card>
-                            </div>
-
-                            {/* Premium Features Info */}
-                            <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 dark:border-purple-800">
-                                <div className="text-center">
-                                    <Crown className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-                                    <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Premium Features</h3>
-                                    <p className="text-slate-600 dark:text-zinc-400 mb-4">
-                                        Unlock professional features for your video ads
-                                    </p>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                                        <div className="flex items-center justify-center">
-                                            <Zap className="w-4 h-4 mr-2 text-yellow-500" />
-                                            Priority Processing
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            <Globe className="w-4 h-4 mr-2 text-blue-500" />
-                                            Custom Domains
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            <Sparkles className="w-4 h-4 mr-2 text-purple-500" />
-                                            Advanced AI Models
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card>
+                        <TabsContent value="premium">
+                            <PremiumConfigTab
+                                config={config}
+                                updateConfig={updateConfig}
+                            />
                         </TabsContent>
                     </Tabs>
 
                     {/* Navigation */}
-                    <div className="flex justify-between pt-6 border-t border-slate-200 dark:border-zinc-700">
+                    <div className="flex justify-between items-center pt-8 border-t-2 border-slate-200 dark:border-zinc-700">
                         <Button
                             variant="outline"
                             onClick={handleClose}
-                            className="px-6 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300"
+                            className="px-8 py-3 border-2 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-xl font-semibold"
                         >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            <ArrowLeft className="w-5 h-5 mr-2" />
                             Back to Upload
                         </Button>
 
+                        <div className="text-center">
+                            <p className="text-sm text-slate-500 dark:text-zinc-500 mb-2">
+                                🚀 Estimated creation time: 3-5 minutes
+                            </p>
+                        </div>
+
                         <Button
                             onClick={handleStartCreation}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8"
+                            className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white px-10 py-3 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                            Start Creating Video
-                            <ArrowRight className="w-4 h-4 ml-2" />
+                            Start Creating Magic
+                            <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
                     </div>
                 </div>
