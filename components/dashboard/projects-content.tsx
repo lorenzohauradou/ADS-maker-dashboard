@@ -23,7 +23,7 @@ import {
   Share2,
   Filter,
 } from "lucide-react"
-import { ImageUploadModal } from "./image-upload-modal"
+import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 
 const projects = [
   {
