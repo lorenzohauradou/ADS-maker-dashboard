@@ -50,7 +50,6 @@ interface VideoConfiguration {
     // Advanced settings
     buy_custom_domain: boolean
     custom_domain_name: string
-    publish_to_socials: boolean
     landing_style: string
     color_scheme: string
     cta_text: string
@@ -113,13 +112,12 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
         target_platform: "instagram",
         target_audience: "giovani adulti",
         language: "en",
-        video_length: 30,
+        video_length: 15,
         aspect_ratio: "9x16",
         script_style: "BenefitsV2",
         visual_style: "AvatarBubbleTemplate",
         buy_custom_domain: false,
         custom_domain_name: "",
-        publish_to_socials: false,
         landing_style: "modern",
         color_scheme: "auto",
         cta_text: "",
@@ -154,13 +152,12 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
             target_platform: "instagram",
             target_audience: "giovani adulti",
             language: "en",
-            video_length: 30,
+            video_length: 15,
             aspect_ratio: "9x16",
             script_style: "BenefitsV2",
             visual_style: "AvatarBubbleTemplate",
             buy_custom_domain: false,
             custom_domain_name: "",
-            publish_to_socials: false,
             landing_style: "modern",
             color_scheme: "auto",
             cta_text: "",
@@ -520,29 +517,6 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
                                                 value={config.custom_domain_name}
                                                 onChange={(e) => updateConfig("custom_domain_name", e.target.value)}
                                             />
-                                        )}
-                                    </div>
-                                </Card>
-
-                                {/* Social Publishing */}
-                                <Card className="p-4 border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
-                                    <h3 className="font-semibold mb-4 flex items-center text-slate-900 dark:text-white">
-                                        <Globe className="w-5 h-5 mr-2 text-blue-600" />
-                                        Auto-Publish to Socials
-                                    </h3>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="auto-publish"
-                                                checked={config.publish_to_socials}
-                                                onCheckedChange={(checked) => updateConfig("publish_to_socials", checked)}
-                                            />
-                                            <Label htmlFor="auto-publish">Auto-publish when ready</Label>
-                                        </div>
-                                        {config.publish_to_socials && (
-                                            <p className="text-sm text-slate-600 dark:text-zinc-400">
-                                                You'll need to connect your social accounts after creation
-                                            </p>
                                         )}
                                     </div>
                                 </Card>

@@ -17,7 +17,6 @@ interface VideoConfiguration {
   visual_style: string
   buy_custom_domain: boolean
   custom_domain_name: string
-  publish_to_socials: boolean
   landing_style: string
   color_scheme: string
   cta_text: string

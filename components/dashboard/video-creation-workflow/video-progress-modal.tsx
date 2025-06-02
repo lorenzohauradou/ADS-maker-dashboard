@@ -21,408 +21,393 @@ import {
     Image as ImageIcon,
     Code,
     Video,
-    Rocket
+    Rocket,
+    Check,
+    Loader2,
+    Settings,
+    MonitorPlay
 } from "lucide-react"
 import Image from "next/image"
+
+interface VideoConfiguration {
+    target_platform: string
+    target_audience: string
+    language: string
+    video_length: number
+    aspect_ratio: string
+    script_style: string
+    visual_style: string
+    buy_custom_domain: boolean
+    custom_domain_name: string
+    landing_style: string
+    color_scheme: string
+    cta_text: string
+    background_music_volume: number
+    voiceover_volume: number
+    no_background_music: boolean
+    no_caption: boolean
+    no_emotion: boolean
+    no_cta: boolean
+    caption_style: string
+    override_script: string
+}
 
 interface VideoProgressModalProps {
     isOpen: boolean
     onClose: () => void
     projectName: string
-    configuration: any
+    configuration: VideoConfiguration
 }
 
-interface ProgressStep {
+interface ProcessingStep {
     id: string
     title: string
     description: string
-    icon: any
-    status: "pending" | "running" | "completed" | "error"
+    status: "waiting" | "processing" | "completed" | "error"
     progress: number
-    details?: string
-    estimated_time?: string
-}
-
-interface WorkflowResult {
-    video_url?: string
-    site_url?: string
-    custom_domain?: string
-    social_results?: any
-    preview_thumbnail?: string
+    duration?: string
 }
 
 export function VideoProgressModal({ isOpen, onClose, projectName, configuration }: VideoProgressModalProps) {
-    const [currentStep, setCurrentStep] = useState(0)
-    const [overallProgress, setOverallProgress] = useState(0)
-    const [isCompleted, setIsCompleted] = useState(false)
-    const [result, setResult] = useState<WorkflowResult | null>(null)
-    const [error, setError] = useState<string | null>(null)
-
-    const [steps, setSteps] = useState<ProgressStep[]>([
+    const [steps, setSteps] = useState<ProcessingStep[]>([
         {
-            id: "upload",
+            id: "analysis",
             title: "Image Analysis",
-            description: "AI analyzing your product images",
-            icon: ImageIcon,
-            status: "pending",
-            progress: 0,
-            estimated_time: "30s"
+            description: "Analyzing your product images with AI",
+            status: "waiting",
+            progress: 0
         },
         {
             id: "landing",
-            title: "Landing Page Creation",
-            description: "Generating professional landing page",
-            icon: Code,
-            status: "pending",
-            progress: 0,
-            estimated_time: "45s"
-        },
-        {
-            id: "deploy",
-            title: "Website Deployment",
-            description: "Deploying to live URL",
-            icon: Rocket,
-            status: "pending",
-            progress: 0,
-            estimated_time: "20s"
-        },
-        {
-            id: "video",
-            title: "Video Generation",
-            description: "Creating AI video with Creatify",
-            icon: Video,
-            status: "pending",
-            progress: 0,
-            estimated_time: "120s"
+            title: "Landing Page",
+            description: "Creating professional landing page",
+            status: "waiting",
+            progress: 0
         },
         {
             id: "domain",
             title: "Domain Setup",
-            description: "Configuring custom domain",
-            icon: Globe,
-            status: "pending",
-            progress: 0,
-            estimated_time: "30s"
+            description: "Configuring domain and deployment",
+            status: "waiting",
+            progress: 0
         },
         {
-            id: "social",
-            title: "Social Publishing",
-            description: "Publishing to social platforms",
-            icon: Share2,
-            status: "pending",
-            progress: 0,
-            estimated_time: "15s"
+            id: "script",
+            title: "Video Script",
+            description: "AI writing optimized video script",
+            status: "waiting",
+            progress: 0
+        },
+        {
+            id: "video",
+            title: "Video Generation",
+            description: "Creating professional video advertisement",
+            status: "waiting",
+            progress: 0
         }
     ])
 
-    // Simula il workflow del backend
-    useEffect(() => {
-        if (!isOpen) return
+    const [currentStep, setCurrentStep] = useState(0)
+    const [overallProgress, setOverallProgress] = useState(0)
+    const [isCompleted, setIsCompleted] = useState(false)
+    const [results, setResults] = useState<any>(null)
 
-        const simulateWorkflow = async () => {
+    const updateStepStatus = (stepId: string, status: ProcessingStep["status"], progress: number = 0) => {
+        setSteps(prev => prev.map(step =>
+            step.id === stepId
+                ? { ...step, status, progress }
+                : step
+        ))
+    }
+
+    const processStep = async (stepIndex: number, message: string) => {
+        const step = steps[stepIndex]
+        if (!step) return
+
+        setCurrentStep(stepIndex)
+        updateStepStatus(step.id, "processing")
+
+        // Simula progresso graduale
+        for (let i = 0; i <= 100; i += 20) {
+            updateStepStatus(step.id, "processing", i)
+            await new Promise(resolve => setTimeout(resolve, 300))
+        }
+
+        updateStepStatus(step.id, "completed", 100)
+    }
+
+    const simulateWorkflow = async () => {
+        try {
             // Step 1: Image Analysis
-            await processStep(0, "Analyzing product images with ChatGPT Vision...")
+            await processStep(0, "Analyzing images with ChatGPT Vision...")
 
             // Step 2: Landing Page
-            await processStep(1, "Generating landing page with Claude AI...")
+            await processStep(1, "Generating landing page with Claude...")
 
-            // Step 3: Deploy
-            await processStep(2, "Deploying to Vercel...")
-
-            // Step 4: Video Generation (longer process)
-            await processStep(3, "Creating video with advanced AI models...", 120000)
-
-            // Step 5: Domain (only if enabled)
+            // Step 3: Domain (only if custom domain requested)
             if (configuration.buy_custom_domain) {
-                await processStep(4, "Setting up custom domain...")
+                await processStep(2, "Setting up custom domain...")
             } else {
-                updateStepStatus(4, "completed", 100, "Skipped - using temporary URL")
+                updateStepStatus("domain", "completed", 100)
             }
 
-            // Step 6: Social (only if enabled)
-            if (configuration.publish_to_socials) {
-                await processStep(5, "Publishing to social platforms...")
-            } else {
-                updateStepStatus(5, "completed", 100, "Skipped - manual publishing")
-            }
+            // Step 4: Script Generation
+            await processStep(3, "Writing video script with AI...")
+
+            // Step 5: Video Creation
+            await processStep(4, "Creating video with Creatify...")
 
             // Completion
             setIsCompleted(true)
-            setResult({
+            setResults({
                 video_url: "https://example.com/video.mp4",
-                site_url: configuration.buy_custom_domain ?
-                    `https://${configuration.custom_domain_name}` :
-                    "https://your-product-abc123.vercel.app",
-                custom_domain: configuration.buy_custom_domain ? configuration.custom_domain_name : undefined,
-                preview_thumbnail: "/placeholder.svg?height=300&width=400"
+                landing_url: configuration.buy_custom_domain
+                    ? `https://${configuration.custom_domain_name || "myproduct.com"}`
+                    : "https://temp-site-123.vercel.app",
+                thumbnail_url: "https://example.com/thumb.jpg"
             })
+
+        } catch (error) {
+            console.error("Workflow error:", error)
         }
-
-        simulateWorkflow()
-    }, [isOpen, configuration])
-
-    const processStep = async (stepIndex: number, details: string, duration: number = 30000) => {
-        setCurrentStep(stepIndex)
-        updateStepStatus(stepIndex, "running", 0, details)
-
-        // Simulate progress
-        const progressInterval = setInterval(() => {
-            setSteps(prev => {
-                const updated = [...prev]
-                if (updated[stepIndex].progress < 100) {
-                    updated[stepIndex].progress = Math.min(100, updated[stepIndex].progress + Math.random() * 10)
-                }
-                return updated
-            })
-        }, duration / 20)
-
-        // Complete after duration
-        setTimeout(() => {
-            clearInterval(progressInterval)
-            updateStepStatus(stepIndex, "completed", 100, "Completed successfully")
-
-            // Update overall progress
-            const completedSteps = stepIndex + 1
-            const totalSteps = steps.filter(s =>
-                s.id !== "domain" || configuration.buy_custom_domain
-            ).filter(s =>
-                s.id !== "social" || configuration.publish_to_socials
-            ).length
-            setOverallProgress((completedSteps / totalSteps) * 100)
-        }, duration)
-
-        return new Promise(resolve => setTimeout(resolve, duration + 100))
     }
 
-    const updateStepStatus = (stepIndex: number, status: ProgressStep["status"], progress: number, details?: string) => {
-        setSteps(prev => {
-            const updated = [...prev]
-            updated[stepIndex] = {
-                ...updated[stepIndex],
-                status,
-                progress,
-                details
-            }
-            return updated
-        })
-    }
+    useEffect(() => {
+        if (isOpen) {
+            simulateWorkflow()
+        }
+    }, [isOpen])
+
+    useEffect(() => {
+        const completedSteps = steps.filter(step => step.status === "completed").length
+        const totalSteps = steps.filter(s =>
+            s.id !== "domain" || configuration.buy_custom_domain
+        ).length
+
+        setOverallProgress((completedSteps / totalSteps) * 100)
+    }, [steps, configuration.buy_custom_domain])
 
     const handleClose = () => {
-        if (isCompleted) {
-            // Reset state
-            setCurrentStep(0)
-            setOverallProgress(0)
-            setIsCompleted(false)
-            setResult(null)
-            setError(null)
-            setSteps(prev => prev.map(step => ({
-                ...step,
-                status: "pending" as const,
-                progress: 0,
-                details: undefined
-            })))
-        }
+        // Reset state
+        setSteps(prev => prev.map(step => ({ ...step, status: "waiting", progress: 0 })))
+        setCurrentStep(0)
+        setOverallProgress(0)
+        setIsCompleted(false)
+        setResults(null)
         onClose()
-    }
-
-    const getStepIcon = (step: ProgressStep) => {
-        if (step.status === "completed") return CheckCircle
-        if (step.status === "error") return AlertCircle
-        if (step.status === "running") return Clock
-        return step.icon
-    }
-
-    const getStepColor = (step: ProgressStep) => {
-        switch (step.status) {
-            case "completed": return "text-green-500"
-            case "error": return "text-red-500"
-            case "running": return "text-blue-500"
-            default: return "text-slate-400"
-        }
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+            <DialogContent
+                className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+                aria-describedby="dialog-description"
+            >
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold flex items-center text-slate-900 dark:text-white">
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={34} height={34} className="mr-4" />
-                        {isCompleted ? "Video Creation Complete!" : "Creating Your Video Ad"}
+                        {isCompleted ? "Video Created Successfully!" : "Creating Your Video Ad"}
                     </DialogTitle>
+                    <p id="dialog-description" className="sr-only">
+                        Video creation progress and status
+                    </p>
                 </DialogHeader>
 
                 <div className="space-y-6">
-                    {/* Project Info */}
-                    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 border-blue-200 dark:border-blue-800">
+                    {/* Project Overview */}
+                    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 border-blue-200 dark:border-blue-800">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="font-semibold text-slate-900 dark:text-white">{projectName}</h3>
                                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                                    {configuration.target_platform} • {configuration.language} • {configuration.video_length}s
+                                    {configuration.target_platform} • {configuration.video_length}s • {configuration.language}
                                 </p>
                             </div>
-                            <Badge className={isCompleted ? "bg-green-500 text-white" : "bg-blue-500 text-white"}>
-                                {isCompleted ? (
-                                    <>
-                                        <CheckCircle className="w-4 h-4 mr-1" />
-                                        Complete
-                                    </>
-                                ) : (
-                                    <>
-                                        <Zap className="w-4 h-4 mr-1 animate-pulse" />
-                                        Processing
-                                    </>
-                                )}
-                            </Badge>
+                            <div className="text-right">
+                                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                    {Math.round(overallProgress)}%
+                                </div>
+                                <div className="text-sm text-slate-600 dark:text-zinc-400">Complete</div>
+                            </div>
+                        </div>
+                        <Progress value={overallProgress} className="mt-4 h-2" />
+                    </Card>
+
+                    {/* Processing Steps */}
+                    <div className="space-y-4">
+                        {steps.map((step, index) => {
+                            const shouldShow = step.id !== "domain" || configuration.buy_custom_domain
+
+                            if (!shouldShow) return null
+
+                            return (
+                                <Card
+                                    key={step.id}
+                                    className={`p-4 border-2 transition-all ${step.status === "completed"
+                                        ? "border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800"
+                                        : step.status === "processing"
+                                            ? "border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800"
+                                            : step.status === "error"
+                                                ? "border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800"
+                                                : "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800"
+                                        }`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-4">
+                                            <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${step.status === "completed"
+                                                ? "bg-green-500 text-white"
+                                                : step.status === "processing"
+                                                    ? "bg-blue-500 text-white"
+                                                    : step.status === "error"
+                                                        ? "bg-red-500 text-white"
+                                                        : "bg-slate-200 dark:bg-zinc-700 text-slate-500 dark:text-zinc-400"
+                                                }`}>
+                                                {step.status === "completed" && <Check className="w-5 h-5" />}
+                                                {step.status === "processing" && <Loader2 className="w-5 h-5 animate-spin" />}
+                                                {step.status === "error" && <AlertCircle className="w-5 h-5" />}
+                                                {step.status === "waiting" && <Clock className="w-5 h-5" />}
+                                            </div>
+
+                                            <div>
+                                                <h4 className="font-semibold text-slate-900 dark:text-white">{step.title}</h4>
+                                                <p className="text-sm text-slate-600 dark:text-zinc-400">{step.description}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center space-x-4">
+                                            {step.status === "processing" && (
+                                                <div className="w-24">
+                                                    <Progress value={step.progress} className="h-2" />
+                                                </div>
+                                            )}
+
+                                            <Badge className={`${step.status === "completed" ? "bg-green-500 text-white" :
+                                                step.status === "processing" ? "bg-blue-500 text-white" :
+                                                    step.status === "error" ? "bg-red-500 text-white" :
+                                                        "bg-slate-200 text-slate-700 dark:bg-zinc-700 dark:text-zinc-300"
+                                                }`}>
+                                                {step.status === "completed" ? "Done" :
+                                                    step.status === "processing" ? "Processing" :
+                                                        step.status === "error" ? "Error" : "Waiting"}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </Card>
+                            )
+                        })}
+                    </div>
+
+                    {/* Results Section */}
+                    {isCompleted && results && (
+                        <Card className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-6 border-green-200 dark:border-green-800">
+                            <h3 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+                                <Sparkles className="w-5 h-5 mr-2 text-green-600 dark:text-green-400" />
+                                Your Video Ad is Ready!
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Video Results */}
+                                <div className="space-y-3">
+                                    <h4 className="font-medium text-slate-900 dark:text-white flex items-center">
+                                        <Video className="w-4 h-4 mr-2 text-red-600 dark:text-red-400" />
+                                        Video Advertisement
+                                    </h4>
+                                    <div className="space-y-2">
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start"
+                                            onClick={() => window.open(results.video_url, '_blank')}
+                                        >
+                                            <MonitorPlay className="w-4 h-4 mr-2" />
+                                            Preview Video
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start"
+                                            onClick={() => window.open(results.video_url, '_blank')}
+                                        >
+                                            <Download className="w-4 h-4 mr-2" />
+                                            Download MP4
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Landing Page Results */}
+                                <div className="space-y-3">
+                                    <h4 className="font-medium text-slate-900 dark:text-white flex items-center">
+                                        <Globe className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
+                                        Landing Page
+                                    </h4>
+                                    <div className="space-y-2">
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-start"
+                                            onClick={() => window.open(results.landing_url, '_blank')}
+                                        >
+                                            <ExternalLink className="w-4 h-4 mr-2" />
+                                            Visit Website
+                                        </Button>
+                                        <p className="text-xs text-slate-500 dark:text-zinc-500 truncate">
+                                            {results.landing_url}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    )}
+
+                    {/* Configuration Summary */}
+                    <Card className="bg-slate-50 dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 p-4">
+                        <h4 className="font-medium text-slate-900 dark:text-white mb-3 flex items-center">
+                            <Settings className="w-4 h-4 mr-2" />
+                            Configuration Used
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                                <span className="text-slate-600 dark:text-zinc-400">Platform:</span>
+                                <p className="font-medium text-slate-900 dark:text-white capitalize">{configuration.target_platform}</p>
+                            </div>
+                            <div>
+                                <span className="text-slate-600 dark:text-zinc-400">Duration:</span>
+                                <p className="font-medium text-slate-900 dark:text-white">{configuration.video_length}s</p>
+                            </div>
+                            <div>
+                                <span className="text-slate-600 dark:text-zinc-400">Language:</span>
+                                <p className="font-medium text-slate-900 dark:text-white">{configuration.language.toUpperCase()}</p>
+                            </div>
+                            <div>
+                                <span className="text-slate-600 dark:text-zinc-400">Style:</span>
+                                <p className="font-medium text-slate-900 dark:text-white">
+                                    {configuration.visual_style.replace(/([A-Z])/g, ' $1').trim()}
+                                </p>
+                            </div>
                         </div>
                     </Card>
 
-                    {!isCompleted ? (
-                        <>
-                            {/* Overall Progress */}
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Overall Progress</h3>
-                                    <span className="text-sm text-slate-600 dark:text-zinc-400">{Math.round(overallProgress)}%</span>
-                                </div>
-                                <Progress value={overallProgress} className="h-3" />
-                            </div>
+                    {/* Action Buttons */}
+                    <div className="flex justify-between pt-4 border-t border-slate-200 dark:border-zinc-700">
+                        {!isCompleted ? (
+                            <Button
+                                variant="outline"
+                                onClick={handleClose}
+                                className="px-6 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300"
+                            >
+                                Cancel
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleClose}
+                                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8"
+                            >
+                                <Check className="w-4 h-4 mr-2" />
+                                Complete
+                            </Button>
+                        )}
 
-                            {/* Step Progress */}
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Processing Steps</h3>
-                                <div className="space-y-3">
-                                    {steps.map((step, index) => {
-                                        const StepIcon = getStepIcon(step)
-                                        const isCurrentStep = index === currentStep
-                                        const shouldShow = step.id !== "domain" || configuration.buy_custom_domain
-                                        const shouldShowSocial = step.id !== "social" || configuration.publish_to_socials
-
-                                        if (!shouldShow || !shouldShowSocial) return null
-
-                                        return (
-                                            <Card
-                                                key={step.id}
-                                                className={`p-4 transition-all border-2 ${isCurrentStep && step.status === "running"
-                                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 animate-pulse"
-                                                    : step.status === "completed"
-                                                        ? "border-green-500 bg-green-50 dark:bg-green-900/20"
-                                                        : step.status === "error"
-                                                            ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                                                            : "border-slate-200 dark:border-zinc-700"
-                                                    }`}
-                                            >
-                                                <div className="flex items-center space-x-4">
-                                                    <StepIcon className={`w-6 h-6 ${getStepColor(step)} ${step.status === "running" ? "animate-spin" : ""}`} />
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <h4 className="font-medium text-slate-900 dark:text-white">{step.title}</h4>
-                                                            <span className="text-sm text-slate-500">{step.estimated_time}</span>
-                                                        </div>
-                                                        <p className="text-sm text-slate-600 dark:text-zinc-400 mb-2">{step.description}</p>
-                                                        {step.details && (
-                                                            <p className="text-xs text-slate-500 dark:text-zinc-500 mb-2">{step.details}</p>
-                                                        )}
-                                                        {step.status === "running" && (
-                                                            <Progress value={step.progress} className="h-2" />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </Card>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        /* Results */
-                        <div className="space-y-6">
-                            <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
-                                <div className="text-center">
-                                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                                    <h3 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Success! Your video ad is ready</h3>
-                                    <p className="text-slate-600 dark:text-zinc-400">
-                                        Everything has been created and deployed successfully
-                                    </p>
-                                </div>
-                            </Card>
-
-                            {/* Results Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Video Preview */}
-                                <Card className="p-4">
-                                    <h4 className="font-semibold mb-3 flex items-center text-slate-900 dark:text-white">
-                                        <Video className="w-5 h-5 mr-2" />
-                                        Video Ad
-                                    </h4>
-                                    <div className="aspect-video bg-slate-100 dark:bg-zinc-800 rounded-lg mb-3 flex items-center justify-center">
-                                        <Play className="w-12 h-12 text-slate-400" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Button size="sm" className="w-full">
-                                            <Play className="w-4 h-4 mr-2" />
-                                            Watch Video
-                                        </Button>
-                                        <Button size="sm" variant="outline" className="w-full">
-                                            <Download className="w-4 h-4 mr-2" />
-                                            Download
-                                        </Button>
-                                    </div>
-                                </Card>
-
-                                {/* Website */}
-                                <Card className="p-4">
-                                    <h4 className="font-semibold mb-3 flex items-center text-slate-900 dark:text-white">
-                                        <Globe className="w-5 h-5 mr-2" />
-                                        Landing Page
-                                    </h4>
-                                    <div className="aspect-video bg-slate-100 dark:bg-zinc-800 rounded-lg mb-3 flex items-center justify-center">
-                                        <Eye className="w-12 h-12 text-slate-400" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Button size="sm" className="w-full" asChild>
-                                            <a href={result?.site_url} target="_blank" rel="noopener noreferrer">
-                                                <ExternalLink className="w-4 h-4 mr-2" />
-                                                View Live Site
-                                            </a>
-                                        </Button>
-                                        <p className="text-xs text-slate-500 dark:text-zinc-500 truncate">
-                                            {result?.site_url}
-                                        </p>
-                                    </div>
-                                </Card>
-                            </div>
-
-                            {/* Quick Actions */}
-                            <Card className="p-4">
-                                <h4 className="font-semibold mb-3 text-slate-900 dark:text-white">Quick Actions</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <Button variant="outline" size="sm">
-                                        <Share2 className="w-4 h-4 mr-2" />
-                                        Share on Social
-                                    </Button>
-                                    <Button variant="outline" size="sm">
-                                        <Download className="w-4 h-4 mr-2" />
-                                        Download Assets
-                                    </Button>
-                                    <Button variant="outline" size="sm">
-                                        <Sparkles className="w-4 h-4 mr-2" />
-                                        Create Another
-                                    </Button>
-                                </div>
-                            </Card>
+                        <div className="text-sm text-slate-500 dark:text-zinc-500 flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            Estimated: 3-5 minutes
                         </div>
-                    )}
-
-                    {/* Close Button */}
-                    <div className="flex justify-center pt-4 border-t border-slate-200 dark:border-zinc-700">
-                        <Button
-                            onClick={handleClose}
-                            variant={isCompleted ? "default" : "outline"}
-                            className={isCompleted ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8" : ""}
-                        >
-                            {isCompleted ? "Done" : "Close"}
-                        </Button>
                     </div>
                 </div>
             </DialogContent>
