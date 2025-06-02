@@ -160,27 +160,27 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
                     {/* Navigation */}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 pt-4 sm:pt-8 border-t-2 border-slate-200 dark:border-zinc-700">
                         <Button
-                            variant="outline"
-                            onClick={handleClose}
-                            className="w-full sm:w-auto px-4 sm:px-8 py-2.5 sm:py-3 border-2 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg sm:rounded-xl font-semibold order-2 sm:order-1 text-sm sm:text-base"
+                            onClick={handleStartCreation}
+                            className="w-full sm:w-auto bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white px-6 sm:px-10 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-bold text-sm sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 order-1 sm:order-3"
                         >
-                            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                            Back to Upload
+                            <span className="sm:hidden">Create Magic</span>
+                            <span className="hidden sm:inline">Start Creating Magic</span>
+                            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
                         </Button>
 
-                        <div className="text-center order-1 sm:order-2">
+                        <div className="text-center order-2 sm:order-2">
                             <p className="text-xs text-slate-500 dark:text-zinc-500">
                                 🚀 Estimated: 3-5 minutes
                             </p>
                         </div>
 
                         <Button
-                            onClick={handleStartCreation}
-                            className="w-full sm:w-auto bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white px-6 sm:px-10 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-bold text-sm sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 order-3"
+                            variant="outline"
+                            onClick={handleClose}
+                            className="w-full sm:w-auto px-4 sm:px-8 py-2.5 sm:py-3 border-2 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg sm:rounded-xl font-semibold order-3 sm:order-1 text-sm sm:text-base"
                         >
-                            <span className="sm:hidden">Create Magic</span>
-                            <span className="hidden sm:inline">Start Creating Magic</span>
-                            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
+                            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                            Back to Upload
                         </Button>
                     </div>
                 </div>
