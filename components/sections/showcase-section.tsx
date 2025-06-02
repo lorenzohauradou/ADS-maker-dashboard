@@ -123,7 +123,7 @@ export function ShowcaseSection() {
   }
 
   return (
-    <section className="pt-8 md:pt-16 pb-16 md:pb-32 px-4 relative overflow-hidden bg-background">
+    <section id="showcase" className="pt-8 md:pt-16 pb-16 md:pb-32 px-4 relative overflow-hidden bg-background">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"></div>
       <div className="absolute top-1/4 left-1/4 w-48 md:w-96 h-48 md:h-96 bg-blue-600/10 dark:bg-blue-600/5 rounded-full blur-3xl"></div>
