@@ -45,7 +45,10 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-3xl w-[92vw] max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 pt-8 pb-3 px-3 sm:p-6">
+            <DialogContent
+                className="max-w-3xl w-[92vw] max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 pt-8 pb-3 px-3 sm:p-6"
+                aria-describedby="dialog-description"
+            >
                 <DialogHeader className="space-y-2">
                     <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center text-slate-900 dark:text-white">
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={24} height={24} className="mr-2 sm:mr-4" />
@@ -53,6 +56,9 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
                     </DialogTitle>
                     <p className="text-xs sm:text-base text-slate-600 dark:text-zinc-400">
                         Customize every aspect of your professional video advertisement
+                    </p>
+                    <p id="dialog-description" className="sr-only">
+                        Configure video advertisement settings including platform, language, style, and advanced options for your project
                     </p>
                 </DialogHeader>
 

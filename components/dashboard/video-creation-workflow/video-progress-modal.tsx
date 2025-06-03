@@ -246,6 +246,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent
                 className={`${showPreview ? 'max-w-2xl w-[95vw]' : 'max-w-lg w-[88vw]'} max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-3 sm:p-4 transition-all duration-500`}
+                aria-describedby="progress-dialog-description"
             >
                 {/* LOADING PHASE */}
                 {!showPreview && (
@@ -272,6 +273,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                             </div>
                             <p className="text-xs text-slate-600 dark:text-zinc-400">
                                 {isCompleted ? "Your video advertisement is ready!" : "AI is working its magic"}
+                            </p>
+                            <p id="progress-dialog-description" className="sr-only">
+                                Video advertisement creation progress with processing steps and completion status
                             </p>
                         </DialogHeader>
 
@@ -452,6 +456,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                             </div>
                             <p className="text-sm text-slate-600 dark:text-zinc-400">
                                 Preview your professional video advertisement
+                            </p>
+                            <p id="progress-dialog-description" className="sr-only">
+                                Video advertisement preview with download options and landing page access
                             </p>
                         </DialogHeader>
 
