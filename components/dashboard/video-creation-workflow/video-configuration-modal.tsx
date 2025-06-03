@@ -4,34 +4,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Slider } from "@/components/ui/slider"
+
 import {
-    Play,
     Settings,
-    Globe,
     Palette,
-    Volume2,
     Smartphone,
     Crown,
     ArrowRight,
     ArrowLeft,
     Sparkles,
-    Zap,
-    CheckCircle
 } from "lucide-react"
 import Image from "next/image"
 
-// Import modular components
-import { VideoConfiguration, VideoConfigurationModalProps } from "./types/video-configuration"
-import { PLATFORMS } from "./constants/video-platforms"
-import { LANGUAGES } from "./constants/video-languages"
-import { SCRIPT_STYLES, VISUAL_STYLES } from "./constants/video-styles"
+import { VideoConfigurationModalProps } from "./types/video-configuration"
 import { useVideoConfiguration } from "./hooks/useVideoConfiguration"
 import { BasicConfigTab } from "./tabs/BasicConfigTab"
 import { StyleConfigTab } from "./tabs/StyleConfigTab"
@@ -59,7 +45,7 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-3xl w-[92vw] max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-3 sm:p-6">
+            <DialogContent className="max-w-3xl w-[92vw] max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 pt-8 pb-3 px-3 sm:p-6">
                 <DialogHeader className="space-y-2">
                     <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center text-slate-900 dark:text-white">
                         <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={24} height={24} className="mr-2 sm:mr-4" />
