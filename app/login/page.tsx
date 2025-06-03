@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, MailCheck, Sparkles, Play, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { signIn } from "next-auth/react"
 
 const Logo = () => (
     <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
@@ -40,17 +41,18 @@ export default function LoginPage() {
         setMessageSent(false)
 
         try {
-            // TODO: Implementare NextAuth signIn
-            // const result = await signIn('resend', {
-            //   email,
-            //   redirect: false,
-            //   callbackUrl: '/dashboard',
-            // })
+            const result = await signIn('resend', {
+                email,
+                redirect: false,
+                callbackUrl: '/dashboard',
+            })
 
-            // Simulazione per ora
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            setMessageSent(true)
-            setEmail('')
+            if (result?.error) {
+                setError('Errore nell\'invio dell\'email. Riprova.')
+            } else {
+                setMessageSent(true)
+                setEmail('')
+            }
         } catch (err) {
             setError('Si è verificato un errore inaspettato.')
             console.error("Unexpected sign in error:", err)
@@ -59,11 +61,16 @@ export default function LoginPage() {
         }
     }
 
-    const handleGoogleSignIn = () => {
+    const handleGoogleSignIn = async () => {
         setLoading(true)
-        // TODO: Implementare Google OAuth
-        // signIn("google", { callbackUrl: "/dashboard" })
-        console.log("Google sign in")
+        try {
+            await signIn("google", { callbackUrl: "/dashboard" })
+        } catch (err) {
+            console.error("Google sign in error:", err)
+            setError('Errore nell\'accesso con Google.')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (

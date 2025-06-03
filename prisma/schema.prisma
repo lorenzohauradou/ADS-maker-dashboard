@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String?
+  email          String          @unique
+  emailVerified  DateTime?
+  image          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  accounts       Account[]
+  authenticators Authenticator[]
+  sessions       Session[]
+  projects       Project[]       @relation("UserProjects")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+model Project {
+  id              String         @id @default(cuid())
+  userId          String
+  status          ProjectStatus  @default(PENDING_IMAGES)
+  aiDescription   String?
+  landingPageHtml String?
+  siteUrl         String?
+  githubRepoUrl   String?
+  productName     String?
+  targetAudience  String?
+  adStyle         String?
+  platform        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  images          ProjectImage[]
+  user            User           @relation("UserProjects", fields: [userId], references: [id], onDelete: Cascade)
+  videos          Video[]
+
+  @@map("projects")
+}
+
+model ProjectImage {
+  id          String   @id @default(cuid())
+  projectId   String
+  fileName    String
+  originalUrl String
+  supabaseUrl String
+  fileSize    Int
+  mimeType    String
+  aiAnalysis  String?
+  createdAt   DateTime @default(now())
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_images")
+}
+
+model Video {
+  id              String      @id @default(cuid())
+  projectId       String
+  creatifyVideoId String?
+  videoUrl        String?
+  thumbnailUrl    String?
+  duration        Int?
+  platform        String
+  style           String
+  status          VideoStatus @default(PENDING)
+  errorMessage    String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("videos")
+}
+
+enum ProjectStatus {
+  PENDING_IMAGES
+  ANALYZING_IMAGES
+  GENERATING_DESCRIPTION
+  CREATING_WEBSITE
+  DEPLOYING_SITE
+  CREATING_VIDEO
+  COMPLETED
+  ERROR
+}
+
+enum VideoStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

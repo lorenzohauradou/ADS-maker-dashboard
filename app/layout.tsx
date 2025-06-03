@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
+import { AuthProvider } from '@/components/providers/session-provider'
 
 export const metadata: Metadata = {
   title: {
@@ -180,9 +181,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
 
         {/* Google Analytics 4 - Replace with your GA4 tracking ID */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
