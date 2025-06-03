@@ -9,6 +9,7 @@
 
 # production
 /build
+/middleware.ts
 
 # debug
 npm-debug.log*
