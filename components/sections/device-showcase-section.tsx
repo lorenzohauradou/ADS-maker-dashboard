@@ -74,7 +74,7 @@ export function DeviceShowcaseSection() {
                     </h2>
 
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                        Gives his best performance on E-commerce, SaaS, and social media. Your audience will see you everywhere.
+                        Deliver its best performance on E-commerce, SaaS, and social media. Your audience will see you everywhere.
                     </p>
                 </div>
 

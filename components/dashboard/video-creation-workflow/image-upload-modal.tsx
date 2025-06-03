@@ -11,12 +11,10 @@ import { Label } from "@/components/ui/label"
 import {
     Upload,
     X,
-    Image as ImageIcon,
     AlertCircle,
     Check,
     Plus,
     ArrowRight,
-    Sparkles,
     Globe,
     Loader2,
     CheckCircle,
@@ -55,13 +53,11 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
             setError("Only image files are accepted")
             return false
         }
-
         // Verifica dimensione (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
             setError("File too large. Maximum 10MB per image")
             return false
         }
-
         return true
     }
 

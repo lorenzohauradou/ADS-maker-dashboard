@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Upload, Brain, Mic, Video, Smartphone, ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Upload, Brain, Mic, Video, Smartphone, ArrowRight, Play, Zap } from "lucide-react"
 
 export function WorkflowSection() {
   const steps = [
@@ -107,6 +108,53 @@ export function WorkflowSection() {
             <span className="text-blue-600 dark:text-blue-400 font-semibold text-lg">
               Total: 5 minutes vs 2-3 weeks traditional
             </span>
+          </div>
+        </div>
+
+        {/* CTA after workflow */}
+        <div className="text-center mt-16">
+          <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm">
+            <div className="flex items-center justify-center mb-4">
+              <Zap className="w-6 h-6 text-yellow-500 mr-3" />
+              <span className="text-lg font-semibold text-foreground">
+                Convinto dalla semplicità?
+              </span>
+            </div>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Mentre i tuoi competitor aspettano settimane per i loro video, tu puoi avere il tuo pronto in 5 minuti.
+              Inizia ora e ottieni un vantaggio competitivo immediato.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Crea il Tuo Primo Video Gratis
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-border text-foreground hover:bg-accent px-8 py-4"
+              >
+                Guarda Demo dal Vivo
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mt-4">
+              <span className="flex items-center">
+                <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                Setup in 30 secondi
+              </span>
+              <span className="flex items-center">
+                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                Nessuna carta di credito
+              </span>
+              <span className="flex items-center">
+                <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
+                Video HD incluso
+              </span>
+            </div>
           </div>
         </div>
       </div>

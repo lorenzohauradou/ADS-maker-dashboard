@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Code, ShoppingCart, Briefcase, Target, Palette, BarChart } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Code, ShoppingCart, Briefcase, Target, Palette, BarChart, ArrowRight, Crown, Sparkles } from "lucide-react"
 
 export function FeaturesSection() {
   const specializations = [
@@ -105,6 +106,53 @@ export function FeaturesSection() {
                 </ul>
               </Card>
             ))}
+          </div>
+
+          {/* Contextual CTA after differentiators */}
+          <div className="text-center mt-16">
+            <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full blur-xl"></div>
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-center mb-4">
+                  <Crown className="w-6 h-6 text-yellow-500 mr-3" />
+                  <span className="text-lg font-semibold text-foreground">
+                    Pronto a Dominare la Concorrenza?
+                  </span>
+                </div>
+                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                  Ora che hai visto cosa ti separa dai tuoi competitor, è il momento di agire.
+                  Mentre loro lottano con strumenti generici e costi elevati, tu puoi creare video professionali in minuti.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white px-8 py-4"
+                  >
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Inizia il Tuo Vantaggio Competitivo
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-border text-foreground hover:bg-accent px-8 py-4"
+                  >
+                    Confronta con la Concorrenza
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+                <div className="text-center mt-4">
+                  <Badge
+                    variant="secondary"
+                    className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20"
+                  >
+                    🎯 Garanzia 30 giorni ROI o rimborso completo
+                  </Badge>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

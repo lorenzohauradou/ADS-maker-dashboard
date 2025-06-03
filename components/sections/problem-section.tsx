@@ -1,63 +1,95 @@
 import { Card } from "@/components/ui/card"
-import { X, Clock, DollarSign, Users } from "lucide-react"
+import { X, Clock, DollarSign, Users, Code, Zap } from "lucide-react"
 
 export function ProblemSection() {
   const problems = [
     {
       icon: DollarSign,
-      title: "Crushing Costs",
+      title: "Crushing Video Costs",
       description: "Agencies charge $3,000-$5,000 for a single video ad",
-      stat: "80% of SMBs can't afford it",
+      stat: "80% of SMBs can't afford professional video production",
+    },
+    {
+      icon: Code,
+      title: "Expensive Website Development",
+      description: "Custom landing pages cost $2,000-$8,000 and take weeks",
+      stat: "Most businesses use generic templates",
     },
     {
       icon: Clock,
-      title: "Endless Waiting",
-      description: "2-3 weeks to produce one advertising video",
-      stat: "Too slow for the digital market",
+      title: "Endless Waiting Times",
+      description: "2-3 weeks for video + 1-2 weeks for landing page setup",
+      stat: "Too slow for agile marketing campaigns",
     },
     {
       icon: Users,
-      title: "Complex Requirements",
-      description: "Need a full team: video editor, voice artist, copywriter",
-      stat: "Skills hard to find & expensive",
+      title: "Complex Team Requirements",
+      description: "Need video editor, web developer, copywriter, designer",
+      stat: "4-5 specialists = $200K+ annual cost",
     },
     {
       icon: X,
-      title: "Can't Scale",
-      description: "Impossible to create variants for A/B testing",
-      stat: "Limits campaign optimization",
+      title: "Poor Integration",
+      description: "Video ads and landing pages often don't match or convert",
+      stat: "Leads to 60% higher bounce rates",
+    },
+    {
+      icon: Zap,
+      title: "Can't Scale or Test",
+      description: "Creating A/B test variants is expensive and time-consuming",
+      stat: "Limits optimization and growth potential",
     },
   ]
 
   return (
-    <section className="py-20 px-4 bg-muted/30">
+    <section className="py-16 sm:py-20 px-4 bg-muted/30">
       <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             The <span className="text-red-500 dark:text-red-400">Problem</span> Every Business Faces
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Every business needs video ads to grow, but the reality is frustrating...
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto">
+            Every business needs professional video ads AND high-converting landing pages to grow, but the reality is frustrating...
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {problems.map((problem, index) => (
-            <Card key={index} className="bg-card border-border p-6 hover:bg-accent/50 transition-colors">
-              <div className="flex items-center justify-center w-12 h-12 bg-red-500/10 rounded-lg mb-4">
-                <problem.icon className="w-6 h-6 text-red-500 dark:text-red-400" />
+            <Card
+              key={index}
+              className="bg-card border-border p-4 sm:p-6 hover:bg-accent/50 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
+            >
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-red-500/10 rounded-lg mb-3 sm:mb-4 group-hover:bg-red-500/20 transition-colors">
+                <problem.icon className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 dark:text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-foreground">{problem.title}</h3>
-              <p className="text-muted-foreground mb-3 text-sm">{problem.description}</p>
-              <div className="text-xs text-red-500 dark:text-red-400 font-medium">{problem.stat}</div>
+              <h3 className="text-base sm:text-lg font-semibold mb-2 text-foreground">{problem.title}</h3>
+              <p className="text-muted-foreground mb-3 text-sm sm:text-base leading-relaxed">{problem.description}</p>
+              <div className="text-xs sm:text-sm text-red-500 dark:text-red-400 font-medium bg-red-500/5 px-2 py-1 rounded-md">
+                {problem.stat}
+              </div>
             </Card>
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <div className="inline-flex items-center px-6 py-3 bg-red-500/10 border border-red-500/20 rounded-full">
-            <span className="text-red-500 dark:text-red-400 font-semibold">
-              Result: 80% of SMBs give up on professional video marketing
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-10 sm:mt-12">
+          <div className="text-center p-4 sm:p-6 bg-card/50 rounded-xl border border-red-200 dark:border-red-800">
+            <div className="text-2xl sm:text-3xl font-bold text-red-500 dark:text-red-400 mb-2">$15K+</div>
+            <div className="text-sm sm:text-base text-muted-foreground">Average cost for professional video + landing page</div>
+          </div>
+          <div className="text-center p-4 sm:p-6 bg-card/50 rounded-xl border border-red-200 dark:border-red-800">
+            <div className="text-2xl sm:text-3xl font-bold text-red-500 dark:text-red-400 mb-2">4-6 weeks</div>
+            <div className="text-sm sm:text-base text-muted-foreground">Time to launch complete campaign</div>
+          </div>
+          <div className="text-center p-4 sm:p-6 bg-card/50 rounded-xl border border-red-200 dark:border-red-800 sm:col-span-2 lg:col-span-1">
+            <div className="text-2xl sm:text-3xl font-bold text-red-500 dark:text-red-400 mb-2">80%</div>
+            <div className="text-sm sm:text-base text-muted-foreground">SMBs that give up on professional marketing</div>
+          </div>
+        </div>
+
+        <div className="text-center mt-8 sm:mt-12">
+          <div className="inline-flex items-center px-4 sm:px-6 py-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full max-w-full">
+            <span className="text-red-500 dark:text-red-400 font-semibold text-sm sm:text-base text-center">
+              Result: Most businesses struggle with fragmented, expensive marketing that doesn't convert
             </span>
           </div>
         </div>
