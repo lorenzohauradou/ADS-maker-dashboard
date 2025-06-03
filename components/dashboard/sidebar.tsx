@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useSidebar } from "@/components/ui/sidebar"
@@ -58,7 +58,16 @@ const menuItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const { state } = useSidebar()
+  const router = useRouter()
+  const { state, setOpen } = useSidebar()
+
+  const handleCreateNewVideo = () => {
+    // Chiudi la sidebar
+    setOpen(false)
+
+    // Naviga al dashboard con parametro per aprire il modal
+    router.push('/dashboard?action=create')
+  }
 
   return (
     <SidebarPrimitive className="border-r border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 backdrop-blur-xl shadow-xl">
@@ -69,7 +78,7 @@ export function Sidebar() {
           {state === "expanded" && (
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                ADS MAKER AI
+                FAST ADS AI
               </h1>
               <Badge variant="secondary" className="text-xs bg-purple-500/10 text-purple-400 border-purple-500/20">
                 <Crown className="w-3 h-3 mr-1" />
@@ -79,15 +88,13 @@ export function Sidebar() {
           )}
         </Link>
 
-        {/* Create New Video Button - Now redirects to dashboard */}
+        {/* Create New Video Button - opens modal */}
         <Button
-          asChild
+          onClick={handleCreateNewVideo}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 text-white border-0"
         >
-          <Link href="/dashboard">
-            <Plus className="w-5 h-5 mr-2" />
-            {state === "expanded" ? "Create New Video" : ""}
-          </Link>
+          <Plus className="w-5 h-5 mr-2" />
+          {state === "expanded" ? "Create New Video" : ""}
         </Button>
       </SidebarHeader>
 

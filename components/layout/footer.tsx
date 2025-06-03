@@ -46,7 +46,7 @@ export function Footer() {
                 />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                ADS MAKER AI
+                FAST ADS AI
               </span>
             </div>
             <p className="text-muted-foreground text-sm mb-6">

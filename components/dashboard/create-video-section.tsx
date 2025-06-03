@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles } from "lucide-react"
 import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
@@ -36,11 +37,22 @@ export function CreateVideoSection() {
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
 
+  const searchParams = useSearchParams()
   // Project data
   const [projectName, setProjectName] = useState("")
   const [uploadedImages, setUploadedImages] = useState<File[]>([])
   const [customDomain, setCustomDomain] = useState<string | undefined>(undefined)
   const [configuration, setConfiguration] = useState<VideoConfiguration | null>(null)
+
+  // Intercetta il parametro ?action=create e apre il modal automaticamente
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create' && !isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
+      handleStartNewProject()
+      // Rimuovi il parametro dall'URL
+      window.history.replaceState({}, '', '/dashboard')
+    }
+  }, [searchParams, isUploadModalOpen, isConfigModalOpen, isProgressModalOpen])
 
   const handleStartNewProject = () => {
     setCurrentStep("upload")
