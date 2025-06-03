@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles } from "lucide-react"
@@ -31,28 +31,43 @@ interface VideoConfiguration {
   override_script: string
 }
 
+// Componente che usa useSearchParams avvolto in Suspense
+function SearchParamsHandler({
+  onCreateAction
+}: {
+  onCreateAction: () => void
+}) {
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create') {
+      onCreateAction()
+      // Rimuovi il parametro dall'URL
+      window.history.replaceState({}, '', '/dashboard')
+    }
+  }, [searchParams, onCreateAction])
+
+  return null
+}
+
 export function CreateVideoSection() {
   const [currentStep, setCurrentStep] = useState<"upload" | "configure" | "progress" | "complete">("upload")
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
 
-  const searchParams = useSearchParams()
   // Project data
   const [projectName, setProjectName] = useState("")
   const [uploadedImages, setUploadedImages] = useState<File[]>([])
   const [customDomain, setCustomDomain] = useState<string | undefined>(undefined)
   const [configuration, setConfiguration] = useState<VideoConfiguration | null>(null)
 
-  // Intercetta il parametro ?action=create e apre il modal automaticamente
-  useEffect(() => {
-    const action = searchParams.get('action')
-    if (action === 'create' && !isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
+  const handleCreateAction = () => {
+    if (!isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
       handleStartNewProject()
-      // Rimuovi il parametro dall'URL
-      window.history.replaceState({}, '', '/dashboard')
     }
-  }, [searchParams, isUploadModalOpen, isConfigModalOpen, isProgressModalOpen])
+  }
 
   const handleStartNewProject = () => {
     setCurrentStep("upload")
@@ -123,6 +138,11 @@ export function CreateVideoSection() {
 
   return (
     <>
+      {/* SearchParams Handler avvolto in Suspense */}
+      <Suspense fallback={null}>
+        <SearchParamsHandler onCreateAction={handleCreateAction} />
+      </Suspense>
+
       <div className="text-center py-8 lg:py-12">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-responsive-4xl md:text-responsive-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-slate-900 via-blue-800 to-purple-800 dark:from-slate-100 dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent leading-tight">
