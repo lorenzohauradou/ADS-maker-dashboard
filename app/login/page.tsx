@@ -16,14 +16,14 @@ const Logo = () => (
         <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
             <Image
                 src="/adsmakerlogo.png"
-                alt="ADS MAKER AI Logo"
+                alt="FAST ADS AI Logo"
                 width={48}
                 height={48}
                 className="object-contain"
             />
         </div>
         <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            ADS MAKER AI
+            FAST ADS AI
         </span>
     </Link>
 )
