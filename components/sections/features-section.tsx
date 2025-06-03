@@ -82,7 +82,7 @@ export function FeaturesSection() {
         <div>
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Why ADS MAKER AI is <span className="text-yellow-600 dark:text-yellow-400">Different</span>
+              Why FAST ADS AI is <span className="text-yellow-600 dark:text-yellow-400">Different</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               We're not another editing tool. We're the first AI specialized for video ads that actually convert.
