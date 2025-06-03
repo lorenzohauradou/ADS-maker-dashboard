@@ -51,7 +51,7 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
             >
                 <DialogHeader className="space-y-2">
                     <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center text-slate-900 dark:text-white">
-                        <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={24} height={24} className="mr-2 sm:mr-4" />
+                        <Image src="/fastadslogo.png" alt="FAST ADS AI Logo" width={24} height={24} className="mr-2 sm:mr-4" />
                         <span className="truncate">Configure Your Video Ad</span>
                     </DialogTitle>
                     <p className="text-xs sm:text-base text-slate-600 dark:text-zinc-400">

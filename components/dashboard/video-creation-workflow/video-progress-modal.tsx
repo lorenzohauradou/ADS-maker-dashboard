@@ -254,7 +254,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                         <DialogHeader className="space-y-1">
                             <div className="flex items-center justify-between">
                                 <DialogTitle className="text-sm sm:text-xl font-bold flex items-center text-slate-900 dark:text-white">
-                                    <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={18} height={18} className="mr-2" />
+                                    <Image src="/fastadslogo.png" alt="FAST ADS AI Logo" width={18} height={18} className="mr-2" />
                                     <span className="truncate">
                                         {isCompleted ? "Video Created!" : "Creating Video Ad"}
                                     </span>
@@ -441,7 +441,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, configuration
                         <DialogHeader className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center text-slate-900 dark:text-white">
-                                    <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={24} height={24} className="mr-3" />
+                                    <Image src="/fastadslogo.png" alt="FAST ADS AI Logo" width={24} height={24} className="mr-3" />
                                     <span className="truncate">Your Video is Ready! 🎉</span>
                                 </DialogTitle>
                                 <Button

@@ -232,7 +232,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
             >
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold flex items-center text-slate-900 dark:text-white">
-                        <Image src="/adsmakerlogo.png" alt="ADS MAKER AI Logo" width={34} height={34} className="mr-4" />
+                        <Image src="/fastadslogo.png" alt="FAST ADS AI Logo" width={34} height={34} className="mr-4" />
                         Create New Video Ad
                     </DialogTitle>
                     <p id="dialog-description" className="sr-only">

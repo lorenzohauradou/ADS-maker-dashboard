@@ -40,8 +40,8 @@ export function Footer() {
             <div className="flex items-center justify-center sm:justify-start space-x-2 mb-4">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
                 <Image
-                  src="/adsmakerlogo.png"
-                  alt="ADS MAKER AI Logo"
+                  src="/fastadslogo.png"
+                  alt="FAST ADS AI Logo"
                   width={32}
                   height={32}
                   className="object-contain"

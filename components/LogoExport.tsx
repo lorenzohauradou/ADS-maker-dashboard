@@ -13,7 +13,7 @@ export function LogoExport() {
                         className="flex items-center space-x-3 w-[400px] h-[100px] justify-center bg-white"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={60}
                             height={60}
@@ -34,7 +34,7 @@ export function LogoExport() {
                         className="flex items-center space-x-6 w-[800px] h-[200px] justify-center bg-white"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={120}
                             height={120}
@@ -55,7 +55,7 @@ export function LogoExport() {
                         className="flex flex-col items-center justify-center space-y-6 w-[1200px] h-[630px] bg-gradient-to-br from-slate-50 to-blue-50"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={160}
                             height={160}
@@ -79,7 +79,7 @@ export function LogoExport() {
                         className="flex flex-col items-center justify-center space-y-8 w-[1200px] h-[1200px] bg-gradient-to-br from-slate-50 to-blue-50"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={300}
                             height={300}
@@ -103,7 +103,7 @@ export function LogoExport() {
                         className="flex items-center justify-center space-x-12 w-[1200px] h-[600px] bg-gradient-to-r from-blue-600 to-purple-600"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={200}
                             height={200}
@@ -129,7 +129,7 @@ export function LogoExport() {
                         className="flex items-center justify-center w-[180px] h-[180px] bg-gradient-to-br from-blue-600 to-purple-600 rounded-[40px]"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={120}
                             height={120}
@@ -147,7 +147,7 @@ export function LogoExport() {
                         className="flex items-center justify-center w-[32px] h-[32px] bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={24}
                             height={24}
@@ -180,7 +180,7 @@ export function LogoExport() {
                         className="flex items-center space-x-3 w-[400px] h-[100px] justify-center bg-gray-900 rounded-lg"
                     >
                         <Image
-                            src="/adsmakerlogo.png"
+                            src="/fastadslogo.png"
                             alt="Fast Ads AI"
                             width={60}
                             height={60}

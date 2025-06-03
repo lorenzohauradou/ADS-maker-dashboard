@@ -15,7 +15,7 @@ const Logo = () => (
     <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
         <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg overflow-hidden group-hover:scale-105 transition-transform">
             <Image
-                src="/adsmakerlogo.png"
+                src="/fastadslogo.png"
                 alt="FAST ADS AI Logo"
                 width={48}
                 height={48}
