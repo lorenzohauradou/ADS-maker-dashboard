@@ -94,7 +94,7 @@ export default function LoginPage() {
                         className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors group"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                        Torna alla homepage
+                        Back to homepage
                     </Link>
                 </div>
 
@@ -107,13 +107,13 @@ export default function LoginPage() {
                             className="mx-auto bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
                         >
                             <Sparkles className="w-4 h-4 mr-2" />
-                            Accesso alla piattaforma
+                            Access to the platform
                         </Badge>
                         <CardTitle className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            Inizia Ora
+                            Start Now
                         </CardTitle>
                         <CardDescription className="text-lg text-muted-foreground">
-                            Crea il tuo primo video ads professionale in 1 minuto
+                            Create your first professional video ads in 1 minute
                         </CardDescription>
                     </CardHeader>
 
@@ -122,25 +122,25 @@ export default function LoginPage() {
                             <div className="text-center p-6 border border-green-300/50 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-500/10 dark:to-emerald-500/10 rounded-xl shadow-sm">
                                 <MailCheck className="mx-auto h-16 w-16 text-green-500 mb-4" />
                                 <h3 className="text-xl font-semibold text-green-800 dark:text-green-400 mb-2">
-                                    Controlla la tua email!
+                                    Check your email!
                                 </h3>
                                 <p className="text-green-700 dark:text-green-300 mb-3">
-                                    Ti abbiamo inviato un link magico per accedere alla dashboard.
+                                    We've sent you a magic link to access the dashboard.
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                    (Potrebbe richiedere qualche minuto)
+                                    (It may take a few minutes)
                                 </p>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="email" className="text-base font-medium">
-                                        Indirizzo Email
+                                        Email Address
                                     </Label>
                                     <Input
                                         id="email"
                                         type="email"
-                                        placeholder="iltuonome@azienda.com"
+                                        placeholder="yourname@company.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -166,12 +166,12 @@ export default function LoginPage() {
                                     {loading ? (
                                         <>
                                             <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                                            Creazione account...
+                                            Creating account...
                                         </>
                                     ) : (
                                         <>
                                             <Play className="mr-3 h-5 w-5" />
-                                            Inizia Gratis
+                                            Start for free
                                         </>
                                     )}
                                 </Button>
@@ -185,7 +185,7 @@ export default function LoginPage() {
                                 </div>
                                 <div className="relative flex justify-center text-sm uppercase">
                                     <span className="bg-card px-4 text-muted-foreground font-medium">
-                                        Oppure continua con
+                                        Or continue with
                                     </span>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@ export default function LoginPage() {
                                 disabled={loading}
                             >
                                 <Image src="/search.png" alt="Google" width={20} height={20} />
-                                Accedi con Google
+                                Sign in with Google
                             </Button>
                         )}
                     </CardContent>
@@ -207,7 +207,7 @@ export default function LoginPage() {
                     {!messageSent && (
                         <CardFooter className="flex flex-col space-y-4 pt-2 pb-8">
                             <div className="text-center text-sm text-muted-foreground">
-                                <p>Non hai un account? <span className="font-semibold text-foreground">Verrà creato automaticamente</span></p>
+                                <p>Don't have an account? <span className="font-semibold text-foreground">It will be created automatically</span></p>
                             </div>
 
                             {/* Features Preview */}
@@ -215,12 +215,12 @@ export default function LoginPage() {
                                 <div className="text-center">
                                     <h4 className="font-semibold text-blue-900 dark:text-blue-400 mb-2 flex items-center justify-center">
                                         <Sparkles className="w-4 h-4 mr-2" />
-                                        Cosa otterrai:
+                                        What you'll get:
                                     </h4>
                                     <div className="space-y-1 text-sm text-blue-800 dark:text-blue-300">
-                                        <p>✨ 1 video ads gratuito di prova</p>
-                                        <p>🚀 Sito web generato automaticamente</p>
-                                        <p>⚡ Setup completo in 2 minuti</p>
+                                        <p>✨ 1 free video ads</p>
+                                        <p>🚀 Automatically generated website</p>
+                                        <p>⚡ Complete setup in 2 minutes</p>
                                     </div>
                                 </div>
                             </div>
@@ -232,15 +232,15 @@ export default function LoginPage() {
                 <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
                     <span className="flex items-center">
                         <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                        Nessuna carta richiesta
+                        No credit card required
                     </span>
                     <span className="flex items-center">
                         <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                        Cancellazione immediata
+                        Instant cancellation
                     </span>
                     <span className="flex items-center">
                         <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                        GDPR compliant
+                        GDPR compliant (EU)
                     </span>
                 </div>
             </div>
