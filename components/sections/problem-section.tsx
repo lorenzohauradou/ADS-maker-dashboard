@@ -6,8 +6,8 @@ export function ProblemSection() {
     {
       icon: DollarSign,
       title: "Crushing Video Costs",
-      description: "Agencies charge $3,000-$5,000 for a single video ad",
-      stat: "80% of SMBs can't afford professional video production",
+      description: "Need video editor, web developer, copywriter, designer",
+      stat: "4-5 specialists = $3K+ monthly cost",
     },
     {
       icon: Code,
@@ -20,24 +20,6 @@ export function ProblemSection() {
       title: "Endless Waiting Times",
       description: "2-3 weeks for video + 1-2 weeks for landing page setup",
       stat: "Too slow for agile marketing campaigns",
-    },
-    {
-      icon: Users,
-      title: "Complex Team Requirements",
-      description: "Need video editor, web developer, copywriter, designer",
-      stat: "4-5 specialists = $200K+ annual cost",
-    },
-    {
-      icon: X,
-      title: "Poor Integration",
-      description: "Video ads and landing pages often don't match or convert",
-      stat: "Leads to 60% higher bounce rates",
-    },
-    {
-      icon: Zap,
-      title: "Can't Scale or Test",
-      description: "Creating A/B test variants is expensive and time-consuming",
-      stat: "Limits optimization and growth potential",
     },
   ]
 

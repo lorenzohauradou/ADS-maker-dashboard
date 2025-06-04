@@ -63,12 +63,12 @@ export function SolutionSection() {
         <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">60 Seconds</div>
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">3-5 Minutes</div>
               <div className="text-muted-foreground">instead of 2-4 weeks</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">$39/month</div>
-              <div className="text-muted-foreground">instead of $3K per video</div>
+              <div className="text-muted-foreground">instead of $500 per video</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">Unlimited</div>

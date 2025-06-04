@@ -136,7 +136,7 @@ export function ShowcaseSection() {
             className="mb-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
-            Viral Projects Created with ADS MAKER AI
+            Viral Projects Created with FAST ADS AI
           </Badge>
 
           <h2 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight">
@@ -145,7 +145,7 @@ export function ShowcaseSection() {
               Convert
             </span>
             <br />
-            <span className="text-lg md:text-3xl lg:text-4xl text-muted-foreground font-normal">Created in 1 minute</span>
+            <span className="text-lg md:text-3xl lg:text-4xl text-muted-foreground font-normal">Created in minutes</span>
           </h2>
 
           <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
