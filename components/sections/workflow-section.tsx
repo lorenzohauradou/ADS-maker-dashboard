@@ -117,12 +117,12 @@ export function WorkflowSection() {
             <div className="flex items-center justify-center mb-4">
               <Zap className="w-6 h-6 text-yellow-500 mr-3" />
               <span className="text-lg font-semibold text-foreground">
-                Convinto dalla semplicità?
+                Ready to create your first video?
               </span>
             </div>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Mentre i tuoi competitor aspettano settimane per i loro video, tu puoi avere il tuo pronto in 5 minuti.
-              Inizia ora e ottieni un vantaggio competitivo immediato.
+              While your competitors wait weeks for their videos, you can have yours ready in 5 minutes.
+              Start now and get an immediate competitive advantage.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -130,29 +130,29 @@ export function WorkflowSection() {
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4"
               >
                 <Play className="w-5 h-5 mr-2" />
-                Crea il Tuo Primo Video Gratis
+                Create your first video for free
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-border text-foreground hover:bg-accent px-8 py-4"
               >
-                Guarda Demo dal Vivo
+                Watch Demo in action
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground mt-4">
               <span className="flex items-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                Setup in 30 secondi
+                Setup in 30 seconds
               </span>
               <span className="flex items-center">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                Nessuna carta di credito
+                No credit card required
               </span>
               <span className="flex items-center">
                 <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                Video HD incluso
+                HD video included
               </span>
             </div>
           </div>
