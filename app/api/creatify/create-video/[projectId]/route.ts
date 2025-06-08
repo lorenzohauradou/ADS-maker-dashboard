@@ -3,7 +3,7 @@ import { auth } from '@/auth'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { projectId: string } }
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
     // 🔐 Verifica autenticazione NextAuth

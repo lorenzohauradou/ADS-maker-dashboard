@@ -3,7 +3,7 @@ import { auth } from '@/auth'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // 🔐 Verifica autenticazione NextAuth
@@ -13,7 +13,8 @@ export async function GET(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const projectId = params.id
+    const resolvedParams = await params
+    const projectId = resolvedParams.id
 
     // 📡 Chiamata al backend per ottenere progresso
     const response = await fetch(

@@ -3,7 +3,7 @@ import { auth } from '@/auth'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { videoId: string } }
+  { params }: { params: Promise<{ videoId: string }> }
 ) {
   try {
     // 🔐 Verifica autenticazione NextAuth
@@ -13,7 +13,8 @@ export async function POST(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const videoId = params.videoId
+    const resolvedParams = await params
+    const videoId = resolvedParams.videoId
 
     // 📡 Chiamata al backend per aggiornare video status
     const response = await fetch(
