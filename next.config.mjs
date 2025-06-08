@@ -22,7 +22,7 @@ const nextConfig = {
   },
   // CONFIGURAZIONI PRODUZIONE
   experimental: {
-    optimizeCss: true,
+    // optimizeCss rimosso per evitare problemi con critters in produzione
   },
   // HEADERS SICUREZZA
   async headers() {
