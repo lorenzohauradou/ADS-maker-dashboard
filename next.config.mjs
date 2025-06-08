@@ -59,7 +59,6 @@ const nextConfig = {
       // Minimizza bundle per produzione
       config.resolve.alias = {
         ...config.resolve.alias,
-        '@': require('path').resolve(__dirname),
       }
     }
     return config
