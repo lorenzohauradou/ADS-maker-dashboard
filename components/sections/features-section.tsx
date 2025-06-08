@@ -148,7 +148,7 @@ export function FeaturesSection() {
                     variant="secondary"
                     className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20"
                   >
-                    🎯 Website generated automatically
+                    🧠  AI Powered
                   </Badge>
                 </div>
               </div>

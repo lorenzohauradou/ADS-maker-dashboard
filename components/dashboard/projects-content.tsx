@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -22,110 +22,228 @@ import {
   Download,
   Share2,
   Filter,
+  Loader2,
+  AlertCircle,
+  Volume2,
+  VolumeX,
 } from "lucide-react"
 import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
-
-const projects = [
-  {
-    id: 1,
-    title: "iPhone 15 Pro Campaign",
-    category: "Physical Product",
-    status: "completed",
-    date: "15/01/2024",
-    duration: "30s",
-    views: "12.5K",
-    downloads: "234",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-green-500 text-white",
-  },
-  {
-    id: 2,
-    title: "SaaS Dashboard Demo",
-    category: "SaaS Application",
-    status: "processing",
-    date: "14/01/2024",
-    duration: "45s",
-    views: "8.2K",
-    downloads: "156",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-blue-500 text-white",
-  },
-  {
-    id: 3,
-    title: "Fitness App Promo",
-    category: "Mobile App",
-    status: "draft",
-    date: "13/01/2024",
-    duration: "60s",
-    views: "0",
-    downloads: "0",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-slate-500 text-white",
-  },
-  {
-    id: 4,
-    title: "E-commerce Store Launch",
-    category: "E-commerce",
-    status: "completed",
-    date: "12/01/2024",
-    duration: "35s",
-    views: "15.8K",
-    downloads: "312",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-green-500 text-white",
-  },
-  {
-    id: 5,
-    title: "Restaurant Menu Showcase",
-    category: "Food & Beverage",
-    status: "completed",
-    date: "11/01/2024",
-    duration: "25s",
-    views: "9.4K",
-    downloads: "187",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-green-500 text-white",
-  },
-  {
-    id: 6,
-    title: "Real Estate Virtual Tour",
-    category: "Real Estate",
-    status: "processing",
-    date: "10/01/2024",
-    duration: "90s",
-    views: "0",
-    downloads: "0",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    statusColor: "bg-blue-500 text-white",
-  },
-]
+import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
+import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
+import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
+import { format } from 'date-fns';
+import { Project } from "@/types/project";
 
 export function ProjectsContent() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [categoryFilter, setCategoryFilter] = useState("all")
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [currentProject, setCurrentProject] = useState<any>(null)
 
-  const handleImagesUploaded = async (images: File[], projectName: string) => {
+  // Stati per gestire il caricamento dei dati
+  const [projects, setProjects] = useState<Project[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Stato per l'audio del video
+  const [activeVideo, setActiveVideo] = useState<number | null>(null)
+
+
+
+  // Funzione per caricare i progetti dal backend
+  const fetchProjects = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await fetch("/api/projects")
+      if (!response.ok) {
+        // Try to get error from body
+        const errorBody = await response.json().catch(() => ({}))
+        throw new Error(errorBody.error || "Failed to fetch projects")
+      }
+      const data = await response.json()
+      if (data.success) {
+        setProjects(data.projects || [])
+
+        // Controlla automaticamente i video in processing (solo se ci sono)
+        const processingProjects = (data.projects || []).filter((p: any) =>
+          p.video?.status === 'processing' && p.video?.url?.startsWith('processing_')
+        )
+
+        if (processingProjects.length > 0) {
+          console.log(`Found ${processingProjects.length} projects with processing videos, checking status...`)
+          // Controlla una sola volta, evita chiamate multiple
+          if (!sessionStorage.getItem('checking-videos')) {
+            sessionStorage.setItem('checking-videos', 'true')
+            setTimeout(() => {
+              checkAllPendingVideos().finally(() => {
+                sessionStorage.removeItem('checking-videos')
+              })
+            }, 2000)
+          }
+        }
+      } else {
+        throw new Error(data.error || "An unknown error occurred while fetching projects.")
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const checkAllPendingVideos = async () => {
+    try {
+      const response = await fetch('/api/creatify/check-all-pending-videos', {
+        method: 'POST'
+      })
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Video status check result:', result)
+        if (result.updated > 0) {
+          // Se ci sono stati aggiornamenti, ricarica i progetti
+          setTimeout(() => {
+            fetchProjects()
+          }, 1000)
+        }
+      }
+    } catch (error) {
+      console.error('Error checking pending videos:', error)
+    }
+  }
+
+  // Carica i progetti quando il componente viene montato
+  useEffect(() => {
+    fetchProjects()
+  }, [])
+
+  const handleImagesUploaded = async (images: File[], projectName: string, customDomain?: string, project?: any) => {
     console.log("Images uploaded from projects page:", images.length, "Project:", projectName)
 
-    // TODO: Implementare chiamata al backend FastAPI
-    setIsModalOpen(false)
+    if (project?.id) {
+      console.log("Project created successfully, opening configuration modal...")
+      // Salva i dati del progetto per la configurazione
+      setCurrentProject({
+        ...project,
+        imageCount: images.length,
+        customDomain: customDomain
+      })
+      // Chiudi il modale di upload e apri quello di configurazione  
+      setIsModalOpen(false)
+      setIsConfigModalOpen(true)
+    } else {
+      // Fallback se non c'è progetto
+      setIsModalOpen(false)
+      fetchProjects()
+    }
+  }
 
-    // Placeholder
-    alert(`Progetto "${projectName}" creato con ${images.length} immagini dalla pagina Projects!`)
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'processing':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'failed':
+        return 'bg-red-100 text-red-800 border-red-300';
+      default:
+        return 'bg-slate-100 text-slate-800 border-slate-300';
+    }
   }
 
   const filteredProjects = projects.filter((project) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.category.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = statusFilter === "all" || project.status === statusFilter
-    const matchesCategory = categoryFilter === "all" || project.category === categoryFilter
-
-    return matchesSearch && matchesStatus && matchesCategory
+    return matchesSearch && matchesStatus
   })
+
+  const handlePreview = (project: Project) => {
+    // Pausa tutti i video nella griglia quando si apre il modale
+    const allVideos = document.querySelectorAll('video');
+    allVideos.forEach(video => {
+      video.pause();
+      video.muted = true;
+    });
+
+    // Resetta lo stato audio per evitare conflitti
+    setActiveVideo(null);
+
+    setSelectedProject(project)
+    setIsPreviewOpen(true)
+  }
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false)
+    setSelectedProject(null)
+    // Non riattivare automaticamente l'audio dei video nella griglia
+    // L'utente deve riattivarli manualmente se vuole
+  }
+
+  const handleDelete = async (project: Project) => {
+    if (confirm(`Sei sicuro di voler eliminare il progetto "${project.name}"?`)) {
+      try {
+        const response = await fetch(`/api/projects/${project.id}`, {
+          method: 'DELETE'
+        })
+        if (response.ok) {
+          fetchProjects() // Ricarica la lista
+        } else {
+          throw new Error('Failed to delete project')
+        }
+      } catch (error) {
+        alert('Errore durante l\'eliminazione del progetto')
+      }
+    }
+  }
+
+  const handleVideoConfiguration = async (configuration: any) => {
+    console.log("Starting video creation with configuration:", configuration)
+
+    if (!currentProject?.id) {
+      alert("Errore: Progetto non trovato")
+      return
+    }
+
+    try {
+      // Avvia il workflow completo con la configurazione personalizzata
+      const response = await fetch(`/api/creatify/create-video/${currentProject.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...configuration,
+          custom_domain: currentProject.customDomain
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log("Workflow started successfully:", result)
+
+        // Salva la configurazione nel progetto corrente per il modale di progresso
+        setCurrentProject((prev: any) => ({ ...prev, configuration }))
+
+        // Chiudi il modale di configurazione e apri quello di progresso
+        setIsConfigModalOpen(false)
+        setIsProgressModalOpen(true)
+      } else {
+        console.error("Failed to start workflow:", response.status)
+        const errorData = await response.json().catch(() => ({}))
+        alert(`Errore nell'avvio del processo: ${errorData.error || response.status}`)
+      }
+    } catch (error) {
+      console.error("Error starting workflow:", error)
+      alert(`Errore nell'avvio del processo: ${error}`)
+    }
+  }
+
+
 
   return (
     <>
@@ -144,6 +262,8 @@ export function ProjectsContent() {
             Create New Project
           </Button>
         </div>
+
+
 
         {/* Filters and Search */}
         <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-6">
@@ -171,22 +291,8 @@ export function ProjectsContent() {
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full sm:w-40 rounded-xl border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Physical Product">Physical Product</SelectItem>
-                  <SelectItem value="SaaS Application">SaaS Application</SelectItem>
-                  <SelectItem value="Mobile App">Mobile App</SelectItem>
-                  <SelectItem value="E-commerce">E-commerce</SelectItem>
-                  <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
-                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
+                  <SelectItem value="created">Draft</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -209,184 +315,281 @@ export function ProjectsContent() {
                   <List className="w-4 h-4" />
                 </Button>
               </div>
-
-              <Button variant="outline" size="sm" className="border-slate-200 dark:border-zinc-700 rounded-xl text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
             </div>
           </div>
         </Card>
 
+        {/* Loading and Error States */}
+        {isLoading && (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          </div>
+        )}
+        {error && (
+          <div className="flex justify-center items-center h-64 bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 rounded-lg">
+            <AlertCircle className="w-6 h-6 text-red-600 mr-3" />
+            <div>
+              <h3 className="font-medium text-red-900 dark:text-red-100">Failed to load projects</h3>
+              <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
+            </div>
+          </div>
+        )}
+
         {/* Projects Grid/List */}
-        {viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-              <Card
-                key={project.id}
-                className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 overflow-hidden hover:shadow-lg transition-all duration-300 group hover:scale-105"
-              >
-                {/* Project Thumbnail */}
-                <div className="relative aspect-video bg-slate-100 dark:bg-zinc-800 flex items-center justify-center border-b border-slate-200 dark:border-zinc-800">
-                  <ImageIcon className="w-12 h-12 text-slate-400 dark:text-zinc-500" />
+        {!isLoading && !error && (
+          viewMode === "grid" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map((project) => (
+                <Card
+                  key={project.id}
+                  className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 overflow-hidden hover:shadow-lg transition-all duration-300 group hover:scale-105 cursor-pointer"
+                  onClick={() => handlePreview(project)}
+                >
+                  {/* Project Thumbnail / Video Player */}
+                  <div className="relative aspect-video bg-slate-100 dark:bg-zinc-800 flex items-center justify-center border-b border-slate-200 dark:border-zinc-800">
+                    {project.video?.url && project.status === 'completed' && !project.video.url.startsWith('processing_') ? (
+                      <video
+                        src={project.video.url}
+                        poster={project.video.thumbnail || undefined}
+                        muted={activeVideo !== project.id}
+                        loop
+                        playsInline
+                        onMouseEnter={async (e) => {
+                          try {
+                            await e.currentTarget.play();
+                          } catch (error) {
+                            // Ignora errori di autoplay
+                            console.log('Autoplay prevented on hover');
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (activeVideo !== project.id) {
+                            e.currentTarget.pause();
+                            e.currentTarget.currentTime = 0;
+                          }
+                        }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const video = e.currentTarget;
 
-                  {/* Status Badge */}
-                  <Badge className={`absolute top-3 left-3 text-xs px-2 py-1 ${project.statusColor}`}>
-                    {project.status}
-                  </Badge>
+                          if (activeVideo === project.id) {
+                            // Disattiva audio
+                            setActiveVideo(null);
+                            video.muted = true;
+                          } else {
+                            // Attiva audio
+                            setActiveVideo(project.id);
+                            video.muted = false;
 
-                  {/* Actions Menu */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 dark:bg-black/80 hover:bg-white dark:hover:bg-black shadow-lg"
+                            // Assicurati che il video stia riproducendo
+                            if (video.paused) {
+                              try {
+                                await video.play();
+                              } catch (error) {
+                                console.log('Play interrupted:', error);
+                              }
+                            }
+                          }
+                        }}
+                        className="w-full h-full object-cover cursor-pointer"
+                      />
+                    ) : (
+                      <>
+                        {project.video?.thumbnail ? (
+                          <img src={project.video.thumbnail} alt={project.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <ImageIcon className="w-12 h-12 text-slate-400 dark:text-zinc-500" />
+                        )}
+                      </>
+                    )}
+
+                    {/* Status Badge */}
+                    <Badge className={`absolute top-3 left-3 text-xs px-2 py-1 border ${getStatusColor(project.status)}`}>
+                      {project.status}
+                    </Badge>
+
+                    {/* Audio Control Icon */}
+                    {project.video?.url && project.status === 'completed' && !project.video.url.startsWith('processing_') && (
+                      <div
+                        className="absolute bottom-3 right-3 bg-black/50 p-1.5 rounded-full text-white backdrop-blur-sm cursor-pointer hover:scale-110 transition-transform"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const videoElement = e.currentTarget.closest('.relative')?.querySelector('video') as HTMLVideoElement;
+
+                          if (activeVideo === project.id) {
+                            // Disattiva audio
+                            setActiveVideo(null);
+                            if (videoElement) {
+                              videoElement.muted = true;
+                            }
+                          } else {
+                            // Attiva audio
+                            setActiveVideo(project.id);
+                            if (videoElement) {
+                              videoElement.muted = false;
+                              // Assicurati che il video stia riproducendo
+                              if (videoElement.paused) {
+                                try {
+                                  await videoElement.play();
+                                } catch (error) {
+                                  console.log('Play interrupted from audio button:', error);
+                                }
+                              }
+                            }
+                          }
+                        }}
                       >
-                        <MoreHorizontal className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 shadow-xl" align="end">
-                      <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                        <Play className="mr-2 h-4 w-4" />
-                        Preview
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                        <Share2 className="mr-2 h-4 w-4" />
-                        Share
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        {activeVideo === project.id ? (
+                          <Volume2 className="w-4 h-4" />
+                        ) : (
+                          <VolumeX className="w-4 h-4" />
+                        )}
+                      </div>
+                    )}
 
-                  {/* Play Button Overlay */}
-                  {project.status === "completed" && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                      <div className="w-12 h-12 bg-white/90 dark:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
-                        <Play className="w-6 h-6 text-slate-700 dark:text-zinc-300 ml-1" />
+                    {/* Actions Menu */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 dark:bg-black/80 hover:bg-white dark:hover:bg-black shadow-lg"
+                        >
+                          <MoreHorizontal className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 shadow-xl" align="end">
+                        <DropdownMenuItem
+                          className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handlePreview(project)
+                          }}
+                        >
+                          <Play className="mr-2 h-4 w-4" />
+                          Preview
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDelete(project)
+                          }}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* Project Info */}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-1">{project.name}</h3>
+                    <p className="text-sm text-slate-600 dark:text-zinc-400 mb-3">{project.product_type}</p>
+
+                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500 mb-3">
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        {format(new Date(project.created_at), 'dd/MM/yyyy')}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {project.video?.duration ? `${Math.round(project.video.duration)}s` : 'N/A'}
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {/* Project Info */}
-                <div className="p-4">
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-1">{project.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-zinc-400 mb-3">{project.category}</p>
-
-                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500 mb-3">
-                    <div className="flex items-center">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {project.date}
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-600 dark:text-zinc-400">{project.views_count || 0} views</span>
                     </div>
-                    <div className="flex items-center">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {project.duration}
-                    </div>
-                  </div>
 
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-600 dark:text-zinc-400">{project.views} views</span>
-                    <span className="text-slate-600 dark:text-zinc-400">{project.downloads} downloads</span>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="border-b border-slate-200 dark:border-zinc-800">
-                  <tr>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Project</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Category</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Status</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Date</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Duration</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Views</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Downloads</th>
-                    <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProjects.map((project) => (
-                    <tr key={project.id} className="border-b border-slate-100 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800/50">
-                      <td className="p-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-slate-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
-                            <ImageIcon className="w-5 h-5 text-slate-400 dark:text-zinc-500" />
-                          </div>
-                          <span className="font-medium text-slate-900 dark:text-white">{project.title}</span>
-                        </div>
-                      </td>
-                      <td className="p-4 text-slate-600 dark:text-zinc-400">{project.category}</td>
-                      <td className="p-4">
-                        <Badge className={`text-xs px-2 py-1 ${project.statusColor}`}>
-                          {project.status}
-                        </Badge>
-                      </td>
-                      <td className="p-4 text-slate-600 dark:text-zinc-400">{project.date}</td>
-                      <td className="p-4 text-slate-600 dark:text-zinc-400">{project.duration}</td>
-                      <td className="p-4 text-slate-600 dark:text-zinc-400">{project.views}</td>
-                      <td className="p-4 text-slate-600 dark:text-zinc-400">{project.downloads}</td>
-                      <td className="p-4">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-zinc-800">
-                              <MoreHorizontal className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 shadow-xl" align="end">
-                            <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                              <Play className="mr-2 h-4 w-4" />
-                              Preview
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                              <Download className="mr-2 h-4 w-4" />
-                              Download
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300">
-                              <Share2 className="mr-2 h-4 w-4" />
-                              Share
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400">
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                </Card>
+              ))}
             </div>
-          </Card>
+          ) : (
+            <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="border-b border-slate-200 dark:border-zinc-800">
+                    <tr>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Project</th>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Category</th>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Status</th>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Date</th>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Duration</th>
+                      <th className="text-left p-4 font-semibold text-slate-900 dark:text-white">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProjects.map((project) => (
+                      <tr key={project.id} className="border-b border-slate-100 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800/50">
+                        <td className="p-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-slate-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
+                              {project.video?.thumbnail ? (
+                                <img src={project.video.thumbnail} alt={project.name} className="w-full h-full object-cover rounded-lg" />
+                              ) : (
+                                <ImageIcon className="w-5 h-5 text-slate-400 dark:text-zinc-500" />
+                              )}
+                            </div>
+                            <span className="font-medium text-slate-900 dark:text-white">{project.name}</span>
+                          </div>
+                        </td>
+                        <td className="p-4 text-slate-600 dark:text-zinc-400">{project.product_type}</td>
+                        <td className="p-4">
+                          <Badge className={`text-xs px-2 py-1 border ${getStatusColor(project.status)}`}>
+                            {project.status}
+                          </Badge>
+                        </td>
+                        <td className="p-4 text-slate-600 dark:text-zinc-400">{format(new Date(project.created_at), 'dd/MM/yyyy')}</td>
+                        <td className="p-4 text-slate-600 dark:text-zinc-400">{project.video?.duration ? `${Math.round(project.video.duration)}s` : 'N/A'}</td>
+                        <td className="p-4">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-zinc-800">
+                                <MoreHorizontal className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 shadow-xl" align="end">
+                              <DropdownMenuItem
+                                className="hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handlePreview(project)
+                                }}
+                              >
+                                <Play className="mr-2 h-4 w-4" />
+                                Preview
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleDelete(project)
+                                }}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )
         )}
 
         {/* Empty State */}
-        {filteredProjects.length === 0 && (
+        {!isLoading && !error && filteredProjects.length === 0 && (
           <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-12 text-center">
             <ImageIcon className="w-16 h-16 text-slate-300 dark:text-zinc-600 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No projects found</h3>
-            <p className="text-slate-600 dark:text-zinc-400 mb-6">Try adjusting your search or filter criteria</p>
+            <p className="text-slate-600 dark:text-zinc-400 mb-6">Create your first project to get started!</p>
             <Button
               onClick={() => setIsModalOpen(true)}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white"
@@ -402,6 +605,36 @@ export function ProjectsContent() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onComplete={handleImagesUploaded}
+      />
+
+      <VideoPreviewModal
+        isOpen={isPreviewOpen}
+        onClose={handleClosePreview}
+        project={selectedProject}
+      />
+
+      <VideoConfigurationModal
+        isOpen={isConfigModalOpen}
+        onClose={() => {
+          setIsConfigModalOpen(false)
+          setCurrentProject(null)
+        }}
+        onStartCreation={handleVideoConfiguration}
+        projectName={currentProject?.name || ""}
+        imageCount={currentProject?.imageCount || 0}
+      />
+
+      <VideoProgressModal
+        isOpen={isProgressModalOpen}
+        onClose={() => {
+          setIsProgressModalOpen(false)
+          setCurrentProject(null)
+          fetchProjects() // Ricarica i progetti quando si chiude
+        }}
+        projectName={currentProject?.name || ""}
+        projectId={currentProject?.id}
+        configuration={currentProject?.configuration || {}}
+        workflowAlreadyStarted={true}
       />
     </>
   )

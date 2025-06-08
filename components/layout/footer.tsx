@@ -52,7 +52,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto sm:mx-0">
-              The AI that transforms your images into professional video ads in 1 minute.
+              The AI that transforms your images into professional video ads in 3-5 minutes.
             </p>
             <div className="flex justify-center sm:justify-start space-x-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg">
@@ -144,7 +144,7 @@ export function Footer() {
         {/* Copyright Section - Responsive layout */}
         <div className="border-t border-border mt-8 sm:mt-10 lg:mt-12 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <p className="text-muted-foreground text-sm text-center sm:text-left">
-            © 2024 ADS MAKER AI. All rights reserved.
+            © 2024 FAST ADS AI. All rights reserved.
           </p>
           <p className="text-muted-foreground text-xs text-center sm:text-right">
             Made with ❤️ in Italy

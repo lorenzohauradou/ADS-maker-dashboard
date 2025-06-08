@@ -58,10 +58,12 @@ export function CreateVideoSection() {
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
 
   // Project data
+  const [projectId, setProjectId] = useState<number | null>(null)
   const [projectName, setProjectName] = useState("")
   const [uploadedImages, setUploadedImages] = useState<File[]>([])
   const [customDomain, setCustomDomain] = useState<string | undefined>(undefined)
   const [configuration, setConfiguration] = useState<VideoConfiguration | null>(null)
+  const [error, setError] = useState("")
 
   const handleCreateAction = () => {
     if (!isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
@@ -74,8 +76,18 @@ export function CreateVideoSection() {
     setIsUploadModalOpen(true)
   }
 
-  const handleImagesUploaded = async (images: File[], name: string, domain?: string) => {
-    console.log("Images uploaded:", images.length, "Project:", name, "Domain:", domain)
+  const handleImagesUploaded = async (images: File[], name: string, domain?: string, project?: any) => {
+    console.log("🎉 Progetto creato:", project?.id, "Nome:", name, "Immagini:", images.length)
+
+    // ✅ USA L'ID REALE DAL BACKEND
+    if (project?.id) {
+      setProjectId(project.id)
+      console.log("✅ Project ID reale:", project.id)
+    } else {
+      console.error("❌ Nessun project ID ricevuto dal backend")
+      setError("Errore creazione progetto")
+      return
+    }
 
     // Salva i dati del progetto
     setUploadedImages(images)
@@ -118,6 +130,7 @@ export function CreateVideoSection() {
     // Reset per permettere nuovo progetto
     setTimeout(() => {
       setCurrentStep("upload")
+      setProjectId(null)
       setProjectName("")
       setUploadedImages([])
       setCustomDomain(undefined)
@@ -232,11 +245,12 @@ export function CreateVideoSection() {
       />
 
       {/* Step 3: Progress Modal */}
-      {configuration && (
+      {configuration && projectId && (
         <VideoProgressModal
           isOpen={isProgressModalOpen}
           onClose={handleProgressComplete}
           projectName={projectName}
+          projectId={projectId}
           configuration={configuration}
         />
       )}

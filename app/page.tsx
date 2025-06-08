@@ -19,13 +19,13 @@ export default function HomePage() {
     <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden">
         <Header />
-        <main>
+        <main className="overflow-x-hidden">
           <HeroSection />
           <ShowcaseSection />
           <WorkflowSection />
           <ProblemSection />
-          <DeviceShowcaseSection />
           <SolutionSection />
+          <DeviceShowcaseSection />
           <FeaturesSection />
           <PricingSection />
           <FaqSection />

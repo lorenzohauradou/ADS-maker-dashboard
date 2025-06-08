@@ -31,7 +31,7 @@ interface ImageFile {
 interface ImageUploadModalProps {
     isOpen: boolean
     onClose: () => void
-    onComplete: (images: File[], projectName: string, customDomain?: string) => void
+    onComplete: (images: File[], projectName: string, customDomain?: string, project?: any) => void
 }
 
 export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadModalProps) {
@@ -181,21 +181,52 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
         setUploadProgress(0)
 
         try {
-            // Simula upload progressivo
-            for (let i = 0; i <= 100; i += 10) {
-                setUploadProgress(i)
-                await new Promise(resolve => setTimeout(resolve, 100))
+            // 📡 CHIAMATA REALE AL BACKEND
+            const formData = new FormData()
+            formData.append('name', projectName.trim())
+            formData.append('product_type', 'physical')
+
+            if (customDomain.trim() && domainStatus === "available") {
+                formData.append('custom_domain', customDomain.trim())
             }
+
+            // Aggiungi tutte le immagini
+            images.forEach((img, index) => {
+                formData.append('files', img.file)
+            })
+
+            // Progresso upload
+            setUploadProgress(20)
+            await new Promise(resolve => setTimeout(resolve, 200))
+
+            // 🚀 Chiamata API backend per creare progetto
+            const response = await fetch('/api/projects', {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json()
+                throw new Error(errorData.error || `HTTP ${response.status}`)
+            }
+
+            const project = await response.json()
+
+            setUploadProgress(80)
+            await new Promise(resolve => setTimeout(resolve, 200))
 
             // Cleanup URLs
             images.forEach(img => URL.revokeObjectURL(img.preview))
 
-            // Chiama callback con i file e il dominio opzionale
+            // ✅ Passa i dati del progetto REALE dal backend
             onComplete(
                 images.map(img => img.file),
                 projectName,
-                domainStatus === "available" ? customDomain : undefined
+                domainStatus === "available" ? customDomain : undefined,
+                project // Aggiungi i dati del progetto dal backend
             )
+
+            setUploadProgress(100)
 
             // Reset
             setImages([])
@@ -460,12 +491,23 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
 
                     {/* Upload Progress */}
                     {isUploading && (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="font-semibold text-slate-900 dark:text-white">Upload in progress...</span>
                                 <span className="text-sm text-slate-600 dark:text-zinc-400">{uploadProgress}%</span>
                             </div>
                             <Progress value={uploadProgress} className="h-2" />
+
+                            {/* User-friendly message */}
+                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                                <div className="flex items-start space-x-3">
+                                    <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                                    <div className="text-sm text-blue-800 dark:text-blue-200">
+                                        <p className="font-medium mb-1">Good news! You can close this window</p>
+                                        <p>Your project is being processed in the background. You'll see it appear in your dashboard once completed (typically 3-5 minutes). Feel free to close this modal and continue with other tasks.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -474,10 +516,9 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                         <Button
                             variant="outline"
                             onClick={handleClose}
-                            disabled={isUploading}
                             className="px-6 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800"
                         >
-                            Cancel
+                            {isUploading ? "Close Window" : "Cancel"}
                         </Button>
 
                         <Button

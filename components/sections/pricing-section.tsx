@@ -185,7 +185,6 @@ export function PricingSection() {
           <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground mt-8">
             <span>✅ No annual contract</span>
             <span>✅ Cancel anytime</span>
-            <span>✅ 30-day ROI guarantee</span>
             <span>✅ English support</span>
             <span>✅ Free migration</span>
           </div>
