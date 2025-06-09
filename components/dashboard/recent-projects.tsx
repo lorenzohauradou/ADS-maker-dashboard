@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Calendar, Clock, ImageIcon, Play, Edit, Trash2, Loader2, AlertTriangle, Volume2, VolumeX } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Project } from "@/types/project"
 import { useVideoControls } from "@/hooks/useVideoControls"
 import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
@@ -14,6 +15,7 @@ export function RecentProjects() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   // Usa il hook per i controlli video
   const {
@@ -38,7 +40,8 @@ export function RecentProjects() {
         }
         const result = await response.json()
         if (result.success) {
-          setProjects(result.projects.slice(0, 3)) // Take the first 3 for "recent"
+          // Assicurati di prendere solo i primi 3 progetti per "recent"
+          setProjects(result.projects.slice(0, 3))
         } else {
           // Use the error message from backend if available
           throw new Error(result.error || 'Could not fetch projects from backend.')
@@ -89,12 +92,20 @@ export function RecentProjects() {
     }
   }
 
+  const handleViewAll = () => {
+    router.push('/dashboard/projects')
+  }
+
   return (
     <>
       <div>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Recent Projects</h2>
-          <Button variant="ghost" className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl">
+          <Button
+            variant="ghost"
+            className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl"
+            onClick={handleViewAll}
+          >
             View All
           </Button>
         </div>
