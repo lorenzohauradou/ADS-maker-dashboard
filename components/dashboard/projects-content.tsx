@@ -33,16 +33,15 @@ import { VideoConfigurationModal } from "./video-creation-workflow/video-configu
 import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
 import { format } from 'date-fns';
 import { Project } from "@/types/project";
+import { useVideoControls } from "@/hooks/useVideoControls"
 
 export function ProjectsContent() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [currentProject, setCurrentProject] = useState<any>(null)
 
   // Stati per gestire il caricamento dei dati
@@ -50,10 +49,18 @@ export function ProjectsContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Stato per l'audio del video
-  const [activeVideo, setActiveVideo] = useState<number | null>(null)
-
-
+  // Usa il hook per i controlli video
+  const {
+    activeVideo,
+    isPreviewOpen,
+    selectedProject,
+    handlePreview,
+    handleClosePreview,
+    toggleVideoAudio,
+    getVideoProps,
+    hasActiveAudio,
+    canPlayVideo
+  } = useVideoControls()
 
   // Funzione per caricare i progetti dal backend
   const fetchProjects = async () => {
@@ -162,28 +169,6 @@ export function ProjectsContent() {
     return matchesSearch && matchesStatus
   })
 
-  const handlePreview = (project: Project) => {
-    // Pausa tutti i video nella griglia quando si apre il modale
-    const allVideos = document.querySelectorAll('video');
-    allVideos.forEach(video => {
-      video.pause();
-      video.muted = true;
-    });
-
-    // Resetta lo stato audio per evitare conflitti
-    setActiveVideo(null);
-
-    setSelectedProject(project)
-    setIsPreviewOpen(true)
-  }
-
-  const handleClosePreview = () => {
-    setIsPreviewOpen(false)
-    setSelectedProject(null)
-    // Non riattivare automaticamente l'audio dei video nella griglia
-    // L'utente deve riattivarli manualmente se vuole
-  }
-
   const handleDelete = async (project: Project) => {
     if (confirm(`Sei sicuro di voler eliminare il progetto "${project.name}"?`)) {
       try {
@@ -243,8 +228,6 @@ export function ProjectsContent() {
     }
   }
 
-
-
   return (
     <>
       <div className="space-y-6">
@@ -262,8 +245,6 @@ export function ProjectsContent() {
             Create New Project
           </Button>
         </div>
-
-
 
         {/* Filters and Search */}
         <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-6">
@@ -347,51 +328,9 @@ export function ProjectsContent() {
                 >
                   {/* Project Thumbnail / Video Player */}
                   <div className="relative aspect-video bg-slate-100 dark:bg-zinc-800 flex items-center justify-center border-b border-slate-200 dark:border-zinc-800">
-                    {project.video?.url && project.status === 'completed' && !project.video.url.startsWith('processing_') ? (
+                    {canPlayVideo(project) ? (
                       <video
-                        src={project.video.url}
-                        poster={project.video.thumbnail || undefined}
-                        muted={activeVideo !== project.id}
-                        loop
-                        playsInline
-                        onMouseEnter={async (e) => {
-                          try {
-                            await e.currentTarget.play();
-                          } catch (error) {
-                            // Ignora errori di autoplay
-                            console.log('Autoplay prevented on hover');
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (activeVideo !== project.id) {
-                            e.currentTarget.pause();
-                            e.currentTarget.currentTime = 0;
-                          }
-                        }}
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          const video = e.currentTarget;
-
-                          if (activeVideo === project.id) {
-                            // Disattiva audio
-                            setActiveVideo(null);
-                            video.muted = true;
-                          } else {
-                            // Attiva audio
-                            setActiveVideo(project.id);
-                            video.muted = false;
-
-                            // Assicurati che il video stia riproducendo
-                            if (video.paused) {
-                              try {
-                                await video.play();
-                              } catch (error) {
-                                console.log('Play interrupted:', error);
-                              }
-                            }
-                          }
-                        }}
-                        className="w-full h-full object-cover cursor-pointer"
+                        {...getVideoProps(project)}
                       />
                     ) : (
                       <>
@@ -409,37 +348,16 @@ export function ProjectsContent() {
                     </Badge>
 
                     {/* Audio Control Icon */}
-                    {project.video?.url && project.status === 'completed' && !project.video.url.startsWith('processing_') && (
+                    {canPlayVideo(project) && (
                       <div
                         className="absolute bottom-3 right-3 bg-black/50 p-1.5 rounded-full text-white backdrop-blur-sm cursor-pointer hover:scale-110 transition-transform"
                         onClick={async (e) => {
-                          e.stopPropagation();
-                          const videoElement = e.currentTarget.closest('.relative')?.querySelector('video') as HTMLVideoElement;
-
-                          if (activeVideo === project.id) {
-                            // Disattiva audio
-                            setActiveVideo(null);
-                            if (videoElement) {
-                              videoElement.muted = true;
-                            }
-                          } else {
-                            // Attiva audio
-                            setActiveVideo(project.id);
-                            if (videoElement) {
-                              videoElement.muted = false;
-                              // Assicurati che il video stia riproducendo
-                              if (videoElement.paused) {
-                                try {
-                                  await videoElement.play();
-                                } catch (error) {
-                                  console.log('Play interrupted from audio button:', error);
-                                }
-                              }
-                            }
-                          }
+                          e.stopPropagation()
+                          const videoElement = e.currentTarget.closest('.relative')?.querySelector('video') as HTMLVideoElement
+                          await toggleVideoAudio(project.id, videoElement)
                         }}
                       >
-                        {activeVideo === project.id ? (
+                        {hasActiveAudio(project.id) ? (
                           <Volume2 className="w-4 h-4" />
                         ) : (
                           <VolumeX className="w-4 h-4" />
@@ -454,6 +372,7 @@ export function ProjectsContent() {
                           variant="ghost"
                           size="icon"
                           className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 dark:bg-black/80 hover:bg-white dark:hover:bg-black shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <MoreHorizontal className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
                         </Button>
