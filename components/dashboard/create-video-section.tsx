@@ -3,33 +3,13 @@
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus, Sparkles } from "lucide-react"
+import { Plus, Sparkles, Crown, Lock } from "lucide-react"
+import { useUserLimits } from "@/hooks/use-user-limits"
+import { UserLimitsBanner } from "./user-limits-banner"
 import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
 import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
-
-interface VideoConfiguration {
-  target_platform: string
-  target_audience: string
-  language: string
-  video_length: number
-  aspect_ratio: string
-  script_style: string
-  visual_style: string
-  buy_custom_domain: boolean
-  custom_domain_name: string
-  landing_style: string
-  color_scheme: string
-  cta_text: string
-  background_music_volume: number
-  voiceover_volume: number
-  no_background_music: boolean
-  no_caption: boolean
-  no_emotion: boolean
-  no_cta: boolean
-  caption_style: string
-  override_script: string
-}
+import { VideoConfiguration } from "./video-creation-workflow/types/video-configuration"
 
 // Componente che usa useSearchParams avvolto in Suspense
 function SearchParamsHandler({
@@ -52,6 +32,7 @@ function SearchParamsHandler({
 }
 
 export function CreateVideoSection() {
+  const { can_create_video, loading, buyExtraVideo } = useUserLimits()
   const [currentStep, setCurrentStep] = useState<"upload" | "configure" | "progress" | "complete">("upload")
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
@@ -72,6 +53,18 @@ export function CreateVideoSection() {
   }
 
   const handleStartNewProject = () => {
+    // Controlla i limiti prima di procedere
+    if (!can_create_video) {
+      // Mostra modal per comprare video extra o upgrade
+      const confirmed = confirm(
+        `Hai raggiunto il limite mensile di video. Vuoi comprare un video extra o fare l'upgrade del piano?`
+      )
+      if (confirmed) {
+        buyExtraVideo()
+      }
+      return
+    }
+
     setCurrentStep("upload")
     setIsUploadModalOpen(true)
   }
@@ -103,6 +96,12 @@ export function CreateVideoSection() {
   const handleConfigurationComplete = async (config: VideoConfiguration) => {
     console.log("Configuration completed:", config)
 
+    if (!projectId) {
+      console.error("❌ No project ID available")
+      setError("Project ID missing")
+      return
+    }
+
     // Salva configurazione
     setConfiguration(config)
 
@@ -111,21 +110,108 @@ export function CreateVideoSection() {
     setCurrentStep("progress")
     setIsProgressModalOpen(true)
 
-    // TODO: Qui faremo la chiamata al backend FastAPI
-    // const response = await fetch('/api/create-video', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     projectName,
-    //     images: uploadedImages,
-    //     configuration: config
-    //   })
-    // })
+    try {
+      // 🚀 Avvia la creazione del video chiamando il backend
+      console.log("🎬 Starting video creation for project:", projectId)
+
+      const response = await fetch(`/api/creatify/start-video-workflow/${projectId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // 🎯 Mappa tutti i parametri della configurazione
+          target_platform: config.target_platform,
+          target_audience: config.target_audience,
+          language: config.language,
+          video_length: config.video_length,
+          script_style: config.script_style,
+          visual_style: config.visual_style,
+
+          // 🎨 Landing page customization
+          landing_style: config.landing_style,
+          color_scheme: config.color_scheme,
+          cta_text: config.cta_text,
+
+          // 🎵 Audio settings
+          background_music_volume: config.background_music_volume,
+          voiceover_volume: config.voiceover_volume,
+          no_background_music: config.no_background_music,
+
+          // 🎭 Creative controls
+          no_caption: config.no_caption,
+          no_emotion: config.no_emotion,
+          no_cta: config.no_cta,
+          override_script: config.override_script,
+
+          // 🎨 Subtitle customization
+          caption_style: config.caption_style,
+          caption_font_family: config.caption_font_family,
+          caption_font_size: config.caption_font_size,
+          caption_font_style: config.caption_font_style,
+          caption_background_color: config.caption_background_color,
+          caption_text_color: config.caption_text_color,
+          caption_highlight_text_color: config.caption_highlight_text_color,
+          caption_text_shadow: config.caption_text_shadow,
+          caption_max_width: config.caption_max_width,
+          caption_line_height: config.caption_line_height,
+          caption_offset_x: config.caption_offset_x,
+          caption_offset_y: config.caption_offset_y,
+
+          // 🎭 Premium avatar/voice selection
+          avatar_id: config.avatar_id,
+          voice_id: config.voice_id,
+
+          // 📋 Metadata
+          project_name: projectName,
+          image_count: uploadedImages.length
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `HTTP ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log("✅ Video creation started:", result)
+
+    } catch (error) {
+      console.error("❌ Error starting video creation:", error)
+      setError(`Failed to start video creation: ${error instanceof Error ? error.message : 'Unknown error'}`)
+
+      // Se errore, torna al step di configurazione
+      setIsProgressModalOpen(false)
+      setCurrentStep("configure")
+      setIsConfigModalOpen(true)
+    }
   }
 
-  const handleProgressComplete = () => {
+  const handleProgressComplete = async (videoSuccess: boolean = true) => {
     setIsProgressModalOpen(false)
     setCurrentStep("complete")
+
+    // Incrementa usage counter SOLO se video completato con successo
+    if (videoSuccess) {
+      try {
+        const response = await fetch('/api/subscriptions/increment-usage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (response.ok) {
+          console.log('✅ Usage incremented successfully')
+          // Ricarica i limiti nel banner
+          // refreshLimits() // Se abbiamo accesso al hook qui
+        } else {
+          console.error('❌ Failed to increment usage:', await response.text())
+        }
+      } catch (error) {
+        console.error('❌ Error incrementing usage:', error)
+      }
+    } else {
+      console.log('⚠️ Video creation failed, usage not incremented')
+    }
 
     // Reset per permettere nuovo progetto
     setTimeout(() => {
@@ -135,6 +221,7 @@ export function CreateVideoSection() {
       setUploadedImages([])
       setCustomDomain(undefined)
       setConfiguration(null)
+      setError("")
     }, 2000)
   }
 
@@ -156,6 +243,9 @@ export function CreateVideoSection() {
         <SearchParamsHandler onCreateAction={handleCreateAction} />
       </Suspense>
 
+      {/* User Limits Banner */}
+      <UserLimitsBanner />
+
       <div className="text-center py-8 lg:py-12">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-responsive-4xl md:text-responsive-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-slate-900 via-blue-800 to-purple-800 dark:from-slate-100 dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent leading-tight">
@@ -170,12 +260,25 @@ export function CreateVideoSection() {
           <Button
             size="lg"
             onClick={handleStartNewProject}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white"
-            disabled={currentStep === "progress"}
+            className={`rounded-xl px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
+              ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              }`}
+            disabled={currentStep === "progress" || loading}
           >
-            <Plus className="w-5 h-5 mr-2" />
-            {currentStep === "progress" ? "Creating Video..." : "Create New Video Ad"}
-            <Sparkles className="w-5 h-5 ml-2" />
+            {!can_create_video && !loading ? (
+              <>
+                <Lock className="w-5 h-5 mr-2" />
+                Limit Reached - Buy Extra Video
+                <Crown className="w-5 h-5 ml-2" />
+              </>
+            ) : (
+              <>
+                <Plus className="w-5 h-5 mr-2" />
+                {currentStep === "progress" ? "Creating Video..." : "Create New Video Ad"}
+                <Sparkles className="w-5 h-5 ml-2" />
+              </>
+            )}
           </Button>
 
           {/* Progress Indicator */}
@@ -248,7 +351,7 @@ export function CreateVideoSection() {
       {configuration && projectId && (
         <VideoProgressModal
           isOpen={isProgressModalOpen}
-          onClose={handleProgressComplete}
+          onClose={(success) => handleProgressComplete(success)}
           projectName={projectName}
           projectId={projectId}
           configuration={configuration}

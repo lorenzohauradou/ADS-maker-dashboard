@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
-) {
+export async function POST(request: NextRequest) {
   try {
     // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
@@ -13,13 +10,9 @@ export async function POST(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const resolvedParams = await params
-    const projectId = resolvedParams.projectId
-    const body = await request.json()
-
-    // 📡 Chiamata al backend per avviare il workflow completo (ASINCRONO)
+    // 📡 Chiamata al backend Python per incrementare usage
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/create-video/${projectId}`,
+      `${process.env.BACKEND_URL || 'http://localhost:8000'}/api/subscriptions/increment-usage/${session.user.id}`,
       {
         method: 'POST',
         headers: {
@@ -27,14 +20,11 @@ export async function POST(
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
         },
-        body: JSON.stringify(body),
-        // 🚀 TIMEOUT MOLTO LUNGO per workflow completi
-        signal: AbortSignal.timeout(360000) // 6 minuti timeout
       }
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
+      const errorData = await response.json()
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
@@ -42,9 +32,9 @@ export async function POST(
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Workflow creation error:', error)
+    console.error('❌ Increment usage error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start workflow', 
+      error: 'Failed to increment usage', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

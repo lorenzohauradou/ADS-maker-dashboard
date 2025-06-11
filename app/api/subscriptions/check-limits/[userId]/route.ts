@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
+export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     // 🔐 Verifica autenticazione NextAuth
@@ -14,37 +14,38 @@ export async function POST(
     }
 
     const resolvedParams = await params
-    const projectId = resolvedParams.projectId
-    const body = await request.json()
+    const userId = resolvedParams.userId
 
-    // 📡 Chiamata al backend per avviare il workflow completo (ASINCRONO)
+    // Verifica che l'utente possa accedere solo ai propri dati
+    if (session.user.id !== userId) {
+      return NextResponse.json({ error: 'Unauthorized access' }, { status: 403 })
+    }
+
+    // 📡 Chiamata al backend Python per ottenere i limiti
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/create-video/${projectId}`,
+      `${process.env.BACKEND_URL || 'http://localhost:8000'}/api/subscriptions/check-limits/${userId}`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
         },
-        body: JSON.stringify(body),
-        // 🚀 TIMEOUT MOLTO LUNGO per workflow completi
-        signal: AbortSignal.timeout(360000) // 6 minuti timeout
       }
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
+      const errorData = await response.json()
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
-    const result = await response.json()
-    return NextResponse.json(result)
+    const limitsData = await response.json()
+    return NextResponse.json(limitsData)
     
   } catch (error) {
-    console.error('❌ Workflow creation error:', error)
+    console.error('❌ Check limits error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start workflow', 
+      error: 'Failed to fetch user limits', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

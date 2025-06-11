@@ -47,7 +47,7 @@ interface VideoConfiguration {
 
 interface VideoProgressModalProps {
     isOpen: boolean
-    onClose: () => void
+    onClose: (success?: boolean) => void  // 🚀 Ora passa se il video è stato completato con successo
     projectName: string
     projectId?: number | string  // ID del progetto creato
     configuration: VideoConfiguration
@@ -116,13 +116,18 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
     }, [isOpen, projectId, workflowAlreadyStarted])
 
     const handleClose = () => {
+        // Determina se il video è stato completato con successo
+        const videoSuccess = isCompleted && results && results.video_url
+
         // Reset state
         setIsCompleted(false)
         setResults(null)
         setIsExpanded(false)
         setShowPreview(false)
         setWorkflowStarted(false)
-        onClose()
+
+        // 🚀 Passa il successo al componente padre
+        onClose(videoSuccess)
     }
 
     return (

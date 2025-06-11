@@ -104,17 +104,17 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                         <Card className="bg-slate-100 dark:bg-zinc-800 rounded-xl p-12 text-center">
                             <Video className="w-16 h-16 text-slate-400 dark:text-zinc-500 mx-auto mb-4" />
                             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                                {project.video?.url?.startsWith('processing_') ? 'Video in elaborazione' : 'Video non disponibile'}
+                                {project.video?.url?.startsWith('processing_') ? 'Video Processing' : 'Video Not Available'}
                             </h3>
                             <p className="text-slate-600 dark:text-zinc-400">
                                 {project.video?.url?.startsWith('processing_')
-                                    ? 'Il video è in fase di creazione su Creatify. Riceverai una email quando sarà pronto.'
-                                    : 'Il video non è ancora stato generato per questo progetto.'
+                                    ? 'Your video is being generated with AI technology. You\'ll receive an email notification when it\'s ready.'
+                                    : 'No video has been generated for this project yet.'
                                 }
                             </p>
                             {project.video?.url?.startsWith('processing_') && (
                                 <p className="text-xs text-purple-600 dark:text-purple-400 mt-2">
-                                    Il video sarà disponibile a breve. Ricarica la pagina tra qualche minuto.
+                                    Video will be available shortly. Refresh the page in a few minutes.
                                 </p>
                             )}
                         </Card>
@@ -136,7 +136,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                             onClick={() => project.video?.url && window.open(project.video.url, '_blank')}
                                         >
                                             <MonitorPlay className="w-4 h-4 mr-2" />
-                                            Apri in Nuova Tab
+                                            Open in New Tab
                                         </Button>
                                         <Button
                                             variant="outline"
@@ -144,14 +144,14 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                             onClick={handleDownload}
                                         >
                                             <Download className="w-4 h-4 mr-2" />
-                                            Scarica MP4
+                                            Download MP4
                                         </Button>
                                     </>
                                 ) : (
                                     <p className="text-sm text-slate-500 dark:text-zinc-500 text-center py-4">
                                         {project.video?.url?.startsWith('processing_')
-                                            ? 'Video in elaborazione...'
-                                            : 'Video non disponibile'
+                                            ? 'Video processing...'
+                                            : 'Video not available'
                                         }
                                     </p>
                                 )}
@@ -172,7 +172,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                             onClick={() => window.open(project.site_url!, '_blank')}
                                         >
                                             <ExternalLink className="w-4 h-4 mr-2" />
-                                            Visita Sito Web
+                                            Visit Website
                                         </Button>
                                         <p className="text-xs text-slate-500 dark:text-zinc-500 truncate bg-slate-50 dark:bg-zinc-800 p-2 rounded">
                                             {project.site_url}
@@ -180,7 +180,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                     </>
                                 ) : (
                                     <p className="text-sm text-slate-500 dark:text-zinc-500 text-center py-4">
-                                        Landing page non disponibile
+                                        Landing page not available
                                     </p>
                                 )}
                             </div>
@@ -193,23 +193,23 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                             <div className="flex-1">
                                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center mb-2">
                                     <Sparkles className="w-4 h-4 mr-2 text-green-600" />
-                                    Dettagli Progetto
+                                    Project Details
                                 </h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Stato:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Status:</span>
                                         <p className="font-medium text-slate-900 dark:text-white capitalize">{project.status}</p>
                                     </div>
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Categoria:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Category:</span>
                                         <p className="font-medium text-slate-900 dark:text-white">{project.product_type}</p>
                                     </div>
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Visualizzazioni:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Views:</span>
                                         <p className="font-medium text-slate-900 dark:text-white">{project.views_count || 0}</p>
                                     </div>
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Durata:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Duration:</span>
                                         <p className="font-medium text-slate-900 dark:text-white">
                                             {project.video?.duration ? `${Math.round(project.video.duration)}s` : 'N/A'}
                                         </p>
@@ -225,7 +225,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                             onClick={onClose}
                             className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white min-w-24"
                         >
-                            Chiudi
+                            Close
                         </Button>
                     </div>
                 </div>

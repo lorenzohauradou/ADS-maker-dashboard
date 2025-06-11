@@ -17,9 +17,9 @@ export async function POST(
     const projectId = resolvedParams.projectId
     const body = await request.json()
 
-    // 📡 Chiamata al backend per avviare il workflow completo (ASINCRONO)
+    // 📡 Chiamata al backend per avviare il workflow asincrono
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/create-video/${projectId}`,
+      `${process.env.BACKEND_URL}/api/creatify/start-video-workflow/${projectId}`,
       {
         method: 'POST',
         headers: {
@@ -28,8 +28,8 @@ export async function POST(
           'x-user-email': session.user.email,
         },
         body: JSON.stringify(body),
-        // 🚀 TIMEOUT MOLTO LUNGO per workflow completi
-        signal: AbortSignal.timeout(360000) // 6 minuti timeout
+        // ⚡ TIMEOUT BREVE - risposta immediata (backend deve rispondere subito!)
+        signal: AbortSignal.timeout(10000) // 10 secondi max
       }
     )
 
@@ -42,9 +42,9 @@ export async function POST(
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Workflow creation error:', error)
+    console.error('❌ Async workflow creation error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start workflow', 
+      error: 'Failed to start async workflow', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

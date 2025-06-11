@@ -1,9 +1,50 @@
+"use client"
+
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Check, X, Crown, Zap, Gift, Building2, Star } from "lucide-react"
+import { useState } from "react"
 
 export function PricingSection() {
+  const [loading, setLoading] = useState<string | null>(null)
+
+  const handlePlanSelect = async (planType: string, planName: string) => {
+    if (planName === "Free") {
+      // Reindirizza alla dashboard per il piano gratuito
+      window.location.href = "/dashboard"
+      return
+    }
+
+    setLoading(planType)
+
+    try {
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planType: planType.toUpperCase()
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.url) {
+        window.location.href = data.url
+      } else {
+        console.error('Errore checkout:', data.error)
+        alert('Errore durante la creazione del checkout. Riprova.')
+      }
+    } catch (error) {
+      console.error('Errore:', error)
+      alert('Errore di connessione. Riprova.')
+    } finally {
+      setLoading(null)
+    }
+  }
+
   const plans = [
     {
       name: "Free",
@@ -167,8 +208,10 @@ export function PricingSection() {
                   : "bg-card hover:bg-accent text-foreground border border-border"
                   }`}
                 size="lg"
+                onClick={() => handlePlanSelect(plan.name.toLowerCase(), plan.name)}
+                disabled={loading === plan.name.toLowerCase()}
               >
-                {plan.cta}
+                {loading === plan.name.toLowerCase() ? "Caricamento..." : plan.cta}
               </Button>
             </Card>
           ))}
