@@ -1,13 +1,29 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set')
+// Lazy-loaded Stripe instance - viene creata solo quando necessaria
+let stripeInstance: Stripe | null = null
+
+export const getStripe = (): Stripe => {
+  if (!stripeInstance) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is not set')
+    }
+    
+    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-05-28.basil',
+      typescript: true,
+    })
+  }
+  
+  return stripeInstance
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-05-28.basil',
-  typescript: true,
-})
+// Backward compatibility - deprecata ma mantenuta per eventuali import esistenti
+export const stripe = {
+  get instance() {
+    return getStripe()
+  }
+}
 
 // Piani di abbonamento che corrispondono a quelli in pricing-section.tsx
 export const STRIPE_PLANS = {

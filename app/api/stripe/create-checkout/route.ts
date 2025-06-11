@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe, STRIPE_PLANS, PlanType } from '@/lib/stripe'
+import { getStripe, STRIPE_PLANS, PlanType } from '@/lib/stripe'
 import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crea o recupera customer Stripe
+    const stripe = getStripe()
     let customerId: string
     const existingCustomers = await stripe.customers.list({
       email: session.user.email!,

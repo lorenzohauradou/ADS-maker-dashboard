@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { auth } from '@/auth'
 
 // Prezzi video extra per ogni piano
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crea sessione di checkout per video extra (one-time payment)
+    const stripe = getStripe()
     const checkoutSession = await stripe.checkout.sessions.create({
       customer_email: session.user.email!,
       payment_method_types: ['card'],
