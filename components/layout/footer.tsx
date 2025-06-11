@@ -52,7 +52,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto sm:mx-0">
-              The AI that transforms your images into professional video ads in 3-5 minutes.
+              The AI that transforms your images into professional video ads in minutes.
             </p>
             <div className="flex justify-center sm:justify-start space-x-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg">

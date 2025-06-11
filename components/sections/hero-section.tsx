@@ -58,7 +58,8 @@ export function HeroSection() {
 
         <p className="text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-light">
           The AI that transforms your product images into{" "}
-          <span className="text-blue-600 dark:text-blue-400 font-medium">high-converting video ads</span>.
+          <span className="text-blue-600 dark:text-blue-400 font-medium">high-converting video ads</span> & {" "}
+          <span className="text-blue-600 dark:text-blue-400 font-medium">websites</span>.
           <br />
           Optimized scripts, ultra-realistic voice, and perfect output for every social platform.
         </p>

@@ -15,11 +15,8 @@ export function PricingSection() {
       borderColor: "border-slate-300 dark:border-slate-700",
       bgColor: "bg-slate-50 dark:bg-slate-900/40",
       features: [
-        { text: "1 free trial video", included: true },
-        { text: "ADS MAKER AI watermark", included: true },
-        { text: "HD download", included: true },
-        { text: "Generated website", included: true },
-        { text: "Custom domain", included: true },
+        { text: "1 free video", included: true },
+        { text: "Free Generated website", included: true },
         { text: "Extra videos at $9 each", included: true },
         { text: "Priority support", included: false },
       ],
@@ -36,10 +33,9 @@ export function PricingSection() {
       borderColor: "border-blue-300 dark:border-blue-500",
       bgColor: "bg-blue-50 dark:bg-blue-500/5",
       features: [
-        { text: "15 advertising videos per month", included: true },
-        { text: "Watermark removal", included: true },
+        { text: "10 advertising videos per month", included: true },
         { text: "Auto-generated website", included: true },
-        { text: "Temporary domain included", included: true },
+        //{ text: "1 custom domain", included: true },
         { text: "HD + 4K downloads", included: true },
         { text: "Extra videos at $7 each", included: true },
         { text: "Email support", included: true },
@@ -57,14 +53,13 @@ export function PricingSection() {
       borderColor: "border-purple-300 dark:border-purple-500",
       bgColor: "bg-purple-50 dark:bg-purple-500/5",
       features: [
-        { text: "45 advertising videos per month", included: true },
+        { text: "25 advertising videos per month", included: true },
         { text: "Unlimited generated websites", included: true },
-        { text: "2 custom domains included", included: true },
-        { text: "Automatic A/B testing", included: true },
-        { text: "Advanced analytics", included: true },
-        { text: "Extra videos at $4 each", included: true },
+        //{ text: "Automatic A/B testing", included: true },
+        //{ text: "Advanced analytics", included: true },
+        { text: "Extra videos at $5 each", included: true },
         { text: "Priority support", included: true },
-        { text: "Auto social media publishing", included: true },
+        //{ text: "Auto social media publishing", included: true },
       ],
       cta: "Choose Pro",
       popular: true,
@@ -79,16 +74,15 @@ export function PricingSection() {
       borderColor: "border-orange-300 dark:border-orange-500",
       bgColor: "bg-orange-50 dark:bg-orange-500/5",
       features: [
-        { text: "90 advertising videos per month", included: true },
+        { text: "55 advertising videos per month", included: true },
         { text: "Unlimited websites", included: true },
-        { text: "Unlimited custom domains", included: true },
         { text: "Complete white-label", included: true },
         { text: "Full API access", included: true },
-        { text: "Extra videos at $2 each", included: true },
-        { text: "Dedicated account manager", included: true },
+        { text: "Extra videos at $3 each", included: true },
+        //{ text: "Dedicated account manager", included: true },
         { text: "24/7 priority support", included: true },
-        { text: "Custom dashboard", included: true },
-        { text: "CRM integration", included: true },
+        //{ text: "Custom dashboard", included: true },
+        //{ text: "CRM integration", included: true },
       ],
       cta: "Contact Sales",
       popular: false,
@@ -147,7 +141,7 @@ export function PricingSection() {
                 </div>
                 {plan.name !== "Free" && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    ~${plan.name === "Starter" ? "2.60" : plan.name === "Pro" ? "1.75" : "1.66"} per video
+                    ~${plan.name === "Starter" ? "3.90" : plan.name === "Pro" ? "3.16" : "2.70"} per video
                   </p>
                 )}
               </div>

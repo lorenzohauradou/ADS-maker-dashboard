@@ -15,32 +15,24 @@ export function FaqSection() {
         },
         {
             question: "Which types of businesses work best?",
-            answer: "ADS MAKER AI is optimized for e-commerce, SaaS, professional services, mobile apps, restaurants, and retail. The AI automatically recognizes your product type and adapts voice, script, and style accordingly. If you sell physical products or digital services, it will work perfectly."
+            answer: "FAST ADS AI is optimized for e-commerce, SaaS, professional services, mobile apps, restaurants, and retail. The AI automatically recognizes your product type and adapts voice, script, and style accordingly. If you sell physical products or digital services, it will work perfectly."
         },
         {
             question: "Does the voice really sound human?",
             answer: "Yes! We use the most advanced TTS technology available. The voice is indistinguishable from a professional actor, with natural intonation, correct pauses, and emphasis on key points. Many clients ask us if we use real voice actors!"
         },
         {
-            question: "Can I remove the watermark from the free plan?",
-            answer: "The free plan includes the 'ADS MAKER AI' watermark to let you test the quality. To remove it and have completely branded videos, you need the Starter plan ($39/month) or higher."
+            question: "Is there a watermark in the free plan?",
+            answer: "The free plan does NOT include any watermark. This plan is designed to let you test the quality."
         },
         {
             question: "Which social platforms can I publish videos to?",
             answer: "Videos are automatically optimized for Instagram (Feed, Stories, Reels), TikTok, YouTube (Shorts and standard videos), Facebook, LinkedIn, and Pinterest. Each format has perfect dimensions and duration to maximize engagement."
         },
         {
-            question: "What happens if I'm not satisfied?",
-            answer: "We offer a 30-day ROI guarantee. If your videos don't generate measurable results within 30 days, we'll give you a full refund. Plus, you can cancel anytime without penalties."
-        },
-        {
             question: "Do you have English-speaking support team?",
             answer: "Absolutely! Our support team speaks English - French - Italian and understands the global market perfectly. We're available via email, chat, and phone during business hours."
         },
-        {
-            question: "Can I integrate ADS MAKER AI with my tools?",
-            answer: "Yes! From the Pro plan up, you get access to complete APIs to integrate ADS MAKER AI into your workflow. It works with Zapier, webhooks, and most CRM and e-commerce platforms."
-        }
     ]
 
     const toggleFaq = (index: number) => {
