@@ -49,7 +49,7 @@ export function ShowcaseSection() {
       category: "E-commerce",
       views: "1.8M",
       likes: "67K",
-      thumbnail: "/example_output.mp4",
+      thumbnail: "/output.mp4",
       gradient: "from-purple-500 to-pink-500",
       hasAudio: true,
     },

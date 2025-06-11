@@ -1,31 +1,29 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { Play, Smartphone, Tablet } from "lucide-react"
+import { Smartphone, Tablet } from "lucide-react"
 
 export function DeviceShowcaseSection() {
     const devices = [
         {
             id: 1,
-            type: "phone",
+            type: "shopify",
             position: { top: "20%", left: "15%" },
             rotation: -8,
             content: {
-                type: "image",
-                src: "/stripe-dash.png",
-                title: "SaaS Platform",
-                description: "Online Web App"
+                src: "/shopify1.webp",
+                title: "E-commerce Platform",
+                description: "Online Store"
             },
             gradient: "from-blue-500 to-cyan-500"
         },
         {
             id: 2,
-            type: "tablet",
+            type: "saas",
             position: { top: "15%", left: "60%", transform: "translateX(-50%)" },
             rotation: 0,
             content: {
-                type: "image",
-                src: "/placeholder.svg?height=800&width=600",
+                src: "/stripe-dash.png",
                 title: "Analytics Dashboard",
                 description: "SaaS Dashboard Pro"
             },
@@ -33,12 +31,11 @@ export function DeviceShowcaseSection() {
         },
         {
             id: 3,
-            type: "phone",
+            type: "saas",
             position: { bottom: "25%", left: "25%" },
             rotation: 5,
             content: {
-                type: "image",
-                src: "/placeholder.svg?height=640&width=320",
+                src: "/stripe2.webp",
                 title: "Social Media Feed",
                 description: "Content Creator App"
             },
@@ -120,34 +117,14 @@ export function DeviceShowcaseSection() {
 
                                         {/* Content */}
                                         <div className="w-full h-full relative">
-                                            {device.content.type === "video" ? (
-                                                <video
-                                                    src={device.content.src}
-                                                    autoPlay
-                                                    loop
-                                                    muted
-                                                    playsInline
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <img
-                                                    src={device.content.src || "/placeholder.svg"}
-                                                    alt={device.content.title}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            )}
+                                            <img
+                                                src={device.content.src || "/placeholder.svg"}
+                                                alt={device.content.title}
+                                                className="w-full h-full object-cover"
+                                            />
 
                                             {/* Overlay */}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-
-                                            {/* Play button for images */}
-                                            {device.content.type === "image" && (
-                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                                                        <Play className="w-8 h-8 text-white ml-1" />
-                                                    </div>
-                                                </div>
-                                            )}
 
                                             {/* Content Info */}
                                             <div className="absolute bottom-4 left-4 right-4">
@@ -155,7 +132,7 @@ export function DeviceShowcaseSection() {
                                                     variant="secondary"
                                                     className="mb-2 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white"
                                                 >
-                                                    {device.type === "phone" ? "📱 Mobile" : "📱 Tablet"}
+                                                    {device.type === "shopify" ? "📱 Shopify" : "📱 SaaS"}
                                                 </Badge>
                                                 <h3 className="text-white font-semibold text-sm mb-1">{device.content.title}</h3>
                                                 <p className="text-white/80 text-xs">{device.content.description}</p>
