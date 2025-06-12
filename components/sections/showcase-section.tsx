@@ -29,9 +29,8 @@ export function ShowcaseSection() {
       category: "Tech/SaaS",
       views: "2.4M",
       likes: "89K",
-      thumbnail: "/placeholder.svg?height=400&width=225",
+      videoSrc: "/placeholder.mp4",
       gradient: "from-blue-500 to-cyan-500",
-      hasAudio: false,
     },
     {
       id: 2,
@@ -39,9 +38,8 @@ export function ShowcaseSection() {
       category: "Mobile App",
       views: "3.1M",
       likes: "124K",
-      thumbnail: "/placeholder.svg?height=400&width=225",
+      videoSrc: "/output.mp4",
       gradient: "from-green-500 to-emerald-500",
-      hasAudio: false,
     },
     {
       id: 3,
@@ -49,9 +47,8 @@ export function ShowcaseSection() {
       category: "E-commerce",
       views: "1.8M",
       likes: "67K",
-      thumbnail: "/output.mp4",
+      videoSrc: "/output_aspirapolvere.mp4",
       gradient: "from-purple-500 to-pink-500",
-      hasAudio: true,
     },
     {
       id: 4,
@@ -59,9 +56,8 @@ export function ShowcaseSection() {
       category: "Food & Beverage",
       views: "956K",
       likes: "43K",
-      thumbnail: "/placeholder.svg?height=400&width=225",
+      videoSrc: "/placeholder.mp4",
       gradient: "from-orange-500 to-red-500",
-      hasAudio: false,
     },
     {
       id: 5,
@@ -69,9 +65,8 @@ export function ShowcaseSection() {
       category: "Real Estate",
       views: "1.2M",
       likes: "78K",
-      thumbnail: "/placeholder.svg?height=400&width=225",
+      videoSrc: "/placeholder.mp4",
       gradient: "from-indigo-500 to-purple-500",
-      hasAudio: false,
     },
   ]
 
@@ -109,16 +104,12 @@ export function ShowcaseSection() {
   }
 
   const handleCardClick = (project: any, event: React.MouseEvent) => {
-
     event.preventDefault()
     event.stopPropagation()
 
-    // Solo per video con audio
-    if (project.hasAudio) {
-      const videoElement = event.currentTarget.querySelector('video') as HTMLVideoElement
-      if (videoElement) {
-        toggleAudio(project.id, videoElement)
-      }
+    const videoElement = event.currentTarget.querySelector('video') as HTMLVideoElement
+    if (videoElement) {
+      toggleAudio(project.id, videoElement)
     }
   }
 
@@ -194,49 +185,39 @@ export function ShowcaseSection() {
                         className={`w-40 sm:w-48 lg:w-56 h-64 sm:h-80 lg:h-96 rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br ${project.gradient} p-1 shadow-xl sm:shadow-2xl group-hover:shadow-2xl sm:group-hover:shadow-4xl transition-all duration-500`}
                       >
                         <div className="w-full h-full bg-card dark:bg-card rounded-2xl sm:rounded-3xl overflow-hidden relative border border-border/50">
-                          {/* Video/Image Thumbnail */}
-                          {project.hasAudio ? (
-                            <video
-                              src={project.thumbnail}
-                              autoPlay
-                              loop
-                              muted
-                              playsInline
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <img
-                              src={project.thumbnail || "/placeholder.svg"}
-                              alt={project.title}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
+                          {/* Video */}
+                          <video
+                            src={project.videoSrc}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
 
                           {/* Overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
-                          {/* Audio Toggle Indicator - trasparente di default */}
-                          {project.hasAudio && (
-                            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
-                              <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${audioStates[project.id]
-                                ? 'bg-green-500/80 border-green-400 backdrop-blur-sm'
-                                : 'bg-white/20 border-white/50 backdrop-blur-sm'
-                                }`}>
-                                {audioStates[project.id] ? (
-                                  <Volume2 className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
-                                ) : (
-                                  <VolumeX className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
-                                )}
-                              </div>
-                              {/* Pulse animation for audio-enabled cards */}
-                              {!audioStates[project.id] && showAudioHint && (
-                                <div className="absolute inset-0 w-8 sm:w-10 h-8 sm:h-10 rounded-full border-2 border-blue-400 animate-ping"></div>
+                          {/* Audio Toggle Indicator */}
+                          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${audioStates[project.id]
+                              ? 'bg-green-500/80 border-green-400 backdrop-blur-sm'
+                              : 'bg-white/20 border-white/50 backdrop-blur-sm'
+                              }`}>
+                              {audioStates[project.id] ? (
+                                <Volume2 className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
+                              ) : (
+                                <VolumeX className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
                               )}
                             </div>
-                          )}
+                            {/* Pulse animation for muted videos */}
+                            {!audioStates[project.id] && showAudioHint && (
+                              <div className="absolute inset-0 w-8 sm:w-10 h-8 sm:h-10 rounded-full border-2 border-blue-400 animate-ping"></div>
+                            )}
+                          </div>
 
-                          {/* Click to Play Hint - tooltip hover */}
-                          {project.hasAudio && !audioStates[project.id] && (
+                          {/* Click to Play Audio Hint */}
+                          {!audioStates[project.id] && (
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 sm:px-4 py-2 border border-white/30">
                                 <div className="flex items-center gap-2 text-white text-xs sm:text-sm">
@@ -245,15 +226,6 @@ export function ShowcaseSection() {
                                   <span className="sm:hidden">Tap</span>
                                   <Volume2 className="w-3 sm:w-4 h-3 sm:h-4" />
                                 </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Play Button - only for images */}
-                          {!project.hasAudio && (
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <div className="w-12 sm:w-16 h-12 sm:h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                                <Play className="w-6 sm:w-8 h-6 sm:h-8 text-white ml-1" />
                               </div>
                             </div>
                           )}
