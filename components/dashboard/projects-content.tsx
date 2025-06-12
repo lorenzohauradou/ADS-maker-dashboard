@@ -196,7 +196,7 @@ export function ProjectsContent() {
 
     try {
       // Avvia il workflow completo con la configurazione personalizzata
-      const response = await fetch(`/api/creatify/create-video/${currentProject.id}`, {
+      const response = await fetch(`/api/creatify/start-video-workflow/${currentProject.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

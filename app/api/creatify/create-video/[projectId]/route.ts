@@ -17,7 +17,7 @@ export async function POST(
     const projectId = resolvedParams.projectId
     const body = await request.json()
 
-    // 📡 Chiamata al backend per avviare il workflow completo (ASINCRONO)
+    // 📡 Chiamata al backend per avviare il workflow completo (SINCRONO)
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/creatify/create-video/${projectId}`,
       {
@@ -28,8 +28,8 @@ export async function POST(
           'x-user-email': session.user.email,
         },
         body: JSON.stringify(body),
-        // 🚀 TIMEOUT MOLTO LUNGO per workflow completi
-        signal: AbortSignal.timeout(360000) // 6 minuti timeout
+        // 🚀 TIMEOUT AUMENTATO per processi lunghi (10+ minuti)
+        signal: AbortSignal.timeout(720000) // 12 minuti timeout
       }
     )
 

@@ -35,7 +35,7 @@ export const useProjectProgress = ({
   projectId,
   onComplete,
   onError,
-  pollingInterval = 5000,
+  pollingInterval = 3000, // 🚀 Ridotto a 3 secondi 
   enabled = true
 }: UseProjectProgressOptions) => {
   const [progress, setProgress] = useState<ProjectProgress | null>(null)

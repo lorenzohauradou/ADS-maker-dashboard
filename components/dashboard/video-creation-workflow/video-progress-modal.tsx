@@ -174,7 +174,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                                     <div className="flex items-center justify-center gap-3">
                                         <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
                                         <div>
-                                            <h3 className="font-medium text-slate-900 dark:text-white">Inizializzazione progetto...</h3>
+                                            <h3 className="font-medium text-slate-900 dark:text-white">Initializing project...</h3>
                                             <p className="text-sm text-slate-600 dark:text-zinc-400">{projectName}</p>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                                     <div className="flex items-center gap-3">
                                         <AlertCircle className="w-6 h-6 text-red-600" />
                                         <div>
-                                            <h3 className="font-medium text-red-900 dark:text-red-100">Errore durante l'elaborazione</h3>
+                                            <h3 className="font-medium text-red-900 dark:text-red-100">Processing error</h3>
                                             <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
                                         </div>
                                     </div>
@@ -198,31 +198,48 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                             <Card className="bg-slate-50 dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 p-2 rounded-lg">
                                 <h4 className="font-medium text-xs text-slate-900 dark:text-white mb-1 flex items-center">
                                     <Settings className="w-3 h-3 mr-1" />
-                                    Configurazione
+                                    Configuration
                                 </h4>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Piattaforma:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Platform:</span>
                                         <p className="font-medium text-slate-900 dark:text-white truncate">{configuration.target_platform}</p>
                                     </div>
                                     <div>
-                                        <span className="text-slate-600 dark:text-zinc-400">Durata:</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">Duration:</span>
                                         <p className="font-medium text-slate-900 dark:text-white">{configuration.video_length}s</p>
                                     </div>
                                 </div>
                             </Card>
 
-                            {/* Background Process Notice */}
-                            {progress && progress.progress > 60 && (
+                            {/* Background Process Notice - Show immediately when workflow starts */}
+                            {workflowStarted && (
+                                <Card className="bg-blue-50 dark:bg-blue-900/20 p-3 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                        <div className="text-xs">
+                                            <p className="font-medium text-blue-900 dark:text-blue-100">
+                                                🚀 Process running in background
+                                            </p>
+                                            <p className="text-blue-700 dark:text-blue-200">
+                                                You can safely close this window - we'll email you when your video is ready!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Card>
+                            )}
+
+                            {/* Almost Complete Notice */}
+                            {progress && progress.progress > 80 && (
                                 <Card className="bg-green-50 dark:bg-green-900/20 p-3 border border-green-200 dark:border-green-800 rounded-lg">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                         <div className="text-xs">
                                             <p className="font-medium text-green-900 dark:text-green-100">
-                                                🎬 Processo quasi completato!
+                                                🎬 Almost done!
                                             </p>
                                             <p className="text-green-700 dark:text-green-200">
-                                                Puoi chiudere questa finestra - riceverai un'email quando il video sarà pronto.
+                                                Your video will be ready in just a few moments.
                                             </p>
                                         </div>
                                     </div>
@@ -235,9 +252,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                                     variant="outline"
                                     onClick={handleClose}
                                     className="flex-1 px-2 py-1 text-xs"
-                                    disabled={workflowStarted && !isCompleted && (!progress || progress.progress < 60)}
+                                    disabled={!workflowStarted && !isCompleted}
                                 >
-                                    {(progress && progress.progress > 60) || isCompleted ? "Chiudi" : "Annulla"}
+                                    {workflowStarted || isCompleted ? "Close" : "Cancel"}
                                 </Button>
 
                                 <div className="text-xs text-slate-500 dark:text-zinc-500 flex items-center">

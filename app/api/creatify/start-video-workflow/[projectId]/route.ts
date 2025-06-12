@@ -28,8 +28,8 @@ export async function POST(
           'x-user-email': session.user.email,
         },
         body: JSON.stringify(body),
-        // ⚡ TIMEOUT BREVE - risposta immediata (backend deve rispondere subito!)
-        signal: AbortSignal.timeout(10000) // 10 secondi max
+        // ⚡ TIMEOUT AUMENTATO per startup lento del backend
+        signal: AbortSignal.timeout(300000) // 5 minuti timeout per inizializzazione molto lenta
       }
     )
 
