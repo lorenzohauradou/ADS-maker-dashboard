@@ -29,7 +29,7 @@ export function ShowcaseSection() {
       category: "Tech/SaaS",
       views: "2.4M",
       likes: "89K",
-      videoSrc: "/placeholder.mp4",
+      videoSrc: "/output_ventilatore_avatar.mp4",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
