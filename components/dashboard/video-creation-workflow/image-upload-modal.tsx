@@ -497,17 +497,6 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                                 <span className="text-sm text-slate-600 dark:text-zinc-400">{uploadProgress}%</span>
                             </div>
                             <Progress value={uploadProgress} className="h-2" />
-
-                            {/* User-friendly message */}
-                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                                    <div className="text-sm text-blue-800 dark:text-blue-200">
-                                        <p className="font-medium mb-1">Good news! You can close this window</p>
-                                        <p>Your project is being processed in the background. You'll see it appear in your dashboard once completed (typically 3-5 minutes). Feel free to close this modal and continue with other tasks.</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     )}
 
