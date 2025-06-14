@@ -19,18 +19,32 @@ export async function GET(
       return NextResponse.json({ error: 'Accesso negato' }, { status: 403 })
     }
 
-    // Chiama il backend Python
-    const backendUrl = process.env.BACKEND_URL || 'https://api.fastadsai.com'
-    const response = await fetch(`${backendUrl}/api/subscriptions/check-limits/${userId}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/subscriptions/check-limits/${userId}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'x-user-id': session.user.id,
+        'x-user-email': session.user.email || '',
       },
     })
 
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Backend error:', response.status, errorText)
+      
+      // Fallback per utenti free se il backend non risponde
+      if (response.status >= 500) {
+        return NextResponse.json({
+          plan: 'free',
+          videos_per_month: 1,
+          videos_used: 0,
+          videos_remaining: 1,
+          can_create_video: true,
+          extra_video_price: 9.0,
+          warning: 'Backend temporaneamente non disponibile'
+        })
+      }
+      
       return NextResponse.json(
         { error: 'Errore nel controllo dei limiti' },
         { status: response.status }
@@ -42,9 +56,17 @@ export async function GET(
 
   } catch (error) {
     console.error('Error checking limits:', error)
-    return NextResponse.json(
-      { error: 'Errore interno del server' },
-      { status: 500 }
-    )
+    
+    // Fallback graceful per evitare blocchi totali
+    return NextResponse.json({
+      plan: 'free',
+      videos_per_month: 1,
+      videos_used: 0,
+      videos_remaining: 1,
+      can_create_video: true,
+      extra_video_price: 9.0,
+      error: 'Errore temporaneo nel controllo limiti',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    })
   }
 } 
