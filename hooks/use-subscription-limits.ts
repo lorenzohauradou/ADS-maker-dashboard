@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 import { enforceVideoLimits, trackLimitEvent, trackExtraVideoPurchase, trackBypassAttempt } from '@/lib/posthog-pricing-enforcement'
@@ -22,6 +22,18 @@ interface LimitsState extends SubscriptionLimits {
 
 export function useSubscriptionLimits() {
   const { data: session } = useSession()
+  
+  // ✅ REF PER TRACCIARE SE IL COMPONENTE È MONTATO
+  const isMountedRef = useRef(true)
+  
+  // ✅ CLEANUP AUTOMATICO QUANDO COMPONENTE SI SMONTA
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+  
   const [limits, setLimits] = useState<LimitsState>({
     plan: 'free',
     videos_per_month: 1,
@@ -35,9 +47,12 @@ export function useSubscriptionLimits() {
   // ✅ POLLING AUTOMATICO per aggiornare limiti durante elaborazione video
   const [isPolling, setIsPolling] = useState(false)
 
-  const fetchLimits = async () => {
-    if (!session?.user?.id) {
-      setLimits(prev => ({ ...prev, loading: false }))
+  const fetchLimits = useCallback(async () => {
+    if (!session?.user?.id || !isMountedRef.current) {
+      // ⚠️ SAFE STATE UPDATE - Solo se componente è montato
+      if (isMountedRef.current) {
+        setLimits(prev => ({ ...prev, loading: false }))
+      }
       return
     }
 
@@ -60,16 +75,19 @@ export function useSubscriptionLimits() {
         can_create_video: data.can_create_video
       })
       
-      setLimits({
-        plan: data.plan,
-        videos_per_month: data.videos_per_month,
-        videos_used: data.videos_used,
-        videos_remaining: data.videos_remaining,
-        can_create_video: data.can_create_video,
-        extra_video_price: data.extra_video_price,
-        subscription_status: data.subscription_status,
-        loading: false
-      })
+      // ✅ SAFE STATE UPDATE - Solo se componente è ancora montato
+      if (isMountedRef.current) {
+        setLimits({
+          plan: data.plan,
+          videos_per_month: data.videos_per_month,
+          videos_used: data.videos_used,
+          videos_remaining: data.videos_remaining,
+          can_create_video: data.can_create_video,
+          extra_video_price: data.extra_video_price,
+          subscription_status: data.subscription_status,
+          loading: false
+        })
+      }
 
       // 🔥 TRACCIAMENTO AUTOMATICO CON POSTHOG
       trackLimitEvent({
@@ -90,11 +108,15 @@ export function useSubscriptionLimits() {
 
     } catch (error) {
       console.error('❌ Error fetching subscription limits:', error)
-      setLimits(prev => ({
-        ...prev,
-        loading: false,
-        error: 'Failed to load subscription limits'
-      }))
+      
+      // ✅ SAFE STATE UPDATE - Solo se componente è ancora montato
+      if (isMountedRef.current) {
+        setLimits(prev => ({
+          ...prev,
+          loading: false,
+          error: 'Failed to load subscription limits'
+        }))
+      }
 
       // 🔥 TRACCIA ERRORI
       if (session?.user?.id) {
@@ -113,23 +135,27 @@ export function useSubscriptionLimits() {
         })
       }
     }
-  }
+  }, [session?.user?.id, limits.plan, limits.videos_used, limits.videos_per_month])
 
   // ✅ AVVIA POLLING quando video in elaborazione
-  const startPolling = () => {
+  const startPolling = useCallback(() => {
     console.log('🔄 Avvio polling limiti per aggiornamento real-time...')
-    setIsPolling(true)
-  }
+    if (isMountedRef.current) {
+      setIsPolling(true)
+    }
+  }, [])
 
   // ✅ FERMA POLLING
-  const stopPolling = () => {
+  const stopPolling = useCallback(() => {
     console.log('⏹️ Fermo polling limiti')
-    setIsPolling(false)
-  }
+    if (isMountedRef.current) {
+      setIsPolling(false)
+    }
+  }, [])
 
   // ✅ POLLING EFFECT
   useEffect(() => {
-    if (!isPolling || !session?.user?.id) return
+    if (!isPolling || !session?.user?.id || !isMountedRef.current) return
 
     console.log('🔄 Polling attivato - aggiornamento ogni 10 secondi')
     
@@ -137,15 +163,18 @@ export function useSubscriptionLimits() {
     fetchLimits()
     
     const interval = setInterval(() => {
-      console.log('🔄 Polling aggiornamento limiti...')
-      fetchLimits()
+      // ⚠️ Controlla se il componente è ancora montato prima di fare fetch
+      if (isMountedRef.current) {
+        console.log('🔄 Polling aggiornamento limiti...')
+        fetchLimits()
+      }
     }, 10000) // Ogni 10 secondi durante elaborazione
 
     return () => {
       console.log('⏹️ Cleanup polling interval')
       clearInterval(interval)
     }
-  }, [isPolling, session?.user?.id])
+  }, [isPolling, session?.user?.id, fetchLimits])
 
   // 🔥 VERIFICA CON ENFORCEMENT E TRACCIAMENTO AUTOMATICO
   const checkCanCreateVideo = async (): Promise<{ canCreate: boolean; message?: string }> => {
@@ -286,8 +315,10 @@ export function useSubscriptionLimits() {
   }
 
   useEffect(() => {
-    fetchLimits()
-  }, [session?.user?.id])
+    if (session?.user?.id && isMountedRef.current) {
+      fetchLimits()
+    }
+  }, [session?.user?.id, fetchLimits])
 
   return {
     limits,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles, Crown, Lock } from "lucide-react"
@@ -38,6 +38,18 @@ export function CreateVideoSection() {
   const { data: session } = useSession()
   const { can_create_video, loading, buyExtraVideo } = useUserLimits()
   const { checkCanCreateVideo, showLimitExceededToast, refreshLimits, startPolling, stopPolling } = useSubscriptionLimits()
+
+  // ✅ REF PER TRACCIARE SE IL COMPONENTE È MONTATO
+  const isMountedRef = useRef(true)
+
+  // ✅ CLEANUP AUTOMATICO QUANDO COMPONENTE SI SMONTA
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+
   const [currentStep, setCurrentStep] = useState<"upload" | "config" | "progress" | "complete">("upload")
   const [showLimitModal, setShowLimitModal] = useState(false)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
@@ -115,6 +127,9 @@ export function CreateVideoSection() {
   const handleImagesUploaded = async (images: File[], name: string, domain?: string, project?: any) => {
     console.log("🎉 Progetto creato:", project?.id, "Nome:", name, "Immagini:", images.length)
 
+    // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+    if (!isMountedRef.current) return
+
     // ✅ USA L'ID REALE DAL BACKEND
     if (project?.id) {
       setProjectId(project.id)
@@ -138,6 +153,9 @@ export function CreateVideoSection() {
 
   const handleConfigurationComplete = async (config: VideoConfiguration) => {
     console.log("Configuration completed:", config)
+
+    // ⚠️ Controlla se il componente è ancora montato
+    if (!isMountedRef.current) return
 
     if (!projectId) {
       console.error("❌ No project ID available")
@@ -221,6 +239,10 @@ export function CreateVideoSection() {
 
     } catch (error) {
       console.error("❌ Error starting video creation:", error)
+
+      // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+      if (!isMountedRef.current) return
+
       setError(`Failed to start video creation: ${error instanceof Error ? error.message : 'Unknown error'}`)
 
       // Se errore, torna al step di configurazione
@@ -231,6 +253,9 @@ export function CreateVideoSection() {
   }
 
   const handleProgressComplete = async (videoSuccess: boolean | null = true) => {
+    // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+    if (!isMountedRef.current) return
+
     setIsProgressModalOpen(false)
     setCurrentStep("complete")
 
@@ -247,20 +272,26 @@ export function CreateVideoSection() {
 
       // Refresh dopo 2 secondi
       setTimeout(() => {
-        console.log('🔄 Refresh banner dopo 2s...')
-        refreshLimits()
+        if (isMountedRef.current) {
+          console.log('🔄 Refresh banner dopo 2s...')
+          refreshLimits()
+        }
       }, 2000)
 
       // Refresh dopo 5 secondi
       setTimeout(() => {
-        console.log('🔄 Refresh banner dopo 5s...')
-        refreshLimits()
+        if (isMountedRef.current) {
+          console.log('🔄 Refresh banner dopo 5s...')
+          refreshLimits()
+        }
       }, 5000)
 
       // Refresh dopo 10 secondi
       setTimeout(() => {
-        console.log('🔄 Refresh banner dopo 10s...')
-        refreshLimits()
+        if (isMountedRef.current) {
+          console.log('🔄 Refresh banner dopo 10s...')
+          refreshLimits()
+        }
       }, 10000)
 
       // Mostra toast di successo
@@ -281,8 +312,10 @@ export function CreateVideoSection() {
           console.log('✅ Usage incrementato manualmente nel frontend')
           // Refresh aggiuntivo dopo incremento
           setTimeout(() => {
-            console.log('🔄 Refresh banner dopo incremento usage...')
-            refreshLimits()
+            if (isMountedRef.current) {
+              console.log('🔄 Refresh banner dopo incremento usage...')
+              refreshLimits()
+            }
           }, 1000)
         }
       } catch (error) {
@@ -313,28 +346,33 @@ export function CreateVideoSection() {
 
     // Reset per permettere nuovo progetto
     setTimeout(() => {
-      setCurrentStep("upload")
-      setProjectId(null)
-      setProjectName("")
-      setUploadedImages([])
-      setCustomDomain(undefined)
-      setConfiguration(null)
-      setError("")
+      if (isMountedRef.current) {
+        setCurrentStep("upload")
+        setProjectId(null)
+        setProjectName("")
+        setUploadedImages([])
+        setCustomDomain(undefined)
+        setConfiguration(null)
+        setError("")
+      }
     }, 2000)
   }
 
   const handleCloseUpload = () => {
+    if (!isMountedRef.current) return
     setIsUploadModalOpen(false)
     setCurrentStep("upload")
   }
 
   const handleCloseConfig = () => {
+    if (!isMountedRef.current) return
     setIsConfigModalOpen(false)
     setCurrentStep("upload")
     setIsUploadModalOpen(true) // Torna all'upload
   }
 
   const handleCloseProgress = () => {
+    if (!isMountedRef.current) return
     setIsProgressModalOpen(false)
     setCurrentStep("upload")
 

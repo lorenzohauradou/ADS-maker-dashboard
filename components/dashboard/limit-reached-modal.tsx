@@ -60,7 +60,10 @@ export function LimitReachedModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent
+                className="max-w-2xl"
+                aria-describedby="limit-dialog-description"
+            >
                 <DialogHeader>
                     <div className="flex items-center space-x-3 mb-2">
                         <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
@@ -68,7 +71,10 @@ export function LimitReachedModal({
                         </div>
                         <div>
                             <DialogTitle className="text-xl font-bold">Limite Video Raggiunto</DialogTitle>
-                            <DialogDescription className="text-base mt-1">
+                            <DialogDescription
+                                className="text-base mt-1"
+                                id="limit-dialog-description"
+                            >
                                 Hai usato tutti i {videos_per_month} video del piano {plan.charAt(0).toUpperCase() + plan.slice(1)}
                             </DialogDescription>
                         </div>
