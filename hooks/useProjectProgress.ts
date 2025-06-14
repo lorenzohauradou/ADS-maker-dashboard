@@ -77,67 +77,70 @@ export const useProjectProgress = ({
       })
 
       // 🔥 TRACCIA AGGIORNAMENTI DELLO STATO DEL PROGETTO
-      if (data.status !== progress?.status) {
-        trackLimitEvent({
-          eventType: 'limit_check',
-          userId: session.user.id,
-          plan: 'free', // Sarà aggiornato dall'hook subscription
-          videosUsed: 0, // Sarà aggiornato
-          videosLimit: 1, // Sarà aggiornato
-          action: 'create_video',
-          metadata: {
-            source: 'project_progress_hook',
-            project_id: projectId,
-            status_change: {
-              from: progress?.status,
-              to: data.status
-            },
-            progress_percentage: data.percentage,
-            current_step: data.current_step,
-            progress_tracking_update: true
-          }
-        })
-      }
+             // Usa la funzione setProgress per accedere al valore precedente evitando loop
+      setProgress((prevProgress) => {
+        if (data.status !== prevProgress?.status && session?.user?.id) {
+          trackLimitEvent({
+            eventType: 'limit_check',
+            userId: session.user.id,
+            plan: 'free', // Sarà aggiornato dall'hook subscription
+            videosUsed: 0, // Sarà aggiornato
+            videosLimit: 1, // Sarà aggiornato
+            action: 'create_video',
+            metadata: {
+              source: 'project_progress_hook',
+              project_id: projectId,
+              status_change: {
+                from: prevProgress?.status,
+                to: data.status
+              },
+              progress_percentage: data.percentage,
+              current_step: data.current_step,
+              progress_tracking_update: true
+            }
+          })
+        }
 
-      // 🔥 TRACCIA COMPLETAMENTO VIDEO (aggiorna limiti!)
-      if (data.status === 'completed' && progress?.status !== 'completed') {
-        trackLimitEvent({
-          eventType: 'limit_check',
-          userId: session.user.id,
-          plan: 'free',
-          videosUsed: 1, // Video completato = +1 utilizzo
-          videosLimit: 1,
-          action: 'create_video',
-          metadata: {
-            source: 'project_progress_hook',
-            project_id: projectId,
-            video_completed: true,
-            usage_bar_should_update: true,
-            new_video_count_expected: true
-          }
-        })
-      }
+        // 🔥 TRACCIA COMPLETAMENTO VIDEO (aggiorna limiti!)
+        if (data.status === 'completed' && prevProgress?.status !== 'completed' && session?.user?.id) {
+          trackLimitEvent({
+            eventType: 'limit_check',
+            userId: session.user.id,
+            plan: 'free',
+            videosUsed: 1, // Video completato = +1 utilizzo
+            videosLimit: 1,
+            action: 'create_video',
+            metadata: {
+              source: 'project_progress_hook',
+              project_id: projectId,
+              video_completed: true,
+              usage_bar_should_update: true,
+              new_video_count_expected: true
+            }
+          })
+        }
 
-      // 🔥 TRACCIA ERRORI DI CREAZIONE VIDEO
-      if (data.status === 'failed' && progress?.status !== 'failed') {
-        trackLimitEvent({
-          eventType: 'limit_check',
-          userId: session.user.id,
-          plan: 'free',
-          videosUsed: 0,
-          videosLimit: 1,
-          action: 'create_video',
-          metadata: {
-            source: 'project_progress_hook',
-            project_id: projectId,
-            video_creation_failed: true,
-            error_occurred: true,
-            usage_bar_unchanged: true
-          }
-        })
-      }
+        // 🔥 TRACCIA ERRORI DI CREAZIONE VIDEO
+        if (data.status === 'failed' && prevProgress?.status !== 'failed' && session?.user?.id) {
+          trackLimitEvent({
+            eventType: 'limit_check',
+            userId: session.user.id,
+            plan: 'free',
+            videosUsed: 0,
+            videosLimit: 1,
+            action: 'create_video',
+            metadata: {
+              source: 'project_progress_hook',
+              project_id: projectId,
+              video_creation_failed: true,
+              error_occurred: true,
+              usage_bar_unchanged: true
+            }
+          })
+        }
 
-      setProgress(data)
+        return data
+      })
 
       // ✅ Completato con successo
       if (data.status === 'completed') {
@@ -178,7 +181,7 @@ export const useProjectProgress = ({
       setError(error instanceof Error ? error.message : 'Failed to fetch progress')
       stopPolling()
     }
-  }, [projectId, session?.user?.id, progress?.status, onComplete, onError])
+  }, [projectId, session?.user?.id, onComplete, onError])
 
   const startPolling = () => {
     if (intervalRef.current) {

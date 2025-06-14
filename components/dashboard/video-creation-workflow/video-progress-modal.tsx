@@ -129,7 +129,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                 console.log('🔄 Quarto refresh limiti completato')
             }, 10000)
         }
-    }, [projectProgress?.progress, projectProgress?.status, refreshLimits, completeProgress])
+    }, [projectProgress?.progress, projectProgress?.status]) // Rimosso refreshLimits e completeProgress dalle dipendenze
 
     // 🚀 Avvia il workflow (solo se non già avviato esternamente)
     const startWorkflow = async () => {

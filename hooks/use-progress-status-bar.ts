@@ -145,7 +145,7 @@ export function useVideoCreationProgress() {
   }
 
   // Funzione per aggiornare il progresso basato sui dati del backend
-  const updateFromBackend = (backendProgress: any) => {
+  const updateFromBackend = useCallback((backendProgress: any) => {
     if (!backendProgress) return
 
     const progress = backendProgress.progress || 0
@@ -162,12 +162,12 @@ export function useVideoCreationProgress() {
     } else if (backendProgress.status === 'failed') {
       failProgress(backendProgress.progress_message || 'Creation failed')
     }
-  }
+  }, [updateProgress, completeProgress, failProgress])
 
   // Funzione per gestire la chiusura manuale
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     hideProgress()
-  }
+  }, [hideProgress])
 
   return {
     // State

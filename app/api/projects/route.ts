@@ -10,17 +10,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const body = await request.json()
+    const formData = await request.formData()
+    
+    // Crea una nuova FormData per inoltro al backend
+    const backendFormData = new FormData()
+    
+    // Copia tutti i campi dalla FormData originale
+    for (const [key, value] of formData.entries()) {
+      backendFormData.append(key, value)
+    }
     
     // 🔧 FIX: Aggiungi trailing slash e headers corretti
     const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'x-user-id': session.user.id,
         'x-user-email': session.user.email,
+        // NON aggiungere Content-Type per FormData - il browser lo gestisce automaticamente
       },
-      body: JSON.stringify(body),
+      body: backendFormData,
     })
 
     if (!response.ok) {
