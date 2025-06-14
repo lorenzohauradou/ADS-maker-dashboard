@@ -162,7 +162,7 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
 
                         <div className="text-center order-2 sm:order-2">
                             <p className="text-xs text-slate-500 dark:text-zinc-500">
-                                🚀 Estimated: 3-5 minutes
+                                🚀 Estimated: 5-8 minutes
                             </p>
                         </div>
 

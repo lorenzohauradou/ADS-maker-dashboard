@@ -3,7 +3,7 @@ import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // 🔐 Verifica autenticazione NextAuth
+    // Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
@@ -11,22 +11,17 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData()
-    
-    // Crea una nuova FormData per inoltro al backend
     const backendFormData = new FormData()
-    
-    // Copia tutti i campi dalla FormData originale
+
     for (const [key, value] of formData.entries()) {
       backendFormData.append(key, value)
     }
     
-    // 🔧 FIX: Aggiungi trailing slash e headers corretti
     const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
       method: 'POST',
       headers: {
         'x-user-id': session.user.id,
         'x-user-email': session.user.email,
-        // NON aggiungere Content-Type per FormData - il browser lo gestisce automaticamente
       },
       body: backendFormData,
     })
@@ -50,14 +45,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    // 🔧 FIX: Aggiungi trailing slash e headers corretti
     const response = await fetch(`${process.env.BACKEND_URL}/api/projects/recent/`, {
       headers: {
         'Content-Type': 'application/json',

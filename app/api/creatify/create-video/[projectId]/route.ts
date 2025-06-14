@@ -27,9 +27,7 @@ export async function POST(
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
         },
-        body: JSON.stringify(body),
-        // 🚀 TIMEOUT AUMENTATO per processi lunghi (10+ minuti)
-        signal: AbortSignal.timeout(720000) // 12 minuti timeout
+        body: JSON.stringify(body)
       }
     )
 

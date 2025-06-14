@@ -78,7 +78,7 @@ export function CreateVideoSection() {
       // 🔥 TRACCIA TENTATIVO DI BYPASS
       if (session?.user?.id) {
         trackBypassAttempt({
-          plan: 'free', // Questo verrà aggiornato dal hook
+          plan: 'free',
           videos_per_month: 1,
           videos_used: 1,
           videos_remaining: 0,
@@ -97,7 +97,7 @@ export function CreateVideoSection() {
       trackLimitEvent({
         eventType: 'limit_check',
         userId: session.user.id,
-        plan: 'free', // Sarà aggiornato dal hook
+        plan: 'free',
         videosUsed: 0,
         videosLimit: 1,
         action: 'create_video',

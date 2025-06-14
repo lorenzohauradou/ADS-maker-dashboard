@@ -25,8 +25,8 @@ export function ShowcaseSection() {
   const projects = [
     {
       id: 1,
-      title: "SaaS Dashboard Demo",
-      category: "Tech/SaaS",
+      title: "Micro Vent",
+      category: "Tech",
       views: "2.4M",
       likes: "89K",
       videoSrc: "/output_ventilatore_avatar.mp4",
@@ -52,8 +52,8 @@ export function ShowcaseSection() {
     },
     {
       id: 4,
-      title: "Restaurant Menu",
-      category: "Food & Beverage",
+      title: "Snorkling Mask",
+      category: "Outdoor",
       views: "956K",
       likes: "43K",
       videoSrc: "/maschera.mp4",
