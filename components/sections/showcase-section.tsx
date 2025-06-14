@@ -56,7 +56,7 @@ export function ShowcaseSection() {
       category: "Food & Beverage",
       views: "956K",
       likes: "43K",
-      videoSrc: "/placeholder.mp4",
+      videoSrc: "/maschera.mp4",
       gradient: "from-orange-500 to-red-500",
     },
     {
