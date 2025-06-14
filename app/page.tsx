@@ -13,9 +13,6 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Analytics } from "@vercel/analytics/next"
 
-// Force dynamic rendering to avoid SSG issues with ThemeProvider
-export const dynamic = 'force-dynamic'
-
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden">
