@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge"
 import { Play, ArrowRight, Sparkles, Zap, Star, Menu, Sun, Moon, Globe } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/theme-provider"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 
 export function HeroSection() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { theme, toggleTheme } = useTheme()
+  const { data: session, status } = useSession()
 
   return (
     <section className="pt-32 pb-16 px-4 relative overflow-hidden">
@@ -93,9 +95,9 @@ export function HeroSection() {
             className="bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 hover:from-blue-700 hover:via-purple-600 hover:to-purple-700 text-xl px-12 py-6 rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 group text-white"
             asChild
           >
-            <Link href="/login">
+            <Link href={session ? "/dashboard" : "/login"}>
               <Play className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
-              Start Free Trial
+              {session ? "Go to Dashboard" : "Start Free Trial"}
             </Link>
           </Button>
           <Button

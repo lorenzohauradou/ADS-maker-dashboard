@@ -26,7 +26,7 @@ export function ShowcaseSection() {
     {
       id: 1,
       title: "Micro Vent",
-      category: "Tech",
+      category: "Comfort",
       views: "2.4M",
       likes: "89K",
       videoSrc: "/output_ventilatore_avatar.mp4",
@@ -34,8 +34,8 @@ export function ShowcaseSection() {
     },
     {
       id: 2,
-      title: "Fitness App Promo",
-      category: "Mobile App",
+      title: "Mosquito Repellent",
+      category: "Indoor/Outdoor",
       views: "3.1M",
       likes: "124K",
       videoSrc: "/output.mp4",
@@ -43,8 +43,8 @@ export function ShowcaseSection() {
     },
     {
       id: 3,
-      title: "E-commerce Product",
-      category: "E-commerce",
+      title: "Vacuum Cleaner",
+      category: "Indoor",
       views: "1.8M",
       likes: "67K",
       videoSrc: "/output_aspirapolvere.mp4",
@@ -61,11 +61,11 @@ export function ShowcaseSection() {
     },
     {
       id: 5,
-      title: "Real Estate Tour",
-      category: "Real Estate",
+      title: "Vegetables Cutter",
+      category: "Kitchen",
       views: "1.2M",
       likes: "78K",
-      videoSrc: "/placeholder.mp4",
+      videoSrc: "/Veg-cutter.mp4",
       gradient: "from-indigo-500 to-purple-500",
     },
   ]
