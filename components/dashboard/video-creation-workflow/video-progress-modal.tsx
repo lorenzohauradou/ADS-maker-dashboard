@@ -26,6 +26,7 @@ import { useProjectProgress } from '@/hooks/useProjectProgress'
 import ProgressPhases from '@/components/ui/progress-phases'
 import { VideoConfiguration } from "./types/video-configuration"
 import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
+import { useVideoCreationProgress } from "@/hooks/use-progress-status-bar"
 import { toast } from "sonner"
 
 interface VideoProgressModalProps {
@@ -63,6 +64,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
     const [error, setError] = useState<string | null>(null)
     const [videoData, setVideoData] = useState<any>(null)
 
+    // 🔥 Hook per la barra di progresso globale
+    const { startVideoCreation, updateFromBackend, completeProgress, failProgress } = useVideoCreationProgress()
+
     // 🔥 Nuovo hook per gestire il progresso
     const { progress: projectProgress, isLoading, error: projectError } = useProjectProgress({
         projectId: projectId || 0,
@@ -84,6 +88,14 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
     // ✅ HOOK per aggiornare limiti quando video completato
     const { refreshLimits } = useSubscriptionLimits()
 
+    // ✅ MONITORA PROGRESSO E AGGIORNA BARRA GLOBALE
+    useEffect(() => {
+        if (projectProgress && workflowStarted) {
+            // 🔥 Aggiorna la barra di progresso globale
+            updateFromBackend(projectProgress)
+        }
+    }, [projectProgress, workflowStarted, updateFromBackend])
+
     // ✅ MONITORA COMPLETAMENTO VIDEO per aggiornare limiti
     useEffect(() => {
         if (projectProgress?.progress === 100 && projectProgress?.status === 'completed') {
@@ -91,6 +103,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
 
             // Aggiorna i limiti immediatamente
             refreshLimits()
+
+            // 🔥 Completa la barra di progresso globale
+            completeProgress()
 
             // Mostra toast di successo
             toast.success('🎉 Video creato con successo!', {
@@ -114,7 +129,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                 console.log('🔄 Quarto refresh limiti completato')
             }, 10000)
         }
-    }, [projectProgress?.progress, projectProgress?.status, refreshLimits])
+    }, [projectProgress?.progress, projectProgress?.status, refreshLimits, completeProgress])
 
     // 🚀 Avvia il workflow (solo se non già avviato esternamente)
     const startWorkflow = async () => {
@@ -126,10 +141,16 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
             setWorkflowStarted(true)
             console.log("🚀 Workflow avviato, inizio monitoring...")
 
+            // 🔥 Avvia la barra di progresso globale
+            startVideoCreation(projectName, projectId)
+
         } catch (error) {
             console.error("❌ Workflow start error:", error)
             alert(`❌ Errore avvio processo: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`)
             setWorkflowStarted(false)
+
+            // 🔥 Mostra errore nella barra di progresso
+            failProgress(error instanceof Error ? error.message : 'Errore sconosciuto')
         }
     }
 
