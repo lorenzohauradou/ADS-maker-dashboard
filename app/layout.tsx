@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/components/providers/session-provider'
-import { PostHogProviderWrapper } from '@/providers/posthog-provider'
+import { PostHogProviderWrapper } from '@/components/providers/posthog-provider'
 import { GoogleAnalytics } from '@/components/analytics/google-analytics'
 
 export const metadata: Metadata = {

@@ -11,29 +11,26 @@ import { FaqSection } from "@/components/sections/faq-section"
 import { CTASection } from "@/components/sections/cta-section"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/next"
 
 export default function HomePage() {
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden">
-        <Header />
-        <main className="overflow-x-hidden">
-          <HeroSection />
-          <ShowcaseSection />
-          <WorkflowSection />
-          <ProblemSection />
-          <SolutionSection />
-          <DeviceShowcaseSection />
-          <FeaturesSection />
-          <PricingSection />
-          <FaqSection />
-          <CTASection />
-        </main>
-        <Footer />
-        <Analytics />
-      </div>
-    </ThemeProvider>
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden">
+      <Header />
+      <main className="overflow-x-hidden">
+        <HeroSection />
+        <ShowcaseSection />
+        <WorkflowSection />
+        <ProblemSection />
+        <SolutionSection />
+        <DeviceShowcaseSection />
+        <FeaturesSection />
+        <PricingSection />
+        <FaqSection />
+        <CTASection />
+      </main>
+      <Footer />
+      <Analytics />
+    </div>
   )
 }
