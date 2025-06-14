@@ -179,7 +179,7 @@ export function StyleConfigTab({ config, updateConfig }: StyleConfigTabProps) {
                     </Label>
 
                     {/* Recommendation Banner */}
-                    <div className="mb-4 p-4 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-xl">
+                    <div className="hidden md:block mb-4 p-4 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-xl">
                         <div className="flex items-start space-x-3">
                             <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
                                 <Sparkles className="w-4 h-4 text-white" />
@@ -188,7 +188,7 @@ export function StyleConfigTab({ config, updateConfig }: StyleConfigTabProps) {
                                 <h4 className="font-bold text-emerald-800 dark:text-emerald-200 mb-1">
                                     💡 Pro Tip: Leave empty to let AI create the perfect script for your audience
                                 </h4>
-                                <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                                <p className="text-sm text-emerald-700 dark:text-emerald-300 hidden md:block">
                                     Our AI is optimized to create perfect scripts based on your images and configurations.
                                 </p>
                                 <p className="hidden md:block text-sm text-emerald-700 dark:text-emerald-300">
@@ -199,7 +199,7 @@ export function StyleConfigTab({ config, updateConfig }: StyleConfigTabProps) {
                     </div>
 
                     <Textarea
-                        placeholder="🤖 Leave empty to let AI magic happen... or write your custom script here if you prefer full control over the content."
+                        placeholder="🤖 Write your custom script or leave empty to let AI magic happen..."
                         value={config.override_script}
                         onChange={(e) => updateConfig("override_script", e.target.value)}
                         className="min-h-[120px] bg-white dark:bg-zinc-800 border-2 border-slate-300 dark:border-zinc-600 focus:border-emerald-400 dark:focus:border-emerald-500 rounded-xl resize-none transition-all duration-300 placeholder:text-slate-400 dark:placeholder:text-zinc-500"

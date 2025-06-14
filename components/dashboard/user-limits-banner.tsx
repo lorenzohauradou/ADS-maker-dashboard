@@ -440,7 +440,7 @@ export function UserLimitsBanner() {
 
                         {/* 🚀 PAID PLAN - ALL GOOD */}
                         {plan !== 'free' && can_create_video && !isLowOnVideos && (
-                            <div className="text-center xl:text-left bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-3 rounded-lg border border-green-200/50 dark:border-green-800/50">
+                            <div className="text-center md:hidden bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-3 rounded-lg border border-green-200/50 dark:border-green-800/50">
                                 <div className="flex items-center justify-center xl:justify-start space-x-2 mb-1">
                                     <span className="text-base">🚀</span>
                                     <p className="font-medium text-green-700 dark:text-green-300 text-sm">

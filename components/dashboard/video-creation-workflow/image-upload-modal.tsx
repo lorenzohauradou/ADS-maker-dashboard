@@ -530,8 +530,8 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                     </div>
 
                     {/* Features Preview */}
-                    {!isUploading && images.length > 0 && (
-                        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+                    {/* {!isUploading && images.length > 0 && ( */}
+                    {/* <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
                             <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-3 flex items-center">
                                 <Check className="w-5 h-5 mr-2" />
                                 What will happen next:
@@ -546,7 +546,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                                 <p>• Estimated time: 3-5 minutes</p>
                             </div>
                         </div>
-                    )}
+                    */}
                 </div>
             </DialogContent>
         </Dialog>

@@ -69,7 +69,7 @@ export function VideoConfigurationModal({ isOpen, onClose, onStartCreation, proj
                             <div className="min-w-0 flex-1">
                                 <h3 className="text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate">{projectName}</h3>
                                 <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 mt-1">
-                                    {imageCount} high-quality images • Ready for AI processing
+                                    {imageCount} high-quality image {imageCount === 1 ? "" : "s"} • Ready for AI processing
                                 </p>
                             </div>
                             <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 sm:px-3 sm:py-2 rounded-full flex-shrink-0 self-start sm:self-center text-xs sm:text-sm">
