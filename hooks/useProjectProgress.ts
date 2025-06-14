@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
+import { trackLimitEvent } from '@/lib/posthog-pricing-enforcement'
 
 interface ProjectPhase {
   name: string
@@ -38,6 +40,7 @@ export const useProjectProgress = ({
   pollingInterval = 3000, // 🚀 Ridotto a 3 secondi 
   enabled = true
 }: UseProjectProgressOptions) => {
+  const { data: session } = useSession()
   const [progress, setProgress] = useState<ProjectProgress | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -45,22 +48,94 @@ export const useProjectProgress = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const mountedRef = useRef(true)
 
-  const fetchProgress = async () => {
-    if (!enabled || !mountedRef.current) return
+  const fetchProgress = useCallback(async () => {
+    if (!projectId || !session?.user?.id) {
+      console.log('⏭️ Skipping progress fetch: no projectId or session')
+      return
+    }
 
     try {
-      setIsLoading(true)
-      setError(null)
-
-      const response = await fetch(`/api/projects/${projectId}/progress`)
+      console.log(`📊 Fetching progress for project ${projectId}`)
       
+      const response = await fetch(`/api/projects/${projectId}/progress`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+        throw new Error(`HTTP ${response.status}: Failed to fetch progress`)
       }
 
       const data = await response.json()
       
-      if (!mountedRef.current) return
+      console.log('📊 Progress data received:', {
+        status: data.status,
+        percentage: data.percentage,
+        current_step: data.current_step,
+        projectId
+      })
+
+      // 🔥 TRACCIA AGGIORNAMENTI DELLO STATO DEL PROGETTO
+      if (data.status !== progress?.status) {
+        trackLimitEvent({
+          eventType: 'limit_check',
+          userId: session.user.id,
+          plan: 'free', // Sarà aggiornato dall'hook subscription
+          videosUsed: 0, // Sarà aggiornato
+          videosLimit: 1, // Sarà aggiornato
+          action: 'create_video',
+          metadata: {
+            source: 'project_progress_hook',
+            project_id: projectId,
+            status_change: {
+              from: progress?.status,
+              to: data.status
+            },
+            progress_percentage: data.percentage,
+            current_step: data.current_step,
+            progress_tracking_update: true
+          }
+        })
+      }
+
+      // 🔥 TRACCIA COMPLETAMENTO VIDEO (aggiorna limiti!)
+      if (data.status === 'completed' && progress?.status !== 'completed') {
+        trackLimitEvent({
+          eventType: 'limit_check',
+          userId: session.user.id,
+          plan: 'free',
+          videosUsed: 1, // Video completato = +1 utilizzo
+          videosLimit: 1,
+          action: 'create_video',
+          metadata: {
+            source: 'project_progress_hook',
+            project_id: projectId,
+            video_completed: true,
+            usage_bar_should_update: true,
+            new_video_count_expected: true
+          }
+        })
+      }
+
+      // 🔥 TRACCIA ERRORI DI CREAZIONE VIDEO
+      if (data.status === 'failed' && progress?.status !== 'failed') {
+        trackLimitEvent({
+          eventType: 'limit_check',
+          userId: session.user.id,
+          plan: 'free',
+          videosUsed: 0,
+          videosLimit: 1,
+          action: 'create_video',
+          metadata: {
+            source: 'project_progress_hook',
+            project_id: projectId,
+            video_creation_failed: true,
+            error_occurred: true,
+            usage_bar_unchanged: true
+          }
+        })
+      }
 
       setProgress(data)
 
@@ -78,18 +153,32 @@ export const useProjectProgress = ({
         stopPolling()
       }
 
-    } catch (err) {
-      if (!mountedRef.current) return
+    } catch (error) {
+      console.error('❌ Error fetching progress:', error)
       
-      const errorMsg = err instanceof Error ? err.message : 'Errore di rete'
-      setError(errorMsg)
-      onError?.(errorMsg)
-    } finally {
-      if (mountedRef.current) {
-        setIsLoading(false)
+      // 🔥 TRACCIA ERRORI DI POLLING
+      if (session?.user?.id) {
+        trackLimitEvent({
+          eventType: 'limit_check',
+          userId: session.user.id,
+          plan: 'free',
+          videosUsed: 0,
+          videosLimit: 1,
+          action: 'check_limits',
+          metadata: {
+            source: 'project_progress_hook',
+            project_id: projectId,
+            polling_error: true,
+            error: error instanceof Error ? error.message : 'unknown',
+            progress_tracking_failed: true
+          }
+        })
       }
+      
+      setError(error instanceof Error ? error.message : 'Failed to fetch progress')
+      stopPolling()
     }
-  }
+  }, [projectId, session?.user?.id, progress?.status, onComplete, onError])
 
   const startPolling = () => {
     if (intervalRef.current) {

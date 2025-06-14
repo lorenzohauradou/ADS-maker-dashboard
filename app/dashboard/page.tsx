@@ -9,7 +9,7 @@ export default function DashboardPage() {
       <DashboardHeader />
       <main className="flex-1 p-6 space-y-8">
         <CreateVideoSection />
-        <StatsCards />
+        {/* <StatsCards /> */}
         <RecentProjects />
       </main>
     </div>

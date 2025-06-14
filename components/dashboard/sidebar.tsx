@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
+import { useUserLimits } from "@/hooks/use-user-limits"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useSidebar } from "@/components/ui/sidebar"
@@ -45,11 +47,11 @@ const menuItems = [
     url: "/dashboard/projects",
     icon: FolderOpen,
   },
-  {
+  /*{
     title: "Analytics",
     url: "/dashboard/analytics",
     icon: BarChart3,
-  },
+  },*/
   {
     title: "Settings",
     url: "/dashboard/settings",
@@ -62,6 +64,7 @@ export function Sidebar() {
   const router = useRouter()
   const { state, setOpen } = useSidebar()
   const { data: session } = useSession()
+  const { plan, loading: limitsLoading, can_create_video, videos_used, videos_per_month } = useUserLimits()
 
   const handleCreateNewVideo = () => {
     // Chiudi la sidebar
@@ -69,6 +72,41 @@ export function Sidebar() {
 
     // Naviga al dashboard con parametro per aprire il modal
     router.push('/dashboard?action=create')
+  }
+
+  const handleSmartUpgrade = async () => {
+    if (!session?.user?.id) {
+      router.push('/#pricing')
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/subscriptions/smart-upgrade/${session.user.id}`)
+      const data = await response.json()
+
+      if (data.success && data.stripe_plan_type) {
+        const stripeResponse = await fetch('/api/stripe/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            planType: data.stripe_plan_type,
+            userId: session.user.id
+          })
+        })
+
+        const stripeData = await stripeResponse.json()
+        if (stripeData.url) {
+          window.location.href = stripeData.url
+        } else {
+          router.push('/#pricing')
+        }
+      } else {
+        router.push('/#pricing')
+      }
+    } catch (error) {
+      console.error('Smart upgrade error:', error)
+      router.push('/#pricing')
+    }
   }
 
   const handleSignOut = async () => {
@@ -86,22 +124,55 @@ export function Sidebar() {
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 FAST ADS AI
               </h1>
-              <Badge variant="secondary" className="text-xs bg-purple-500/10 text-purple-400 border-purple-500/20">
-                <Crown className="w-3 h-3 mr-1" />
-                Pro Plan
-              </Badge>
+              {!limitsLoading && (
+                <Badge
+                  variant="secondary"
+                  className={`text-xs border ${plan === 'free'
+                    ? 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                    : plan === 'starter'
+                      ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      : plan === 'pro'
+                        ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                        : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                    }`}
+                >
+                  <Crown className="w-3 h-3 mr-1" />
+                  {plan === 'free' ? 'Free Plan' :
+                    plan === 'starter' ? 'Starter Plan' :
+                      plan === 'pro' ? 'Pro Plan' :
+                        plan === 'business' ? 'Business Plan' : 'Enterprise Plan'}
+                </Badge>
+              )}
             </div>
           )}
         </Link>
 
-        {/* Create New Video Button - opens modal */}
-        <Button
-          onClick={handleCreateNewVideo}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 text-white border-0"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          {state === "expanded" ? "Create New Video" : ""}
-        </Button>
+        {/* Create New Video Button - opens modal OR upgrade */}
+        {!limitsLoading && can_create_video ? (
+          <Button
+            onClick={handleCreateNewVideo}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 text-white border-0"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            {state === "expanded" ? "Create New Video" : ""}
+          </Button>
+        ) : !limitsLoading ? (
+          <Button
+            onClick={handleSmartUpgrade}
+            className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 rounded-xl shadow-lg hover:shadow-orange-500/25 transition-all duration-300 text-white border-0"
+          >
+            <Crown className="w-5 h-5 mr-2" />
+            {state === "expanded" ? "Upgrade Plan" : ""}
+          </Button>
+        ) : (
+          <Button
+            disabled
+            className="w-full bg-slate-300 dark:bg-zinc-700 rounded-xl text-slate-500 dark:text-zinc-400 border-0"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            {state === "expanded" ? "Loading..." : ""}
+          </Button>
+        )}
       </SidebarHeader>
 
       <SidebarContent className="px-4">

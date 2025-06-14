@@ -36,6 +36,10 @@ export async function POST(request: NextRequest) {
       case 'invoice.payment_failed':
         await handlePaymentFailed(event.data.object as Stripe.Invoice)
         break
+
+      case 'payment_intent.succeeded':
+        await handleExtraVideoPayment(event.data.object as Stripe.PaymentIntent)
+        break
         
       default:
         console.log(`Unhandled event type: ${event.type}`)
@@ -100,6 +104,35 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
 async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
   console.log('Subscription canceled:', subscription.id)
   // TODO: Aggiornare status a "canceled" nel backend
+}
+
+async function handleExtraVideoPayment(paymentIntent: Stripe.PaymentIntent) {
+  // Gestisce i pagamenti per video extra
+  console.log('Extra video payment succeeded:', paymentIntent.id)
+  
+  const metadata = paymentIntent.metadata
+  
+  if (metadata.payment_type === 'extra_video' && metadata.nextauth_user_id) {
+    try {
+      // Chiama il backend per aggiungere il video extra
+      const response = await fetch(`${process.env.BACKEND_URL || 'https://api.fastadsai.com'}/api/subscriptions/add-extra-video/${metadata.nextauth_user_id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payment_amount: paymentIntent.amount / 100, // Stripe amount è in centesimi
+          stripe_payment_id: paymentIntent.id
+        })
+      })
+      
+      if (response.ok) {
+        console.log('Extra video added successfully for user:', metadata.nextauth_user_id)
+      } else {
+        console.error('Failed to add extra video:', await response.text())
+      }
+    } catch (error) {
+      console.error('Error processing extra video payment:', error)
+    }
+  }
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/components/providers/session-provider'
+import { PostHogProviderWrapper } from '@/providers/posthog-provider'
+import { GoogleAnalytics } from '@/components/analytics/google-analytics'
 
 export const metadata: Metadata = {
   title: {
@@ -182,23 +184,15 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <AuthProvider>
-          <ThemeProvider>
-            {children}
-          </ThemeProvider>
+          <PostHogProviderWrapper>
+            <ThemeProvider>
+              {children}
+            </ThemeProvider>
+          </PostHogProviderWrapper>
         </AuthProvider>
 
         {/* Google Analytics 4 - Replace with your GA4 tracking ID */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'GA_TRACKING_ID');
-            `,
-          }}
-        />
+        <GoogleAnalytics />
       </body>
     </html>
   )

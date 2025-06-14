@@ -5,13 +5,17 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles, Crown, Lock } from "lucide-react"
 import { useUserLimits } from "@/hooks/use-user-limits"
+import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
 import { UserLimitsBanner } from "./user-limits-banner"
+import { LimitReachedModal } from "./limit-reached-modal"
 import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
 import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
 import { VideoConfiguration } from "./video-creation-workflow/types/video-configuration"
+import { toast } from "sonner"
+import { useSession } from "next-auth/react"
+import { trackBypassAttempt, trackLimitEvent } from '@/lib/posthog-pricing-enforcement'
 
-// Componente che usa useSearchParams avvolto in Suspense
 function SearchParamsHandler({
   onCreateAction
 }: {
@@ -23,7 +27,6 @@ function SearchParamsHandler({
     const action = searchParams.get('action')
     if (action === 'create') {
       onCreateAction()
-      // Rimuovi il parametro dall'URL
       window.history.replaceState({}, '', '/dashboard')
     }
   }, [searchParams, onCreateAction])
@@ -32,8 +35,11 @@ function SearchParamsHandler({
 }
 
 export function CreateVideoSection() {
+  const { data: session } = useSession()
   const { can_create_video, loading, buyExtraVideo } = useUserLimits()
-  const [currentStep, setCurrentStep] = useState<"upload" | "configure" | "progress" | "complete">("upload")
+  const { checkCanCreateVideo, showLimitExceededToast, refreshLimits, startPolling, stopPolling } = useSubscriptionLimits()
+  const [currentStep, setCurrentStep] = useState<"upload" | "config" | "progress" | "complete">("upload")
+  const [showLimitModal, setShowLimitModal] = useState(false)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
@@ -46,26 +52,63 @@ export function CreateVideoSection() {
   const [configuration, setConfiguration] = useState<VideoConfiguration | null>(null)
   const [error, setError] = useState("")
 
+  // ✅ GESTIONE POLLING tramite hook useSubscriptionLimits
+  useEffect(() => {
+    if (currentStep === "progress" && isProgressModalOpen) {
+      console.log('🔄 Avvio polling tramite hook...')
+      startPolling()
+    } else {
+      console.log('⏹️ Fermo polling tramite hook')
+      stopPolling()
+    }
+  }, [currentStep, isProgressModalOpen, startPolling, stopPolling])
+
   const handleCreateAction = () => {
     if (!isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
       handleStartNewProject()
     }
   }
 
-  const handleStartNewProject = () => {
-    // Controlla i limiti prima di procedere
-    if (!can_create_video) {
-      // Mostra modal per comprare video extra o upgrade
-      const confirmed = confirm(
-        `Hai raggiunto il limite mensile di video. Vuoi comprare un video extra o fare l'upgrade del piano?`
-      )
-      if (confirmed) {
-        buyExtraVideo()
+  // 🔥 TRACCIA TENTATIVO DI AVVIO PROGETTO CON CONTROLLI LIMITI
+  const handleStartNewProject = async () => {
+    // 🚀 CONTROLLO LIMITI CON TRACCIAMENTO AUTOMATICO
+    const { canCreate, message } = await checkCanCreateVideo()
+
+    if (!canCreate) {
+      // 🔥 TRACCIA TENTATIVO DI BYPASS
+      if (session?.user?.id) {
+        trackBypassAttempt({
+          plan: 'free', // Questo verrà aggiornato dal hook
+          videos_per_month: 1,
+          videos_used: 1,
+          videos_remaining: 0,
+          can_create_video: false,
+          extra_video_price: 9.0,
+          userId: session.user.id
+        }, 'create_video_button_click')
       }
+
+      showLimitExceededToast()
       return
     }
 
-    setCurrentStep("upload")
+    // 🔥 TRACCIA AVVIO PROGETTO AUTORIZZATO
+    if (session?.user?.id) {
+      trackLimitEvent({
+        eventType: 'limit_check',
+        userId: session.user.id,
+        plan: 'free', // Sarà aggiornato dal hook
+        videosUsed: 0,
+        videosLimit: 1,
+        action: 'create_video',
+        metadata: {
+          source: 'create_video_section',
+          button_clicked: 'create_new_video',
+          step: 'project_start_authorized'
+        }
+      })
+    }
+
     setIsUploadModalOpen(true)
   }
 
@@ -89,7 +132,7 @@ export function CreateVideoSection() {
 
     // Chiudi modal upload e apri configurazione
     setIsUploadModalOpen(false)
-    setCurrentStep("configure")
+    setCurrentStep("config")
     setIsConfigModalOpen(true)
   }
 
@@ -110,6 +153,9 @@ export function CreateVideoSection() {
     setCurrentStep("progress")
     setIsProgressModalOpen(true)
 
+    // ✅ AVVIA POLLING quando inizia elaborazione video
+    startPolling()
+
     try {
       // 🚀 Avvia la creazione del video chiamando il backend
       console.log("🎬 Starting video creation for project:", projectId)
@@ -118,7 +164,6 @@ export function CreateVideoSection() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // 🎯 Mappa tutti i parametri della configurazione
           target_platform: config.target_platform,
           target_audience: config.target_audience,
           language: config.language,
@@ -180,37 +225,90 @@ export function CreateVideoSection() {
 
       // Se errore, torna al step di configurazione
       setIsProgressModalOpen(false)
-      setCurrentStep("configure")
+      setCurrentStep("config")
       setIsConfigModalOpen(true)
     }
   }
 
-  const handleProgressComplete = async (videoSuccess: boolean = true) => {
+  const handleProgressComplete = async (videoSuccess: boolean | null = true) => {
     setIsProgressModalOpen(false)
     setCurrentStep("complete")
 
-    // Incrementa usage counter SOLO se video completato con successo
-    if (videoSuccess) {
+    // ✅ GESTIONE BASATA SUL TIPO DI CHIUSURA
+    if (videoSuccess === true) {
+      // 🎉 VIDEO COMPLETATO CON SUCCESSO
+      console.log('✅ Video completato con successo, aggiorno banner...')
+
+      // 🔄 REFRESH MULTIPLI per garantire aggiornamento banner
+      console.log('🔄 Avvio refresh multipli per aggiornamento banner...')
+
+      // Refresh immediato
+      refreshLimits()
+
+      // Refresh dopo 2 secondi
+      setTimeout(() => {
+        console.log('🔄 Refresh banner dopo 2s...')
+        refreshLimits()
+      }, 2000)
+
+      // Refresh dopo 5 secondi
+      setTimeout(() => {
+        console.log('🔄 Refresh banner dopo 5s...')
+        refreshLimits()
+      }, 5000)
+
+      // Refresh dopo 10 secondi
+      setTimeout(() => {
+        console.log('🔄 Refresh banner dopo 10s...')
+        refreshLimits()
+      }, 10000)
+
+      // Mostra toast di successo
+      toast.success('🎉 Video creato con successo!', {
+        description: 'Il tuo video pubblicitario è pronto. Controlla la dashboard per i dettagli.',
+        duration: 5000
+      })
+
+      // Incrementa usage counter (opzionale, già fatto nel backend)
       try {
         const response = await fetch('/api/subscriptions/increment-usage', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: session?.user?.id })
         })
 
         if (response.ok) {
-          console.log('✅ Usage incremented successfully')
-          // Ricarica i limiti nel banner
-          // refreshLimits() // Se abbiamo accesso al hook qui
-        } else {
-          console.error('❌ Failed to increment usage:', await response.text())
+          console.log('✅ Usage incrementato manualmente nel frontend')
+          // Refresh aggiuntivo dopo incremento
+          setTimeout(() => {
+            console.log('🔄 Refresh banner dopo incremento usage...')
+            refreshLimits()
+          }, 1000)
         }
       } catch (error) {
-        console.error('❌ Error incrementing usage:', error)
+        console.log('⚠️ Errore incremento usage frontend (non critico):', error)
       }
+
+    } else if (videoSuccess === null) {
+      // ⏹️ CHIUSURA MANUALE - PROCESSO CONTINUA
+      console.log('⏹️ Modal chiuso manualmente - processo continua in background')
+
+      toast('🔄 Processo in corso', {
+        description: 'Il video continua ad essere elaborato in background. Riceverai un\'email quando sarà pronto.',
+        duration: 6000
+      })
+
+      // NON fermare il polling - potrebbe completarsi
+      // Il polling continuerà e aggiornerà i limiti quando il video sarà pronto
+
     } else {
-      console.log('⚠️ Video creation failed, usage not incremented')
+      // ❌ VERO FALLIMENTO DEL VIDEO
+      console.log('❌ Video creation failed - errore reale')
+
+      toast.error('❌ Errore nella creazione del video', {
+        description: 'Si è verificato un problema durante la creazione. Riprova.',
+        duration: 5000
+      })
     }
 
     // Reset per permettere nuovo progetto
@@ -236,6 +334,14 @@ export function CreateVideoSection() {
     setIsUploadModalOpen(true) // Torna all'upload
   }
 
+  const handleCloseProgress = () => {
+    setIsProgressModalOpen(false)
+    setCurrentStep("upload")
+
+    // ✅ FERMA POLLING se chiuso manualmente
+    stopPolling()
+  }
+
   return (
     <>
       {/* SearchParams Handler avvolto in Suspense */}
@@ -246,7 +352,7 @@ export function CreateVideoSection() {
       {/* User Limits Banner */}
       <UserLimitsBanner />
 
-      <div className="text-center py-8 lg:py-12">
+      <div className="text-center py-8 lg:py-12" data-create-video>
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-responsive-4xl md:text-responsive-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-slate-900 via-blue-800 to-purple-800 dark:from-slate-100 dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent leading-tight">
             Create Professional Video Ads in Minutes
@@ -260,7 +366,7 @@ export function CreateVideoSection() {
           <Button
             size="lg"
             onClick={handleStartNewProject}
-            className={`rounded-xl px-6 lg:px-8 py-3 lg:py-4 text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
+            className={`rounded-xl px-4 sm:px-6 lg:px-8 py-3 lg:py-4 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
               ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
               : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               }`}
@@ -268,15 +374,17 @@ export function CreateVideoSection() {
           >
             {!can_create_video && !loading ? (
               <>
-                <Lock className="w-5 h-5 mr-2" />
-                Limit Reached - Buy Extra Video
-                <Crown className="w-5 h-5 ml-2" />
+                <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="hidden sm:inline">Limit Reached - Buy Extra Video</span>
+                <span className="sm:hidden">Limit Reached</span>
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </>
             ) : (
               <>
-                <Plus className="w-5 h-5 mr-2" />
-                {currentStep === "progress" ? "Creating Video..." : "Create New Video Ad"}
-                <Sparkles className="w-5 h-5 ml-2" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="hidden sm:inline">{currentStep === "progress" ? "Creating Video..." : "Create New Video Ad"}</span>
+                <span className="sm:hidden">{currentStep === "progress" ? "Creating..." : "Create Video"}</span>
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </>
             )}
           </Button>
@@ -284,10 +392,10 @@ export function CreateVideoSection() {
           {/* Progress Indicator */}
           {currentStep !== "upload" && (
             <div className="mt-8 flex items-center justify-center space-x-4 text-sm text-slate-600 dark:text-zinc-400">
-              <div className={`flex items-center space-x-2 ${currentStep === "configure" ? "text-blue-600 dark:text-blue-400 font-medium" :
+              <div className={`flex items-center space-x-2 ${currentStep === "config" ? "text-blue-600 dark:text-blue-400 font-medium" :
                 ["progress", "complete"].includes(currentStep) ? "text-green-600 dark:text-green-400" : ""
                 }`}>
-                <div className={`w-2 h-2 rounded-full ${currentStep === "configure" ? "bg-blue-500 animate-pulse" :
+                <div className={`w-2 h-2 rounded-full ${currentStep === "config" ? "bg-blue-500 animate-pulse" :
                   ["progress", "complete"].includes(currentStep) ? "bg-green-500" : "bg-slate-300"
                   }`}></div>
                 <span>Configure</span>
@@ -357,6 +465,18 @@ export function CreateVideoSection() {
           configuration={configuration}
         />
       )}
+
+      {/* Limit Reached Modal */}
+      <LimitReachedModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        onBuyExtra={() => {
+          refreshLimits()
+        }}
+        onUpgrade={() => {
+          refreshLimits()
+        }}
+      />
     </>
   )
 }

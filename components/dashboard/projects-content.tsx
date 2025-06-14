@@ -34,8 +34,13 @@ import { VideoProgressModal } from "./video-creation-workflow/video-progress-mod
 import { format } from 'date-fns';
 import { Project } from "@/types/project";
 import { useVideoControls } from "@/hooks/useVideoControls"
+import { useUserLimits } from "@/hooks/use-user-limits"
+import { useSession } from "next-auth/react"
+import { toast } from "sonner"
+import { Crown, CreditCard } from "lucide-react"
 
 export function ProjectsContent() {
+  const { data: session } = useSession()
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -48,6 +53,17 @@ export function ProjectsContent() {
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // 🎯 HOOK PER GESTIRE I LIMITI UTENTE
+  const {
+    plan,
+    videos_per_month,
+    videos_used,
+    can_create_video,
+    extra_video_price,
+    loading: limitsLoading,
+    buyExtraVideo
+  } = useUserLimits()
 
   // Usa il hook per i controlli video
   const {
@@ -186,6 +202,62 @@ export function ProjectsContent() {
     }
   }
 
+  // 🚀 GESTIONE SMART UPGRADE
+  const handleSmartUpgrade = async () => {
+    if (!session?.user?.id) {
+      window.location.href = '/#pricing'
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/subscriptions/smart-upgrade/${session.user.id}`)
+      const data = await response.json()
+
+      if (data.success && data.stripe_plan_type) {
+        toast.success(`Upgrading to ${data.upgrade_to.name}!`, {
+          description: `Creating checkout session for ${data.upgrade_to.price}...`,
+          duration: 3000
+        })
+
+        const stripeResponse = await fetch('/api/stripe/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ planType: data.stripe_plan_type })
+        })
+
+        if (stripeResponse.ok) {
+          const stripeData = await stripeResponse.json()
+          window.location.href = stripeData.url
+        } else {
+          throw new Error('Failed to create Stripe checkout session')
+        }
+      } else {
+        window.location.href = data.redirect_url || '/#pricing'
+      }
+    } catch (error) {
+      console.error('Smart upgrade error:', error)
+      toast.error('Upgrade Error', {
+        description: 'Redirecting to pricing page...',
+        duration: 3000
+      })
+      window.location.href = '/#pricing'
+    }
+  }
+
+  // 💳 GESTIONE ACQUISTO VIDEO EXTRA
+  const handleBuyExtraVideo = async () => {
+    const success = await buyExtraVideo()
+    if (success) {
+      toast.success('Redirecting to Stripe for payment...', {
+        description: 'You will be redirected to complete your extra video purchase.',
+      })
+    } else {
+      toast.error('Failed to start purchase process', {
+        description: 'Please try again later or contact support.',
+      })
+    }
+  }
+
   const handleVideoConfiguration = async (configuration: any) => {
     console.log("Starting video creation with configuration:", configuration)
 
@@ -237,13 +309,43 @@ export function ProjectsContent() {
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
             <p className="text-slate-600 dark:text-zinc-400 mt-1">Manage and organize your video ad campaigns</p>
           </div>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg text-white"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Create New Project
-          </Button>
+
+          {/* 🎯 BOTTONI DINAMICI BASATI SUI LIMITI */}
+          {!limitsLoading && can_create_video ? (
+            // ✅ UTENTE PUÒ CREARE VIDEO - MOSTRA BOTTONE NORMALE
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg text-white"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Create New Project
+            </Button>
+          ) : !limitsLoading ? (
+            // ❌ LIMITE RAGGIUNTO - MOSTRA BOTTONI UPGRADE E BUY EXTRA
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Upgrade Plan Button */}
+              <Button
+                onClick={handleSmartUpgrade}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl shadow-lg text-white"
+              >
+                <Crown className="w-5 h-5 mr-2" />
+                Upgrade Plan
+              </Button>
+
+              {/* Buy Extra Video Button */}
+              <Button
+                onClick={handleBuyExtraVideo}
+                variant="outline"
+                className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl"
+              >
+                <CreditCard className="w-5 h-5 mr-2" />
+                Buy Video ${extra_video_price}
+              </Button>
+            </div>
+          ) : (
+            // ⏳ LOADING - MOSTRA SKELETON
+            <div className="animate-pulse bg-slate-200 dark:bg-slate-700 h-10 w-40 rounded-xl"></div>
+          )}
         </div>
 
         {/* Filters and Search */}
@@ -508,14 +610,51 @@ export function ProjectsContent() {
           <Card className="bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-12 text-center">
             <ImageIcon className="w-16 h-16 text-slate-300 dark:text-zinc-600 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No projects found</h3>
-            <p className="text-slate-600 dark:text-zinc-400 mb-6">Create your first project to get started!</p>
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Create Your First Project
-            </Button>
+
+            {/* 🎯 MESSAGGIO DINAMICO BASATO SUI LIMITI */}
+            {!limitsLoading && can_create_video ? (
+              <>
+                <p className="text-slate-600 dark:text-zinc-400 mb-6">Create your first project to get started!</p>
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create Your First Project
+                </Button>
+              </>
+            ) : !limitsLoading ? (
+              <>
+                <p className="text-slate-600 dark:text-zinc-400 mb-2">
+                  You've used all {videos_per_month} video{videos_per_month > 1 ? 's' : ''} for this month
+                </p>
+                <p className="text-slate-500 dark:text-zinc-500 text-sm mb-6">
+                  Upgrade your plan or buy an extra video to continue creating
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button
+                    onClick={handleSmartUpgrade}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl shadow-lg text-white"
+                  >
+                    <Crown className="w-5 h-5 mr-2" />
+                    Upgrade Plan
+                  </Button>
+                  <Button
+                    onClick={handleBuyExtraVideo}
+                    variant="outline"
+                    className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl"
+                  >
+                    <CreditCard className="w-5 h-5 mr-2" />
+                    Buy Video ${extra_video_price}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div className="animate-pulse bg-slate-200 dark:bg-slate-700 h-4 w-64 mx-auto rounded"></div>
+                <div className="animate-pulse bg-slate-200 dark:bg-slate-700 h-10 w-40 mx-auto rounded-xl"></div>
+              </div>
+            )}
           </Card>
         )}
       </div>

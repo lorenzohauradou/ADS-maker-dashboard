@@ -104,12 +104,12 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                         <Card className="bg-slate-100 dark:bg-zinc-800 rounded-xl p-12 text-center">
                             <Video className="w-16 h-16 text-slate-400 dark:text-zinc-500 mx-auto mb-4" />
                             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                                {project.video?.url?.startsWith('processing_') ? 'Video Processing' : 'Video Not Available'}
+                                {project.video?.url?.startsWith('processing_') ? 'Video Processing' : 'Video Available Soon'}
                             </h3>
                             <p className="text-slate-600 dark:text-zinc-400">
                                 {project.video?.url?.startsWith('processing_')
                                     ? 'Your video is being generated with AI technology. You\'ll receive an email notification when it\'s ready.'
-                                    : 'No video has been generated for this project yet.'
+                                    : 'We are working on it. You\'ll receive an email notification when it\'s ready.'
                                 }
                             </p>
                             {project.video?.url?.startsWith('processing_') && (
@@ -151,7 +151,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                     <p className="text-sm text-slate-500 dark:text-zinc-500 text-center py-4">
                                         {project.video?.url?.startsWith('processing_')
                                             ? 'Video processing...'
-                                            : 'Video not available'
+                                            : 'Video not available yet'
                                         }
                                     </p>
                                 )}

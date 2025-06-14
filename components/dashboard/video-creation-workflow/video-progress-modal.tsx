@@ -16,38 +16,21 @@ import {
     Settings,
     MonitorPlay,
     ArrowLeft,
-    AlertCircle
+    AlertCircle,
+    CheckCircle,
+    Share2,
+    Eye
 } from "lucide-react"
 import Image from "next/image"
 import { useProjectProgress } from '@/hooks/useProjectProgress'
 import ProgressPhases from '@/components/ui/progress-phases'
-
-interface VideoConfiguration {
-    target_platform: string
-    target_audience: string
-    language: string
-    video_length: number
-    aspect_ratio: string
-    script_style: string
-    visual_style: string
-    buy_custom_domain: boolean
-    custom_domain_name: string
-    landing_style: string
-    color_scheme: string
-    cta_text: string
-    background_music_volume: number
-    voiceover_volume: number
-    no_background_music: boolean
-    no_caption: boolean
-    no_emotion: boolean
-    no_cta: boolean
-    caption_style: string
-    override_script: string
-}
+import { VideoConfiguration } from "./types/video-configuration"
+import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
+import { toast } from "sonner"
 
 interface VideoProgressModalProps {
     isOpen: boolean
-    onClose: (success?: boolean) => void  // 🚀 Ora passa se il video è stato completato con successo
+    onClose: (success?: boolean | null) => void  // 🚀 null = chiusura manuale, boolean = successo/fallimento
     projectName: string
     projectId?: number | string  // ID del progetto creato
     configuration: VideoConfiguration
@@ -63,15 +46,25 @@ interface ProcessingStep {
     duration?: string
 }
 
+interface ProgressData {
+    progress: number
+    message: string
+    status: string
+    estimated_time_remaining?: string
+}
+
 export function VideoProgressModal({ isOpen, onClose, projectName, projectId, configuration, workflowAlreadyStarted = false }: VideoProgressModalProps) {
+    const [progress, setProgress] = useState<ProgressData | null>(null)
     const [isCompleted, setIsCompleted] = useState(false)
     const [results, setResults] = useState<any>(null)
     const [isExpanded, setIsExpanded] = useState(false)
     const [showPreview, setShowPreview] = useState(false)
-    const [workflowStarted, setWorkflowStarted] = useState(false)
+    const [workflowStarted, setWorkflowStarted] = useState(workflowAlreadyStarted)
+    const [error, setError] = useState<string | null>(null)
+    const [videoData, setVideoData] = useState<any>(null)
 
     // 🔥 Nuovo hook per gestire il progresso
-    const { progress, isLoading, error } = useProjectProgress({
+    const { progress: projectProgress, isLoading, error: projectError } = useProjectProgress({
         projectId: projectId || 0,
         enabled: isOpen && workflowStarted && !!projectId,
         onComplete: (results) => {
@@ -87,6 +80,41 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
             alert(`Errore durante la creazione: ${errorMessage}`)
         }
     })
+
+    // ✅ HOOK per aggiornare limiti quando video completato
+    const { refreshLimits } = useSubscriptionLimits()
+
+    // ✅ MONITORA COMPLETAMENTO VIDEO per aggiornare limiti
+    useEffect(() => {
+        if (projectProgress?.progress === 100 && projectProgress?.status === 'completed') {
+            console.log('🎉 Video completato! Aggiorno limiti utente...')
+
+            // Aggiorna i limiti immediatamente
+            refreshLimits()
+
+            // Mostra toast di successo
+            toast.success('🎉 Video creato con successo!', {
+                description: 'Il tuo video pubblicitario è pronto. I tuoi limiti sono stati aggiornati.',
+                duration: 5000
+            })
+
+            // ✅ REFRESH MULTIPLI per essere sicuri che i limiti si aggiornino
+            setTimeout(() => {
+                refreshLimits()
+                console.log('🔄 Secondo refresh limiti completato')
+            }, 2000)
+
+            setTimeout(() => {
+                refreshLimits()
+                console.log('🔄 Terzo refresh limiti completato')
+            }, 5000)
+
+            setTimeout(() => {
+                refreshLimits()
+                console.log('🔄 Quarto refresh limiti completato')
+            }, 10000)
+        }
+    }, [projectProgress?.progress, projectProgress?.status, refreshLimits])
 
     // 🚀 Avvia il workflow (solo se non già avviato esternamente)
     const startWorkflow = async () => {
@@ -119,6 +147,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
         // Determina se il video è stato completato con successo
         const videoSuccess = isCompleted && results && results.video_url
 
+        // ✅ DISTINGUI tra chiusura manuale e fallimento reale
+        const isManualClose = !videoSuccess && !projectError && workflowStarted
+
         // Reset state
         setIsCompleted(false)
         setResults(null)
@@ -127,7 +158,13 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
         setWorkflowStarted(false)
 
         // 🚀 Passa il successo al componente padre
-        onClose(videoSuccess)
+        // Se è chiusura manuale, passa 'null' invece di false
+        if (isManualClose) {
+            console.log('⏹️ Chiusura manuale del modal - processo continua in background')
+            onClose(null) // null = chiusura manuale, non fallimento
+        } else {
+            onClose(videoSuccess)
+        }
     }
 
     return (
@@ -158,18 +195,18 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
 
                         <div className="space-y-2 sm:space-y-4">
                             {/* 🔥 Nuovo Progress Component */}
-                            {progress && (
+                            {projectProgress && (
                                 <ProgressPhases
-                                    phases={progress.phases || []}
-                                    currentProgress={progress.progress || 0}
-                                    currentMessage={progress.progress_message}
-                                    estimatedTime={progress.estimated_time_remaining}
+                                    phases={projectProgress.phases || []}
+                                    currentProgress={projectProgress.progress || 0}
+                                    currentMessage={projectProgress.progress_message}
+                                    estimatedTime={projectProgress.estimated_time_remaining}
                                     className="border border-purple-200 dark:border-purple-800 rounded-lg p-4"
                                 />
                             )}
 
                             {/* Loading State */}
-                            {!progress && workflowStarted && (
+                            {!projectProgress && workflowStarted && (
                                 <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-4 border border-purple-200 dark:border-purple-800 rounded-lg">
                                     <div className="flex items-center justify-center gap-3">
                                         <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
@@ -182,13 +219,13 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                             )}
 
                             {/* Error State */}
-                            {error && (
+                            {projectError && (
                                 <Card className="bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <AlertCircle className="w-6 h-6 text-red-600" />
                                         <div>
                                             <h3 className="font-medium text-red-900 dark:text-red-100">Processing error</h3>
-                                            <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
+                                            <p className="text-sm text-red-700 dark:text-red-200">{projectError}</p>
                                         </div>
                                     </div>
                                 </Card>
@@ -230,7 +267,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                             )}
 
                             {/* Almost Complete Notice */}
-                            {progress && progress.progress > 80 && (
+                            {projectProgress && projectProgress.progress > 80 && (
                                 <Card className="bg-green-50 dark:bg-green-900/20 p-3 border border-green-200 dark:border-green-800 rounded-lg">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -259,7 +296,7 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
 
                                 <div className="text-xs text-slate-500 dark:text-zinc-500 flex items-center">
                                     <Clock className="w-3 h-3 mr-1" />
-                                    {progress?.estimated_time_remaining || "5-8 min"}
+                                    {projectProgress?.estimated_time_remaining || "5-8 min"}
                                 </div>
                             </div>
                         </div>
@@ -371,12 +408,9 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
                                             className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white relative overflow-hidden group animate-pulse hover:animate-none hover:scale-[1.02] transition-all duration-300 hover:shadow-md hover:shadow-green-500/30"
                                             onClick={() => window.open(results.landing_url, '_blank')}
                                         >
-                                            {/* Contenuto del bottone */}
                                             <div className="relative flex items-center justify-center">
                                                 <ExternalLink className="w-4 h-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" />
                                                 <span className="font-semibold">Visit Website</span>
-
-                                                {/* Sottile indicatore di novità */}
                                                 <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-300 rounded-full opacity-70"></div>
                                             </div>
                                         </Button>
@@ -414,4 +448,4 @@ export function VideoProgressModal({ isOpen, onClose, projectName, projectId, co
             </DialogContent>
         </Dialog>
     )
-} 
+}

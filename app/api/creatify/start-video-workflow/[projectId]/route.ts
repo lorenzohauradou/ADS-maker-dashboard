@@ -28,8 +28,8 @@ export async function POST(
           'x-user-email': session.user.email,
         },
         body: JSON.stringify(body),
-        // ⚡ TIMEOUT AUMENTATO per startup lento del backend
-        signal: AbortSignal.timeout(300000) // 5 minuti timeout per inizializzazione molto lenta
+        // TIMEOUT AUMENTATO per processi video lunghi (15 minuti)
+        signal: AbortSignal.timeout(900000)
       }
     )
 

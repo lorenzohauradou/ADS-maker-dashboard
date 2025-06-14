@@ -236,7 +236,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
             setDomainPrice(null)
             setError("")
         } catch (error) {
-            setError("Upload error. Please try again.")
+            setError("Upload error. Please check the images format and size.")
         } finally {
             setIsUploading(false)
             setUploadProgress(0)
@@ -464,7 +464,7 @@ export function ImageUploadModal({ isOpen, onClose, onComplete }: ImageUploadMod
                                     </div>
 
                                     <div className="text-sm text-slate-500 dark:text-zinc-500 text-center border-t border-slate-200 dark:border-zinc-700 pt-4">
-                                        <p>Drag and drop more images here or click "Add More" to continue</p>
+                                        <p>Drag and drop more images here or click "Add More" to continue. Add images in order of importance!</p>
                                     </div>
                                 </div>
                             )}
