@@ -19,7 +19,7 @@ export async function GET(
       return NextResponse.json({ error: 'Accesso negato' }, { status: 403 })
     }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/api/subscriptions/check-limits/${userId}/`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/subscriptions/check-limits/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
