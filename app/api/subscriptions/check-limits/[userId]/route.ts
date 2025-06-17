@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
+// 🚀 CACHE SEMPLICE PER LIMITI (30 secondi)
+const limitsCache = new Map<string, { data: any, timestamp: number }>()
+const CACHE_DURATION = 30000 // 30 secondi
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ userId: string }> }
@@ -20,7 +24,20 @@ export async function GET(
       return NextResponse.json({ error: 'Accesso negato' }, { status: 403 })
     }
 
-    // 🚀 Usa utility con timeout ottimizzato
+    // 🚀 CONTROLLA CACHE PRIMA
+    const cacheKey = `limits_${userId}`
+    const cached = limitsCache.get(cacheKey)
+    
+    if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+      console.log(`🚀 Cache hit per ${userId}`)
+      return NextResponse.json({
+        ...cached.data,
+        cached: true,
+        cache_age: Math.round((Date.now() - cached.timestamp) / 1000)
+      })
+    }
+
+    // 🚀 Usa utility con timeout ultra-veloce
     const data = await fetchBackendJson(
       `/api/subscriptions/check-limits/${userId}`,
       {
@@ -29,9 +46,25 @@ export async function GET(
           'x-user-id': session.user.id,
           'x-user-email': session.user.email || '',
         },
-        timeout: TIMEOUTS.QUICK, // 5s per check-limits
+        timeout: TIMEOUTS.QUICK, // 2s per check-limits
       }
     )
+
+    // 🚀 SALVA IN CACHE
+    limitsCache.set(cacheKey, {
+      data,
+      timestamp: Date.now()
+    })
+
+    // Pulizia cache ogni 100 richieste
+    if (limitsCache.size > 100) {
+      const now = Date.now()
+      for (const [key, value] of limitsCache.entries()) {
+        if (now - value.timestamp > CACHE_DURATION * 2) {
+          limitsCache.delete(key)
+        }
+      }
+    }
 
     return NextResponse.json(data)
 

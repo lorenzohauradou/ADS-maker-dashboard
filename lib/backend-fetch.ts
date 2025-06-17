@@ -13,8 +13,8 @@ interface BackendFetchOptions extends RequestInit {
   ): Promise<Response> {
     const { timeout = 8000, ...fetchOptions } = options
     
-    // 🌐 URL del backend
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000'
+    // 🌐 URL del backend - Usa NEXT_PUBLIC_API_URL per frontend
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:8000'
     const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`
     
     // ⏱️ Setup timeout
@@ -74,8 +74,8 @@ interface BackendFetchOptions extends RequestInit {
    * 🚨 Costanti timeout per diversi tipi di operazioni - AUMENTATI per stabilità
    */
   export const TIMEOUTS = {
-    QUICK: 6000,    // Check limits, quick operations (era 3000)
-    NORMAL: 8000,   // Standard operations (era 4000)
-    UPLOAD: 15000,  // File uploads (era 8000)
-    PROCESSING: 20000 // Video processing status (era 12000)
+    QUICK: 2000,      // 2s per check-limits, session (era 6s)
+    NORMAL: 3000,     // 3s per increment-usage, projects (era 8s)  
+    UPLOAD: 5000,     // 5s per upload immagini (era 15s)
+    PROCESSING: 7000, // 7s per avvio workflow (era 20s)
   } as const 
