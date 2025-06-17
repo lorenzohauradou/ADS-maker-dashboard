@@ -38,6 +38,7 @@ import { useUserLimits } from "@/hooks/use-user-limits"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { Crown, CreditCard } from "lucide-react"
+import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
 
 export function ProjectsContent() {
   const { data: session } = useSession()
@@ -53,6 +54,11 @@ export function ProjectsContent() {
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Stati per il dialog di eliminazione
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // 🎯 HOOK PER GESTIRE I LIMITI UTENTE
   const {
@@ -185,20 +191,35 @@ export function ProjectsContent() {
     return matchesSearch && matchesStatus
   })
 
-  const handleDelete = async (project: Project) => {
-    if (confirm(`Sei sicuro di voler eliminare il progetto "${project.name}"?`)) {
-      try {
-        const response = await fetch(`/api/projects/${project.id}`, {
-          method: 'DELETE'
+  const handleDelete = (project: Project) => {
+    setProjectToDelete(project)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!projectToDelete) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/projects/${projectToDelete.id}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        toast.success('Progetto eliminato con successo', {
+          description: `Il progetto "${projectToDelete.name}" è stato eliminato.`
         })
-        if (response.ok) {
-          fetchProjects() // Ricarica la lista
-        } else {
-          throw new Error('Failed to delete project')
-        }
-      } catch (error) {
-        alert('Errore durante l\'eliminazione del progetto')
+        fetchProjects() // Ricarica la lista
+      } else {
+        throw new Error('Failed to delete project')
       }
+    } catch (error) {
+      toast.error('Errore durante l\'eliminazione', {
+        description: 'Non è stato possibile eliminare il progetto. Riprova più tardi.'
+      })
+    } finally {
+      setIsDeleting(false)
+      setIsDeleteDialogOpen(false)
+      setProjectToDelete(null)
     }
   }
 
