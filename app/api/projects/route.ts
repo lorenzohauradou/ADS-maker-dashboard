@@ -18,19 +18,34 @@ export async function POST(request: NextRequest) {
       backendFormData.append(key, value)
     }
     
-    // 📡 Usa utility per upload con timeout più lungo
-    const response = await fetchBackend(`/api/projects/`, {
-      method: 'POST',
-      headers: {
-        'x-user-id': session.user.id,
-        'x-user-email': session.user.email,
-      },
-      body: backendFormData,
-      timeout: TIMEOUTS.UPLOAD, // 15s per upload
-    })
+    // 📡 Chiamata diretta per FormData (utility non compatibile)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
+    
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
+        method: 'POST',
+        headers: {
+          'x-user-id': session.user.id,
+          'x-user-email': session.user.email,
+        },
+        body: backendFormData,
+        signal: controller.signal,
+      })
 
-    const result = await response.json()
-    return NextResponse.json(result)
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}`)
+      }
+
+      const result = await response.json()
+      return NextResponse.json(result)
+    } catch (error) {
+      clearTimeout(timeoutId)
+      throw error
+    }
     
   } catch (error) {
     console.error('❌ Project creation error:', error)
