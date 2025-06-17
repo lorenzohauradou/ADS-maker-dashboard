@@ -11,7 +11,7 @@ export async function fetchBackend(
   endpoint: string, 
   options: BackendFetchOptions = {}
 ): Promise<Response> {
-  const { timeout = 8000, ...fetchOptions } = options
+  const { timeout = 4000, ...fetchOptions } = options
   
   // 🌐 URL del backend
   const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000'
@@ -71,11 +71,11 @@ export async function fetchBackendJson<T = any>(
 }
 
 /**
- * 🚨 Costanti timeout per diversi tipi di operazioni
+ * 🚨 Costanti timeout per diversi tipi di operazioni - RIDOTTI per Vercel
  */
 export const TIMEOUTS = {
-  QUICK: 5000,    // Check limits, quick operations
-  NORMAL: 8000,   // Standard operations  
-  UPLOAD: 15000,  // File uploads
-  PROCESSING: 30000 // Video processing status
+  QUICK: 3000,    // Check limits, quick operations (era 5000)
+  NORMAL: 4000,   // Standard operations (era 8000)
+  UPLOAD: 8000,   // File uploads (era 15000)
+  PROCESSING: 12000 // Video processing status (era 30000)
 } as const 
