@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function DELETE(
   request: NextRequest,
@@ -16,29 +17,33 @@ export async function DELETE(
     const resolvedParams = await params
     const projectId = resolvedParams.id
 
-    // 📡 Chiamata al backend per eliminare il progetto
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/projects/${projectId}`,
+    // 📡 Chiamata al backend con utility ottimizzata
+    const result = await fetchBackendJson(
+      `/api/projects/${projectId}`,
       {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
         },
+        timeout: TIMEOUTS.NORMAL, // 8s per delete
       }
     )
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
-    }
-
-    const result = await response.json()
     return NextResponse.json(result)
     
   } catch (error) {
     console.error('❌ Project deletion error:', error)
+    
+    // 🚨 Gestione specifica timeout
+    if (error instanceof Error && error.message.includes('Timeout')) {
+      console.warn('⏱️ Delete timeout')
+      return NextResponse.json({ 
+        error: 'Backend timeout', 
+        details: 'Eliminazione timeout - potrebbe essere completata in background'
+      }, { status: 408 })
+    }
+    
     return NextResponse.json({ 
       error: 'Failed to delete project', 
       details: error instanceof Error ? error.message : 'Unknown error'

@@ -10,11 +10,15 @@ import { useRouter } from "next/navigation"
 import { Project } from "@/types/project"
 import { useVideoControls } from "@/hooks/useVideoControls"
 import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
+import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
 
 export function RecentProjects() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
 
   // Usa il hook per i controlli video
@@ -68,28 +72,46 @@ export function RecentProjects() {
     }
   }
 
-  const handleDelete = async (project: Project) => {
-    if (confirm(`Sei sicuro di voler eliminare il progetto "${project.name}"?`)) {
-      try {
-        const response = await fetch(`/api/projects/${project.id}`, {
-          method: 'DELETE'
-        })
-        if (response.ok) {
-          // Ricarica i progetti
-          const newResponse = await fetch('/api/projects')
-          if (newResponse.ok) {
-            const result = await newResponse.json()
-            if (result.success) {
-              setProjects(result.projects.slice(0, 3))
-            }
+  const handleDelete = (project: Project) => {
+    setProjectToDelete(project)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/projects/${projectToDelete.id}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        // Ricarica i progetti
+        const newResponse = await fetch('/api/projects')
+        if (newResponse.ok) {
+          const result = await newResponse.json()
+          if (result.success) {
+            setProjects(result.projects.slice(0, 3))
           }
-        } else {
-          throw new Error('Failed to delete project')
         }
-      } catch (error) {
-        alert('Errore durante l\'eliminazione del progetto')
+      } else {
+        throw new Error('Failed to delete project')
       }
+
+      // Chiudi il dialog
+      setIsDeleteDialogOpen(false)
+      setProjectToDelete(null)
+    } catch (error) {
+      console.error('Error deleting project:', error)
+      // Mantieni il dialog aperto per mostrare l'errore
+    } finally {
+      setIsDeleting(false)
     }
+  }
+
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false)
+    setProjectToDelete(null)
   }
 
   const handleViewAll = () => {
@@ -253,6 +275,16 @@ export function RecentProjects() {
         isOpen={isPreviewOpen}
         onClose={handleClosePreview}
         project={selectedProject}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={projectToDelete?.name}
+        itemType="progetto"
+        isLoading={isDeleting}
       />
     </>
   )

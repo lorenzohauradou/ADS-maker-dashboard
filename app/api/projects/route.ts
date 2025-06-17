@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { fetchBackend, fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,25 +18,31 @@ export async function POST(request: NextRequest) {
       backendFormData.append(key, value)
     }
     
-    const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
+    // 📡 Usa utility per upload con timeout più lungo
+    const response = await fetchBackend(`/api/projects/`, {
       method: 'POST',
       headers: {
         'x-user-id': session.user.id,
         'x-user-email': session.user.email,
       },
       body: backendFormData,
+      timeout: TIMEOUTS.UPLOAD, // 15s per upload
     })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
-    }
 
     const result = await response.json()
     return NextResponse.json(result)
     
   } catch (error) {
     console.error('❌ Project creation error:', error)
+    
+    // 🚨 Gestione timeout per upload
+    if (error instanceof Error && error.message.includes('Timeout')) {
+      return NextResponse.json({ 
+        error: 'Upload timeout', 
+        details: 'Upload delle immagini troppo lento'
+      }, { status: 408 })
+    }
+    
     return NextResponse.json({ 
       error: 'Failed to create project', 
       details: error instanceof Error ? error.message : 'Unknown error'
@@ -51,24 +58,28 @@ export async function GET() {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/api/projects/recent/`, {
+    // 📡 Usa utility per fetch progetti
+    const result = await fetchBackendJson(`/api/projects/recent/`, {
       headers: {
-        'Content-Type': 'application/json',
         'x-user-id': session.user.id,
         'x-user-email': session.user.email || '',
       },
+      timeout: TIMEOUTS.QUICK, // 5s per fetch
     })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `HTTP ${response.status}`)
-    }
-
-    const result = await response.json()
     return NextResponse.json(result)
     
   } catch (error) {
     console.error('❌ Projects fetch error:', error)
+    
+    // 🚨 Gestione timeout per fetch
+    if (error instanceof Error && error.message.includes('Timeout')) {
+      return NextResponse.json({ 
+        error: 'Fetch timeout', 
+        details: 'Caricamento progetti troppo lento'
+      }, { status: 408 })
+    }
+    
     return NextResponse.json({ 
       error: 'Failed to fetch projects', 
       details: error instanceof Error ? error.message : 'Unknown error'
