@@ -300,27 +300,8 @@ export function CreateVideoSection() {
         duration: 5000
       })
 
-      // Incrementa usage counter (opzionale, già fatto nel backend)
-      try {
-        const response = await fetch('/api/subscriptions/increment-usage', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: session?.user?.id })
-        })
-
-        if (response.ok) {
-          console.log('✅ Usage incrementato manualmente nel frontend')
-          // Refresh aggiuntivo dopo incremento
-          setTimeout(() => {
-            if (isMountedRef.current) {
-              console.log('🔄 Refresh banner dopo incremento usage...')
-              refreshLimits()
-            }
-          }, 1000)
-        }
-      } catch (error) {
-        console.log('⚠️ Errore incremento usage frontend (non critico):', error)
-      }
+      // ✅ Usage già incrementato automaticamente nel backend durante il processo video
+      console.log('✅ Usage incrementato automaticamente dal backend')
 
     } else if (videoSuccess === null) {
       // ⏹️ CHIUSURA MANUALE - PROCESSO CONTINUA

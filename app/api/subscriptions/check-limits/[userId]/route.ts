@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function GET(
   request: NextRequest,
@@ -19,45 +20,39 @@ export async function GET(
       return NextResponse.json({ error: 'Accesso negato' }, { status: 403 })
     }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/api/subscriptions/check-limits/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-id': session.user.id,
-        'x-user-email': session.user.email || '',
-      },
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Backend error:', response.status, errorText)
-      
-      // Fallback per utenti free se il backend non risponde
-      if (response.status >= 500) {
-        return NextResponse.json({
-          plan: 'free',
-          videos_per_month: 1,
-          videos_used: 0,
-          videos_remaining: 1,
-          can_create_video: true,
-          extra_video_price: 9.0,
-          warning: 'Backend temporaneamente non disponibile'
-        })
+    // 🚀 Usa utility con timeout ottimizzato
+    const data = await fetchBackendJson(
+      `/api/subscriptions/check-limits/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'x-user-id': session.user.id,
+          'x-user-email': session.user.email || '',
+        },
+        timeout: TIMEOUTS.QUICK, // 5s per check-limits
       }
-      
-      return NextResponse.json(
-        { error: 'Errore nel controllo dei limiti' },
-        { status: response.status }
-      )
-    }
+    )
 
-    const data = await response.json()
     return NextResponse.json(data)
 
   } catch (error) {
-    console.error('Error checking limits:', error)
+    console.error('❌ Error checking limits:', error)
     
-    // Fallback graceful per evitare blocchi totali
+    // 🚨 Gestione specifica timeout 
+    if (error instanceof Error && error.message.includes('Timeout')) {
+      console.warn('⏱️ Check-limits timeout - usando fallback')
+      return NextResponse.json({
+        plan: 'free',
+        videos_per_month: 1,
+        videos_used: 0,
+        videos_remaining: 1,
+        can_create_video: true,
+        extra_video_price: 9.0,
+        warning: 'Timeout nel controllo limiti - valori predefiniti'
+      }, { status: 408 })
+    }
+    
+    // Fallback graceful per altri errori
     return NextResponse.json({
       plan: 'free',
       videos_per_month: 1,
