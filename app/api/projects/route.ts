@@ -23,25 +23,25 @@ export async function POST(request: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
     
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
-        method: 'POST',
-        headers: {
-          'x-user-id': session.user.id,
-          'x-user-email': session.user.email,
-        },
-        body: backendFormData,
+    const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
+      method: 'POST',
+      headers: {
+        'x-user-id': session.user.id,
+        'x-user-email': session.user.email,
+      },
+      body: backendFormData,
         signal: controller.signal,
-      })
+    })
 
       clearTimeout(timeoutId)
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `HTTP ${response.status}`)
-      }
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `HTTP ${response.status}`)
+    }
 
-      const result = await response.json()
-      return NextResponse.json(result)
+    const result = await response.json()
+    return NextResponse.json(result)
     } catch (error) {
       clearTimeout(timeoutId)
       throw error
