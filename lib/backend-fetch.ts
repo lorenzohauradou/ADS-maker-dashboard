@@ -11,7 +11,7 @@ interface BackendFetchOptions extends RequestInit {
     endpoint: string, 
     options: BackendFetchOptions = {}
   ): Promise<Response> {
-    const { timeout = 4000, ...fetchOptions } = options
+    const { timeout = 8000, ...fetchOptions } = options
     
     // 🌐 URL del backend
     const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000'
@@ -71,11 +71,11 @@ interface BackendFetchOptions extends RequestInit {
   }
   
   /**
-   * 🚨 Costanti timeout per diversi tipi di operazioni - RIDOTTI per Vercel
+   * 🚨 Costanti timeout per diversi tipi di operazioni - AUMENTATI per stabilità
    */
   export const TIMEOUTS = {
-    QUICK: 3000,    // Check limits, quick operations (era 5000)
-    NORMAL: 4000,   // Standard operations (era 8000)
-    UPLOAD: 8000,   // File uploads (era 15000)
-    PROCESSING: 12000 // Video processing status (era 30000)
+    QUICK: 6000,    // Check limits, quick operations (era 3000)
+    NORMAL: 8000,   // Standard operations (era 4000)
+    UPLOAD: 15000,  // File uploads (era 8000)
+    PROCESSING: 20000 // Video processing status (era 12000)
   } as const 
