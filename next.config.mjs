@@ -57,6 +57,21 @@ const nextConfig = {
   },
   experimental: {
   },
+  
+  // 🌐 CONFIGURAZIONE DEV ORIGINS per risolvere warning cross-origin
+  ...(process.env.NODE_ENV === 'development' && {
+    allowedDevOrigins: [
+      // IP locale automatico
+      '10.55.64.64:3000',
+      // Altri IP comuni della rete locale
+      '192.168.1.*:3000',
+      '192.168.0.*:3000', 
+      '10.0.0.*:3000',
+      // Per testing mobile su rete locale
+      'localhost:3000',
+      '127.0.0.1:3000'
+    ]
+  }),
   // HEADERS SICUREZZA
   async headers() {
     if (process.env.NODE_ENV === "production") {

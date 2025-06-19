@@ -37,7 +37,7 @@ export async function GET(
       })
     }
 
-    // 🚀 Usa utility con timeout ultra-veloce
+    // ⚡ Timeout ridotto - backend ottimizzato per <200ms
     const data = await fetchBackendJson(
       `/api/subscriptions/check-limits/${userId}`,
       {
@@ -46,7 +46,7 @@ export async function GET(
           'x-user-id': session.user.id,
           'x-user-email': session.user.email || '',
         },
-        timeout: TIMEOUTS.QUICK, // 2s per check-limits
+        timeout: 6000, // 6s - abbastanza per backend veloce + margine rete
       }
     )
 
