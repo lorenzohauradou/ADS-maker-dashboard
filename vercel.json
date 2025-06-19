@@ -20,9 +20,5 @@
       "memory": 512,
       "runtime": "nodejs20.x"
     }
-  },
-  "regions": ["fra1", "iad1"],
-  "experimental": {
-    "optimizeConcurrency": true
   }
 } 
