@@ -132,75 +132,78 @@ export default function LoginPage() {
                                 </p>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="email" className="text-base font-medium">
-                                        Email Address
-                                    </Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="yourname@company.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                        disabled={loading}
-                                        className={`h-12 text-lg border-2 rounded-xl ${error
-                                            ? 'border-red-500 focus-visible:ring-red-500'
-                                            : 'border-border focus-visible:ring-blue-500'
-                                            }`}
-                                    />
-                                    {error && (
-                                        <p className="text-sm text-red-600 flex items-center mt-2">
-                                            <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
-                                            {error}
-                                        </p>
-                                    )}
-                                </div>
-
+                            <>
+                                {/* Google Sign In Button - Top */}
                                 <Button
-                                    type="submit"
+                                    variant="outline"
+                                    className="w-full h-12 flex items-center justify-center gap-3 text-lg border-2 border-border hover:bg-accent/50 rounded-xl transition-all duration-300"
+                                    onClick={handleGoogleSignIn}
                                     disabled={loading}
-                                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
                                 >
-                                    {loading ? (
-                                        <>
-                                            <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                                            Creating account...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Play className="mr-3 h-5 w-5" />
-                                            Start for free
-                                        </>
-                                    )}
+                                    <Image src="/search.png" alt="Google" width={20} height={20} />
+                                    Sign in with Google
                                 </Button>
-                            </form>
-                        )}
 
-                        {!messageSent && (
-                            <div className="relative my-8">
-                                <div className="absolute inset-0 flex items-center">
-                                    <span className="w-full border-t border-border/50" />
+                                <div className="relative my-6">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t border-border/50" />
+                                    </div>
+                                    <div className="relative flex justify-center text-sm uppercase">
+                                        <span className="bg-card px-4 text-muted-foreground font-medium">
+                                            Or with email
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="relative flex justify-center text-sm uppercase">
-                                    <span className="bg-card px-4 text-muted-foreground font-medium">
-                                        Or continue with
-                                    </span>
-                                </div>
-                            </div>
-                        )}
 
-                        {!messageSent && (
-                            <Button
-                                variant="outline"
-                                className="w-full h-12 flex items-center justify-center gap-3 text-lg border-2 border-border hover:bg-accent/50 rounded-xl transition-all duration-300"
-                                onClick={handleGoogleSignIn}
-                                disabled={loading}
-                            >
-                                <Image src="/search.png" alt="Google" width={20} height={20} />
-                                Sign in with Google
-                            </Button>
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email" className="text-base font-medium">
+                                            Email Address
+                                        </Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            placeholder="yourname@company.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                            disabled={loading}
+                                            className={`h-12 text-lg border-2 rounded-xl ${error
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : 'border-border focus-visible:ring-blue-500'
+                                                }`}
+                                        />
+                                        {error && (
+                                            <p className="text-sm text-red-600 flex items-center mt-2">
+                                                <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
+                                                {error}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <Button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                                                Creating account...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Play className="mr-3 h-5 w-5" />
+                                                Start for free
+                                            </>
+                                        )}
+                                    </Button>
+                                </form>
+
+
+
+
+                            </>
                         )}
                     </CardContent>
 
