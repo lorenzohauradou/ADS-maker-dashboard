@@ -22,7 +22,6 @@
     }
   },
   "regions": ["fra1", "iad1"],
-  "outputFileTracing": true,
   "experimental": {
     "optimizeConcurrency": true
   }
