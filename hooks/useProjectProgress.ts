@@ -227,7 +227,6 @@ export const useProjectProgress = ({
     progress,
     isLoading,
     error,
-    refetch: fetchProgress,
     startPolling,
     stopPolling
   }

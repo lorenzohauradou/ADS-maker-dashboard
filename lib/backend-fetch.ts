@@ -1,6 +1,5 @@
 /**
  * 🚀 UTILITY per chiamate al backend con timeout e gestione errori
- * Risolve i problemi di timeout su Vercel
  */
 
 interface BackendFetchOptions extends RequestInit {
@@ -11,9 +10,9 @@ interface BackendFetchOptions extends RequestInit {
     endpoint: string, 
     options: BackendFetchOptions = {}
   ): Promise<Response> {
-    const { timeout = 8000, ...fetchOptions } = options
+  const { timeout = 15000, ...fetchOptions } = options
     
-    // 🌐 URL del backend - Usa NEXT_PUBLIC_API_URL per frontend
+  // 🌐 URL del backend
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:8000'
     const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`
     
@@ -71,11 +70,11 @@ interface BackendFetchOptions extends RequestInit {
   }
   
   /**
-   * 🚨 Costanti timeout per diversi tipi di operazioni - AUMENTATI per stabilità
+ * 🚨 Timeout per diversi tipi di operazioni
    */
   export const TIMEOUTS = {
-    QUICK: 2000,      // 2s per check-limits, session (era 6s)
-    NORMAL: 3000,     // 3s per increment-usage, projects (era 8s)  
-    UPLOAD: 5000,     // 5s per upload immagini (era 15s)
-    PROCESSING: 7000, // 7s per avvio workflow (era 20s)
+  QUICK: 15000,     // 15s per check-limits, projects
+  NORMAL: 20000,    // 20s per operazioni DB
+  UPLOAD: 30000,    // 30s per upload immagini
+  PROCESSING: 60000, // 60s per avvio workflow
   } as const 

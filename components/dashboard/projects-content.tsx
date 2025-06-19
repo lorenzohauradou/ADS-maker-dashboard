@@ -99,6 +99,19 @@ export function ProjectsContent() {
       if (data.success) {
         setProjects(data.projects || [])
 
+        // 🔄 GESTISCI DIVERSI STATI DEL BACKEND
+        if (data.backend_busy) {
+          console.log('⚠️ Backend occupato durante elaborazione video')
+          // Mostra lista vuota con messaggio informativo invece di progetti fake
+          setProjects([])
+        } else if (data.is_fallback) {
+          console.log('⚡ Usando dati cache/fallback')
+          // Progetti da cache o fallback - nessuna azione speciale
+        } else if (data.all_endpoints_failed) {
+          console.log('❌ Tutti endpoint falliti')
+          setProjects([])
+        }
+
         // Controlla automaticamente i video in processing (solo se ci sono)
         const processingProjects = (data.projects || []).filter((p: any) =>
           p.video?.status === 'processing' && p.video?.url?.startsWith('processing_')

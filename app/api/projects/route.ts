@@ -79,7 +79,7 @@ export async function GET() {
         'x-user-id': session.user.id,
         'x-user-email': session.user.email || '',
       },
-      timeout: TIMEOUTS.QUICK, // 5s per fetch
+      timeout: TIMEOUTS.QUICK,
     })
 
     return NextResponse.json(result)
