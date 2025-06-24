@@ -160,7 +160,14 @@ export function ShowcaseSection() {
                 const offsetFromCenter = index - centerIndex
                 // Use responsive spacing based on screen size detection
                 const xOffset = offsetFromCenter * (isDesktop ? 200 : 80) // Proper desktop spacing restored
-                const yOffset = Math.abs(offsetFromCenter) * (isDesktop ? 20 : 10) // More vertical offset for desktop
+
+                // Special positioning for center-left and center-right cards on desktop
+                let yOffset = Math.abs(offsetFromCenter) * (isDesktop ? 20 : 10) // More vertical offset for desktop
+                if (isDesktop && (offsetFromCenter === -1 || offsetFromCenter === 1)) {
+                  // Move center-left and center-right cards much lower on desktop
+                  yOffset += 120 // Additional 120px down for these specific cards
+                }
+
                 const rotation = offsetFromCenter * (isDesktop ? 8 : 4) // More rotation for desktop
                 const scale = index === centerIndex ? (isDesktop ? 1.1 : 1.05) : 0.95 // Center element larger on desktop
                 const zIndex = 30 - Math.abs(offsetFromCenter) * 5 // Z-index based on distance from center

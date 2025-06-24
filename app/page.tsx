@@ -1,5 +1,6 @@
 "use client"
 import { HeroSection } from "@/components/sections/hero-section"
+// import { TrustedCompaniesSection } from "@/components/sections/trusted-companies-section"
 import { ShowcaseSection } from "@/components/sections/showcase-section"
 import { ProblemSection } from "@/components/sections/problem-section"
 import { DeviceShowcaseSection } from "@/components/sections/device-showcase-section"
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Header />
       <main className="overflow-x-hidden">
         <HeroSection />
+        {/* <TrustedCompaniesSection /> */}
         <ShowcaseSection />
         <WorkflowSection />
         <ProblemSection />
