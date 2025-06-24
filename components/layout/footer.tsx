@@ -6,13 +6,13 @@ export function Footer() {
     product: [
       { name: "Features", href: "#features" },
       { name: "Pricing", href: "#pricing" },
-      { name: "Demo", href: "#demo" },
-      { name: "API", href: "#api" },
+      { name: "Dropshipping Ads", href: "/dropshipping-video-ads" },
+      { name: "TikTok Ads", href: "/tiktok-video-ads" },
     ],
     company: [
-      { name: "About Us", href: "#about" },
-      { name: "Blog", href: "#blog" },
-      { name: "Careers", href: "#careers" },
+      { name: "About Us", href: "/about" },
+      { name: "Blog", href: "/blog" },
+      { name: "Instagram Ads", href: "/instagram-video-ads" },
       { name: "Contact", href: "#contact" },
     ],
     support: [

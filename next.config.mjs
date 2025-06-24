@@ -9,8 +9,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // OTTIMIZZAZIONI PRODUZIONE
+    // OTTIMIZZAZIONI PRODUZIONE SEO
     unoptimized: false, // Abilita ottimizzazione immagini
+    formats: ['image/webp', 'image/avif'], // Formati moderni per performance
     remotePatterns: [
       {
         protocol: 'http',

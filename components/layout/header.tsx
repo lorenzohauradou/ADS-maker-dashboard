@@ -73,6 +73,12 @@ export function Header() {
           >
             How it Works
           </a>
+          <Link
+            href="/blog"
+            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
+          >
+            Blog
+          </Link>
           <a
             href="#pricing"
             className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
@@ -176,6 +182,9 @@ export function Header() {
             <a href="#workflow" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
               How it Works
             </a>
+            <Link href="/blog" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
+              Blog
+            </Link>
             <a href="#pricing" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
               Pricing
             </a>

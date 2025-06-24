@@ -58,10 +58,10 @@ export const metadata: Metadata = {
         type: 'image/png',
       },
       {
-        url: 'https://fastadsai.com/og-square.png', // manca
+        url: 'https://fastadsai.com/logo.png', // Usando logo esistente
         width: 1200,
         height: 1200,
-        alt: 'Fast Ads AI Logo',
+        alt: 'Fast Ads AI - Square Logo for Social Media',
         type: 'image/png',
       }
     ],
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     images: ['https://fastadsai.com/twitter-image.png'],
   },
   verification: {
-    google: 'your-google-site-verification-code',
+    // google: 'your-google-site-verification-code', // Decommentare quando hai il codice
     // yandex: 'your-yandex-verification-code',
     // yahoo: 'your-yahoo-verification-code',
   },
@@ -178,6 +178,59 @@ export default function RootLayout({
                 "availableLanguage": ["English", "Italian", "French"],
                 "url": "https://fastadsai.com/contact"
               }
+            })
+          }}
+        />
+
+        {/* FAQ Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "How long does it really take to create a video?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The complete process takes 3-5 minutes: 30 seconds to upload images, 1-2 minutes for AI analysis, 1-2 minutes for video generation, and 30 seconds for download. It's literally faster than making coffee!"
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Which types of businesses work best?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "FAST ADS AI is optimized for e-commerce, SaaS, professional services, mobile apps, restaurants, and retail. The AI automatically recognizes your product type and adapts voice, script, and style accordingly."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Does the voice really sound human?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! We use the most advanced TTS technology available. The voice is indistinguishable from a professional actor, with natural intonation, correct pauses, and emphasis on key points."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Is there a watermark in the free plan?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The free plan does NOT include any watermark. This plan is designed to let you test the quality."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Which social platforms can I publish videos to?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Videos are automatically optimized for Instagram (Feed, Stories, Reels), TikTok, YouTube (Shorts and standard videos), Facebook, LinkedIn, and Pinterest. Each format has perfect dimensions and duration to maximize engagement."
+                  }
+                }
+              ]
             })
           }}
         />
