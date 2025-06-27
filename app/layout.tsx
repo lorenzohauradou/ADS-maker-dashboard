@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     site: '@FastAdsAI',
     creator: '@FastAdsAI',
     title: 'Fast Ads AI - Create Viral Video Ads in Minutes',
-    description: 'Turn product images into viral TikTok & Instagram ads with AI. Perfect for dropshippers. Create professional video ads in 3 minutes! 🚀',
+    description: 'Turn product images into viral TikTok & Instagram ads with AI. Perfect for dropshippers. Create professional video ads in minutes! 🚀',
     images: ['https://fastadsai.com/twitter-image.png'],
   },
   verification: {
