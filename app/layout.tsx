@@ -75,7 +75,8 @@ export const metadata: Metadata = {
     images: ['https://fastadsai.com/twitter-image.png'],
   },
   verification: {
-    // google: 'your-google-site-verification-code', // Decommentare quando hai il codice
+    // Google Search Console verificato tramite DNS
+    // Non serve meta tag per questo metodo
     // yandex: 'your-yandex-verification-code',
     // yahoo: 'your-yahoo-verification-code',
   },
