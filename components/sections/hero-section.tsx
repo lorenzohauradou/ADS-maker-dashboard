@@ -165,7 +165,7 @@ export function HeroSection() {
         <div className="mt-16 max-w-7xl mx-auto px-4">
           {/* Mobile: Vertical Layout */}
           <div className="md:hidden">
-            <div className="relative bg-gradient-to-br from-indigo-900/80 via-blue-900/80 to-purple-900/80 rounded-2xl p-4 backdrop-blur-sm border border-blue-400/30 shadow-2xl">
+            <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 rounded-2xl p-4 backdrop-blur-sm border border-slate-700/50 shadow-2xl">
               <div className="relative bg-black rounded-xl overflow-hidden aspect-[9/16]">
                 {/* Mobile content remains the same as before */}
                 {/* Step 0: Product Images */}
@@ -257,31 +257,34 @@ export function HeroSection() {
 
           {/* Desktop: Horizontal Layout like Competitor */}
           <div className="hidden md:block">
-            <div className="relative bg-gradient-to-br from-indigo-900/90 via-blue-900/90 to-purple-900/90 rounded-3xl p-8 border border-blue-400/40 shadow-xl">
+            <div className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 rounded-3xl p-8 border border-slate-700/40 shadow-xl backdrop-blur-md">
+              {/* Elegant overlay with subtle gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10 rounded-3xl pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 rounded-3xl pointer-events-none"></div>
 
               {/* Step Labels */}
-              <div className="flex justify-between items-center mb-8 px-8">
+              <div className="flex justify-between items-center mb-8 px-8 relative z-10">
                 <div className="text-center">
                   <h3 className="text-white text-lg font-semibold">Product Upload</h3>
-                  <p className="text-blue-200 text-sm mt-1">Upload your images</p>
+                  <p className="text-slate-300 text-sm mt-1">Upload your images</p>
                 </div>
-                <ArrowRight className="w-8 h-8 text-blue-400" />
+                <ArrowRight className="w-8 h-8 text-slate-400" />
                 <div className="text-center">
-                  <h3 className="text-white text-lg font-semibold">AI Avatar</h3>
-                  <p className="text-blue-200 text-sm mt-1">AI processes content</p>
+                  <h3 className="text-white text-lg font-semibold">AI Avatar - Music & Voice</h3>
+                  <p className="text-slate-300 text-sm text-left mt-1">AI processes content</p>
                 </div>
-                <ArrowRight className="w-8 h-8 text-blue-400" />
+                <ArrowRight className="w-8 h-8 text-slate-400" />
                 <div className="text-center">
-                  <h3 className="text-white text-lg font-semibold">Final Video</h3>
-                  <p className="text-blue-200 text-sm mt-1">Professional result</p>
+                  <h3 className="text-white text-lg font-semibold">Final Video + Landing Page</h3>
+                  <p className="text-slate-300 text-sm text-left mt-1">Professional result</p>
                 </div>
               </div>
 
               {/* Three Phase Cards */}
-              <div className="grid grid-cols-3 gap-8">
+              <div className="grid grid-cols-3 gap-8 relative z-10">
 
                 {/* Phase 1: Product Images */}
-                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 0 ? 'ring-4 ring-blue-400' : currentStep === 2 ? 'ring-2 ring-blue-400/50' : 'ring-2 ring-blue-500/30'
+                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 0 ? 'ring-4 ring-slate-400' : currentStep === 2 ? 'ring-2 ring-slate-400/50' : 'ring-2 ring-slate-500/30'
                   }`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
                   <div className="relative bg-black/80 h-80 flex items-center justify-center">
@@ -323,7 +326,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Phase 2: AI Processing */}
-                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 1 ? 'ring-4 ring-purple-400' : 'ring-2 ring-purple-500/30'
+                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 1 ? 'ring-4 ring-slate-400' : 'ring-2 ring-slate-500/30'
                   }`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20"></div>
                   <div className="relative bg-black/80 h-80 flex items-center justify-center">
@@ -350,7 +353,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Phase 3: Final Video */}
-                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 2 ? 'ring-4 ring-green-400' : 'ring-2 ring-green-500/30'
+                <div className={`relative rounded-2xl overflow-hidden transition-all duration-500 ${currentStep === 2 ? 'ring-4 ring-slate-400' : 'ring-2 ring-slate-500/30'
                   }`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-green-600/20 to-cyan-600/20"></div>
                   <div className="relative bg-black/80 h-80 flex items-center justify-center">
