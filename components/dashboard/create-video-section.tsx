@@ -8,6 +8,7 @@ import { useUserLimits } from "@/hooks/use-user-limits"
 import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
 import { UserLimitsBanner } from "./user-limits-banner"
 import { LimitReachedModal } from "./limit-reached-modal"
+import { CreationMethodModal } from "./video-creation-workflow/creation-method-modal"
 import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
 import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
@@ -50,8 +51,9 @@ export function CreateVideoSection() {
     }
   }, [])
 
-  const [currentStep, setCurrentStep] = useState<"upload" | "config" | "progress" | "complete">("upload")
+  const [currentStep, setCurrentStep] = useState<"method" | "upload" | "config" | "progress" | "complete">("method")
   const [showLimitModal, setShowLimitModal] = useState(false)
+  const [isMethodModalOpen, setIsMethodModalOpen] = useState(false)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
@@ -62,6 +64,8 @@ export function CreateVideoSection() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([])
   const [customDomain, setCustomDomain] = useState<string | undefined>(undefined)
   const [configuration, setConfiguration] = useState<VideoConfiguration | null>(null)
+  const [selectedMethod, setSelectedMethod] = useState<"images" | "url" | null>(null)
+  const [websiteUrl, setWebsiteUrl] = useState("")
   const [error, setError] = useState("")
 
   // ✅ GESTIONE POLLING tramite hook useSubscriptionLimits
@@ -76,7 +80,7 @@ export function CreateVideoSection() {
   }, [currentStep, isProgressModalOpen, startPolling, stopPolling])
 
   const handleCreateAction = () => {
-    if (!isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
+    if (!isMethodModalOpen && !isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
       handleStartNewProject()
     }
   }
@@ -121,7 +125,7 @@ export function CreateVideoSection() {
       })
     }
 
-    setIsUploadModalOpen(true)
+    setIsMethodModalOpen(true)
   }
 
   const handleImagesUploaded = async (images: File[], name: string, domain?: string, project?: any) => {
@@ -328,34 +332,103 @@ export function CreateVideoSection() {
     // Reset per permettere nuovo progetto
     setTimeout(() => {
       if (isMountedRef.current) {
-        setCurrentStep("upload")
+        setCurrentStep("method")
         setProjectId(null)
         setProjectName("")
         setUploadedImages([])
         setCustomDomain(undefined)
         setConfiguration(null)
+        setSelectedMethod(null)
+        setWebsiteUrl("")
         setError("")
       }
     }, 2000)
   }
 
+  const handleCloseMethod = () => {
+    if (!isMountedRef.current) return
+    setIsMethodModalOpen(false)
+    setCurrentStep("method")
+  }
+
+  const handleSelectImageUpload = () => {
+    if (!isMountedRef.current) return
+    setSelectedMethod("images")
+    setIsMethodModalOpen(false)
+    setCurrentStep("upload")
+    setIsUploadModalOpen(true)
+  }
+
+  const handleSelectWebsiteUrl = async (url: string) => {
+    if (!isMountedRef.current) return
+    setSelectedMethod("url")
+    setWebsiteUrl(url)
+    setIsMethodModalOpen(false)
+
+    // For URL method, we skip image upload and go straight to configuration
+    // But first we need to create a project with the URL
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `Video from ${new URL(url).hostname}`,
+          product_type: 'url',
+          website_url: url
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `HTTP ${response.status}`)
+      }
+
+      const project = await response.json()
+
+      if (project?.id) {
+        setProjectId(project.id)
+        setProjectName(project.name)
+        setCurrentStep("config")
+        setIsConfigModalOpen(true)
+      } else {
+        throw new Error("No project ID received")
+      }
+    } catch (error) {
+      console.error("❌ Error creating URL project:", error)
+      setError(`Failed to create project: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      // Return to method selection
+      setIsMethodModalOpen(true)
+    }
+  }
+
   const handleCloseUpload = () => {
     if (!isMountedRef.current) return
     setIsUploadModalOpen(false)
-    setCurrentStep("upload")
+    setCurrentStep("method")
+    setIsMethodModalOpen(true) // Return to method selection
   }
 
   const handleCloseConfig = () => {
     if (!isMountedRef.current) return
     setIsConfigModalOpen(false)
-    setCurrentStep("upload")
-    setIsUploadModalOpen(true) // Torna all'upload
+
+    // Return to appropriate previous step based on selected method
+    if (selectedMethod === "images") {
+      setCurrentStep("upload")
+      setIsUploadModalOpen(true)
+    } else if (selectedMethod === "url") {
+      setCurrentStep("method")
+      setIsMethodModalOpen(true)
+    } else {
+      setCurrentStep("method")
+      setIsMethodModalOpen(true)
+    }
   }
 
   const handleCloseProgress = () => {
     if (!isMountedRef.current) return
     setIsProgressModalOpen(false)
-    setCurrentStep("upload")
+    setCurrentStep("method")
 
     // ✅ FERMA POLLING se chiuso manualmente
     stopPolling()
@@ -409,7 +482,7 @@ export function CreateVideoSection() {
           </Button>
 
           {/* Progress Indicator */}
-          {currentStep !== "upload" && (
+          {!["method", "upload"].includes(currentStep) && (
             <div className="mt-8 flex items-center justify-center space-x-4 text-sm text-slate-600 dark:text-zinc-400">
               <div className={`flex items-center space-x-2 ${currentStep === "config" ? "text-blue-600 dark:text-blue-400 font-medium" :
                 ["progress", "complete"].includes(currentStep) ? "text-green-600 dark:text-green-400" : ""
@@ -439,12 +512,15 @@ export function CreateVideoSection() {
           )}
 
           {/* Current Project Info */}
-          {projectName && currentStep !== "upload" && (
+          {projectName && !["method", "upload"].includes(currentStep) && (
             <div className="mt-6 p-4 bg-slate-50 dark:bg-zinc-800 rounded-lg border">
               <p className="text-sm text-slate-600 dark:text-zinc-400">
                 Current Project: <span className="font-medium text-slate-900 dark:text-white">{projectName}</span>
-                {uploadedImages.length > 0 && (
+                {selectedMethod === "images" && uploadedImages.length > 0 && (
                   <span className="ml-2">• {uploadedImages.length} images</span>
+                )}
+                {selectedMethod === "url" && websiteUrl && (
+                  <span className="ml-2">• From URL: {new URL(websiteUrl).hostname}</span>
                 )}
                 {customDomain && (
                   <span className="ml-2">• Custom domain: {customDomain}</span>
@@ -457,6 +533,14 @@ export function CreateVideoSection() {
           )}
         </div>
       </div>
+
+      {/* Step 0: Creation Method Selection Modal */}
+      <CreationMethodModal
+        isOpen={isMethodModalOpen}
+        onClose={handleCloseMethod}
+        onSelectImageUpload={handleSelectImageUpload}
+        onSelectWebsiteUrl={handleSelectWebsiteUrl}
+      />
 
       {/* Step 1: Image Upload Modal */}
       <ImageUploadModal

@@ -132,14 +132,14 @@ export function FeaturesSection() {
                     className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white px-8 py-4"
                   >
                     <Sparkles className="w-5 h-5 mr-2" />
-                    Start Your Competitive Advantage
+                    Get your advantage
                   </Button>
                   <Button
                     size="lg"
                     variant="outline"
                     className="border-border text-foreground hover:bg-accent px-8 py-4"
                   >
-                    Compare with the Competition
+                    Compare the Competition
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </div>

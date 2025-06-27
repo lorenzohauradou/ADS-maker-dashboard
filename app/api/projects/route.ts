@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
     
     try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/projects`, {
       method: 'POST',
       headers: {
         'x-user-id': session.user.id,
@@ -74,7 +74,7 @@ export async function GET() {
     }
 
     // 📡 Usa utility per fetch progetti
-    const result = await fetchBackendJson(`/api/projects/recent/`, {
+    const result = await fetchBackendJson(`/api/projects/recent`, {
       headers: {
         'x-user-id': session.user.id,
         'x-user-email': session.user.email || '',

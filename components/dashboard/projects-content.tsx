@@ -336,7 +336,7 @@ export function ProjectsContent() {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 min-h-0 flex-1">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -455,7 +455,7 @@ export function ProjectsContent() {
         {/* Projects Grid/List */}
         {!isLoading && !error && (
           viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-max">
               {filteredProjects.map((project) => (
                 <Card
                   key={project.id}
@@ -727,6 +727,18 @@ export function ProjectsContent() {
         projectId={currentProject?.id}
         configuration={currentProject?.configuration || {}}
         workflowAlreadyStarted={true}
+      />
+
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => {
+          setIsDeleteDialogOpen(false)
+          setProjectToDelete(null)
+        }}
+        onConfirm={confirmDelete}
+        title="Elimina Progetto"
+        description={`Sei sicuro di voler eliminare il progetto "${projectToDelete?.name}"? Questa azione non può essere annullata.`}
+        isLoading={isDeleting}
       />
     </>
   )
