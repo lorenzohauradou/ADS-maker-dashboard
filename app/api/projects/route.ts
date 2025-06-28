@@ -27,7 +27,26 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const backendFormData = new FormData()
 
-    console.log('🔍 FormData entries:', Array.from(formData.entries()).map(([key, value]) => [key, value instanceof File ? `File: ${value.name}` : value]))
+    console.log('🔍 FormData entries:', Array.from(formData.entries()).map(([key, value]) => [key, value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value]))
+    
+    // Calcola dimensione totale
+    let totalSize = 0
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        totalSize += value.size
+      }
+    }
+    console.log('🔍 Total upload size:', `${totalSize} bytes (${(totalSize / 1024 / 1024).toFixed(2)} MB)`)
+    
+    // Verifica limite Vercel (50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    if (totalSize > maxSize) {
+      console.error('❌ Files too large for Vercel:', `${totalSize} > ${maxSize}`)
+      return NextResponse.json({ 
+        error: 'Files too large', 
+        details: `Total size ${(totalSize / 1024 / 1024).toFixed(2)}MB exceeds 50MB limit`
+      }, { status: 413 })
+    }
 
     for (const [key, value] of formData.entries()) {
       backendFormData.append(key, value)
@@ -49,6 +68,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'x-user-id': session.user.id,
         'x-user-email': session.user.email,
+        // NON impostare Content-Type per FormData - il browser lo fa automaticamente con boundary
       },
       body: backendFormData,
         signal: controller.signal,
