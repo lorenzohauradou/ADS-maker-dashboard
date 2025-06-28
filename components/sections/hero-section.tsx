@@ -157,7 +157,7 @@ export function HeroSection() {
             className="border-2 border-border text-foreground hover:bg-accent text-xl px-12 py-6 rounded-2xl backdrop-blur-sm hover:border-border/80 transition-all duration-300 group"
             asChild
           >
-            <Link href="#showcase" className="scroll-smooth">
+            <Link href="/demo">
               Watch Demo
               <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
             </Link>
