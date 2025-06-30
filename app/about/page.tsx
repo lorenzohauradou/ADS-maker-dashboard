@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
-import { Header } from "@/components/layout/header"
+import { BlogHeader } from "@/components/layout/blog-header"
 import { Footer } from "@/components/layout/footer"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { BreadcrumbsSEO } from "@/components/ui/breadcrumbs-seo"
-import { Sparkles, Users, Target, Zap } from "lucide-react"
 
 export const metadata: Metadata = {
     title: 'About Fast Ads AI - AI-Powered Video Ad Creation Platform',
@@ -28,12 +25,12 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-background">
-            <Header />
+        <div className="min-h-screen bg-white dark:bg-zinc-950">
+            <BlogHeader />
 
-            <main className="pt-20">
+            <main className="pt-16">
                 {/* Breadcrumbs */}
-                <div className="container mx-auto px-4 pt-4">
+                <div className="max-w-7xl mx-auto px-4 pt-4">
                     <BreadcrumbsSEO
                         items={[
                             { label: 'About', href: '/about', current: true }
@@ -41,122 +38,119 @@ export default function AboutPage() {
                     />
                 </div>
 
-                {/* Hero Section */}
-                <section className="py-20 px-4">
-                    <div className="container mx-auto text-center">
-                        <Badge variant="secondary" className="mb-6">
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            About Fast Ads AI
-                        </Badge>
-                        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                            Revolutionizing Video Ad Creation
-                            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                {" "}with AI
-                            </span>
-                        </h1>
-                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                            Fast Ads AI transforms the way businesses create video advertisements.
-                            Our AI-powered platform converts product images into high-converting video ads in minutes,
-                            helping dropshippers and e-commerce brands scale their marketing efforts.
-                        </p>
+                {/* Hero Section - stile molto più clean come il blog */}
+                <section className="py-16 px-4">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="max-w-3xl">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+                                About Fast Ads AI
+                            </h1>
+                            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Fast Ads AI transforms the way businesses create video advertisements.
+                                Our AI-powered platform converts product images into high-converting video ads in minutes,
+                                helping dropshippers and e-commerce brands scale their marketing efforts.
+                            </p>
+                        </div>
                     </div>
                 </section>
 
-                {/* Mission Section */}
-                <section className="py-16 px-4 bg-muted/50">
-                    <div className="container mx-auto">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                            <div>
-                                <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-                                <p className="text-lg text-muted-foreground mb-6">
-                                    We believe that creating high-quality video ads shouldn't require expensive agencies,
-                                    complex software, or hours of manual work. Our mission is to democratize video marketing
-                                    by making professional ad creation accessible to everyone.
-                                </p>
-                                <p className="text-lg text-muted-foreground">
-                                    With Fast Ads AI, any business can transform simple product images into compelling
-                                    video advertisements that drive conversions across all major social platforms.
-                                </p>
+                {/* Mission Section - layout semplificato */}
+                <section className="py-16 px-4">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                            <div className="lg:col-span-2">
+                                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Our Mission</h2>
+                                <div className="space-y-4">
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                        We believe that creating high-quality video ads shouldn't require expensive agencies,
+                                        complex software, or hours of manual work. Our mission is to democratize video marketing
+                                        by making professional ad creation accessible to everyone.
+                                    </p>
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                        With Fast Ads AI, any business can transform simple product images into compelling
+                                        video advertisements that drive conversions across all major social platforms.
+                                    </p>
+                                </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Card className="p-6 text-center">
-                                    <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                                    <h3 className="font-bold text-2xl mb-2">10K+</h3>
-                                    <p className="text-sm text-muted-foreground">Active Users</p>
-                                </Card>
-                                <Card className="p-6 text-center">
-                                    <Target className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                                    <h3 className="font-bold text-2xl mb-2">500K+</h3>
-                                    <p className="text-sm text-muted-foreground">Ads Created</p>
-                                </Card>
-                                <Card className="p-6 text-center">
-                                    <Zap className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                                    <h3 className="font-bold text-2xl mb-2">3 Min</h3>
-                                    <p className="text-sm text-muted-foreground">Average Creation Time</p>
-                                </Card>
-                                <Card className="p-6 text-center">
-                                    <Sparkles className="w-12 h-12 text-orange-600 mx-auto mb-4" />
-                                    <h3 className="font-bold text-2xl mb-2">4.9★</h3>
-                                    <p className="text-sm text-muted-foreground">User Rating</p>
-                                </Card>
+
+                            {/* Statistiche semplificate */}
+                            <div className="space-y-6">
+                                <div className="border-l-2 border-gray-200 dark:border-zinc-800 pl-4">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">10K+</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Active Users</p>
+                                </div>
+                                <div className="border-l-2 border-gray-200 dark:border-zinc-800 pl-4">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">500K+</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Ads Created</p>
+                                </div>
+                                <div className="border-l-2 border-gray-200 dark:border-zinc-800 pl-4">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">3 Min</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Average Creation Time</p>
+                                </div>
+                                <div className="border-l-2 border-gray-200 dark:border-zinc-800 pl-4">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">4.9★</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">User Rating</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Technology Section */}
-                <section className="py-16 px-4">
-                    <div className="container mx-auto text-center">
-                        <h2 className="text-3xl font-bold mb-12">Powered by Advanced AI Technology</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <Card className="p-8">
-                                <h3 className="text-xl font-bold mb-4">Computer Vision</h3>
-                                <p className="text-muted-foreground">
+                {/* Technology Section - semplificato */}
+                <section className="py-16 px-4 border-t border-gray-200 dark:border-zinc-800">
+                    <div className="max-w-7xl mx-auto">
+                        <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
+                            Powered by Advanced AI Technology
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Computer Vision</h3>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                     Our AI analyzes product images to understand features, benefits, and optimal presentation angles.
                                 </p>
-                            </Card>
-                            <Card className="p-8">
-                                <h3 className="text-xl font-bold mb-4">Natural Language Processing</h3>
-                                <p className="text-muted-foreground">
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Natural Language Processing</h3>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                     Generates compelling scripts and copy that resonate with your target audience.
                                 </p>
-                            </Card>
-                            <Card className="p-8">
-                                <h3 className="text-xl font-bold mb-4">Video Synthesis</h3>
-                                <p className="text-muted-foreground">
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">Video Synthesis</h3>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                     Creates professional video ads with realistic voices and engaging visuals.
                                 </p>
-                            </Card>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Values Section */}
-                <section className="py-16 px-4 bg-muted/50">
-                    <div className="container mx-auto">
-                        <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg mb-2">Innovation</h3>
-                                <p className="text-sm text-muted-foreground">
+                {/* Values Section - molto più semplice */}
+                <section className="py-16 px-4 border-t border-gray-200 dark:border-zinc-800">
+                    <div className="max-w-7xl mx-auto">
+                        <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">Our Values</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div>
+                                <h3 className="font-bold text-base mb-2 text-gray-900 dark:text-white">Innovation</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                     Constantly pushing the boundaries of what's possible with AI.
                                 </p>
                             </div>
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg mb-2">Accessibility</h3>
-                                <p className="text-sm text-muted-foreground">
+                            <div>
+                                <h3 className="font-bold text-base mb-2 text-gray-900 dark:text-white">Accessibility</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                     Making professional tools available to businesses of all sizes.
                                 </p>
                             </div>
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg mb-2">Quality</h3>
-                                <p className="text-sm text-muted-foreground">
+                            <div>
+                                <h3 className="font-bold text-base mb-2 text-gray-900 dark:text-white">Quality</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                     Delivering high-quality results that drive real business growth.
                                 </p>
                             </div>
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg mb-2">Speed</h3>
-                                <p className="text-sm text-muted-foreground">
+                            <div>
+                                <h3 className="font-bold text-base mb-2 text-gray-900 dark:text-white">Speed</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                     Enabling rapid creation and iteration of marketing content.
                                 </p>
                             </div>
