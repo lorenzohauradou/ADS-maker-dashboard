@@ -147,7 +147,7 @@ export function Footer() {
             © 2024 FAST ADS AI. All rights reserved.
           </p>
           <p className="text-muted-foreground text-xs text-center sm:text-right">
-            Made with ❤️ in Italy
+            Made with ❤️
           </p>
         </div>
       </div>

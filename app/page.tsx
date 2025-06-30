@@ -5,8 +5,10 @@ import { ShowcaseSection } from "@/components/sections/showcase-section"
 import { ProblemSection } from "@/components/sections/problem-section"
 import { DeviceShowcaseSection } from "@/components/sections/device-showcase-section"
 import { SolutionSection } from "@/components/sections/solution-section"
-import { FeaturesSection } from "@/components/sections/features-section"
+// import { FeaturesSection } from "@/components/sections/features-section"
 import { WorkflowSection } from "@/components/sections/workflow-section"
+import { AvatarSelectionSection } from "@/components/sections/avatar-selection-section"
+import { WebsiteShowcaseSection } from "@/components/sections/website-showcase-section"
 import { PricingSection } from "@/components/sections/pricing-section"
 import { FaqSection } from "@/components/sections/faq-section"
 import { CTASection } from "@/components/sections/cta-section"
@@ -23,10 +25,11 @@ export default function HomePage() {
         {/* <TrustedCompaniesSection /> */}
         <ShowcaseSection />
         <WorkflowSection />
+        <AvatarSelectionSection />
         <ProblemSection />
         <SolutionSection />
+        <WebsiteShowcaseSection />
         <DeviceShowcaseSection />
-        <FeaturesSection />
         <PricingSection />
         <FaqSection />
         <CTASection />

@@ -28,7 +28,7 @@ export function CTASection() {
             </h2>
 
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of businesses that have already transformed their video marketing with AutoADS. Your first video is free.
+              Join thousands of businesses that have already transformed their video marketing with Fast Ads AI. Your first video is free.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
