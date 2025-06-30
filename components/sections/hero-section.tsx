@@ -232,9 +232,6 @@ export function HeroSection() {
                         >
                           <source src={currentProjectData.videoSrc} type="video/mp4" />
                         </video>
-                        <Badge className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm border-white/30 text-white z-10 text-sm">
-                          🎬 Video Ready
-                        </Badge>
                         {/* Mobile Audio Control Hint - Bottom Left */}
                         <div className="absolute bottom-4 left-4">
                           <Badge className="bg-black/60 text-white text-xs px-2 py-1">
