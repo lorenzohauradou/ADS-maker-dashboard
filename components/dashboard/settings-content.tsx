@@ -31,11 +31,11 @@ import {
 
 export function SettingsContent() {
   const [formData, setFormData] = useState({
-    firstName: "Lorenzo",
-    lastName: "Hauradou",
-    email: "lorenzo@adsmaker.ai",
-    company: "ADS MAKER AI",
-    bio: "Creative director specializing in AI-powered video advertising solutions.",
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    bio: "",
     notifications: {
       email: true,
       push: true,
@@ -44,8 +44,8 @@ export function SettingsContent() {
     },
     preferences: {
       theme: "system",
-      language: "it",
-      timezone: "Europe/Rome",
+      language: "en",
+      timezone: "Europe/London",
       autoSave: true,
     },
   })
