@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Play, ArrowRight, Sparkles, Zap, Brain } from "lucide-react"
 
 export function DemoVideoSection() {

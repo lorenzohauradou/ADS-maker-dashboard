@@ -7,7 +7,7 @@ import { Play, Eye, Heart, Share2, TrendingUp, Volume2, VolumeX, MousePointer2 }
 
 export function ShowcaseSection() {
   const [audioStates, setAudioStates] = useState<Record<number, boolean>>({})
-  const [showAudioHint, setShowAudioHint] = useState(true)
+  const [showAudioHint] = useState(true)
   const [isDesktop, setIsDesktop] = useState(false)
 
   // Detect screen size

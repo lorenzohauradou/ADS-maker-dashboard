@@ -1,10 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import { useUserLimits } from "@/hooks/use-user-limits"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useSidebar } from "@/components/ui/sidebar"
@@ -23,14 +21,11 @@ import {
 import {
   Home,
   FolderOpen,
-  BarChart3,
   Settings,
   HelpCircle,
   Crown,
   Plus,
-  ArrowUp,
   LogOut,
-  Zap,
   Sparkles,
 } from "lucide-react"
 import Link from "next/link"
@@ -64,7 +59,7 @@ export function Sidebar() {
   const router = useRouter()
   const { state, setOpen } = useSidebar()
   const { data: session } = useSession()
-  const { plan, loading: limitsLoading, can_create_video, videos_used, videos_per_month } = useUserLimits()
+  const { plan, loading: limitsLoading, can_create_video } = useUserLimits()
 
   const handleCreateNewVideo = () => {
     // Chiudi la sidebar

@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { Smartphone, Tablet } from "lucide-react"
+import { Smartphone } from "lucide-react"
 
 export function DeviceShowcaseSection() {
     const devices = [

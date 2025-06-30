@@ -3,19 +3,19 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { LanguageBadge } from "@/components/ui/LanguageBadge"
-import { Play, ArrowRight, Sparkles, Zap, Globe, Brain } from "lucide-react"
+import { Play, ArrowRight, Sparkles, Zap, Brain } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useVideoControls } from "@/hooks/useVideoControls"
 
 export function HeroSection() {
-  const { data: session, status } = useSession()
-  const { activeVideo, toggleVideoAudio, handleVideoClick, setActiveVideo } = useVideoControls()
+  const { data: session } = useSession()
+  const { activeVideo, handleVideoClick, setActiveVideo } = useVideoControls()
 
   // Dynamic video transformation states
   const [currentStep, setCurrentStep] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [isAnimating] = useState(false)
   const [currentProject, setCurrentProject] = useState(0)
 
   // Using the same projects from showcase section

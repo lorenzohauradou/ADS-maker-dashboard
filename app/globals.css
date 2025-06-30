@@ -180,11 +180,57 @@ html {
 }
 
 /* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Blog specific styles */
+.blog-sidebar-nav a {
+  transition: all 0.2s ease;
+}
+
+.blog-sidebar-nav a:hover {
+  transform: translateX(4px);
+}
+
+.blog-card-thumbnail {
+  transition: transform 0.3s ease;
+}
+
+.blog-card:hover .blog-card-thumbnail {
+  transform: scale(1.05);
+}
+
+/* Enhanced hover effects for blog cards */
+.blog-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Backdrop blur for thumbnails */
+.thumbnail-overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Responsive text utilities */

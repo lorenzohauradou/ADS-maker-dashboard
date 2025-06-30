@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Calendar, Clock, ImageIcon, Play, Edit, Trash2, Loader2, AlertTriangle, Volume2, VolumeX } from "lucide-react"
+import { MoreHorizontal, Calendar, Clock, ImageIcon, Play, Trash2, Loader2, AlertTriangle, Volume2, VolumeX } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Project } from "@/types/project"
@@ -23,7 +23,6 @@ export function RecentProjects() {
 
   // Usa il hook per i controlli video
   const {
-    activeVideo,
     isPreviewOpen,
     selectedProject,
     handlePreview,

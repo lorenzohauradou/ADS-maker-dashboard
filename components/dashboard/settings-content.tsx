@@ -8,16 +8,12 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import {
   User,
-  Mail,
   Lock,
   Bell,
-  Palette,
-  Globe,
   CreditCard,
   Shield,
   Download,
@@ -25,7 +21,6 @@ import {
   Save,
   Camera,
   Settings,
-  Check,
   AlertTriangle,
 } from "lucide-react"
 

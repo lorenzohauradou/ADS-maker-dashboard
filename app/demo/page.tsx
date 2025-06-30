@@ -4,13 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/layout/header"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
-import { Play, ArrowLeft, Sparkles, Maximize2, X } from "lucide-react"
+import { Play, ArrowLeft, Sparkles, Maximize2 } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
 
 export default function DemoPage() {
-    const [isExpanded, setIsExpanded] = useState(false)
-
     return (
         <main className="min-h-screen bg-background">
             <Header />

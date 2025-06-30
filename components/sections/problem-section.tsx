@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { X, Clock, DollarSign, Users, Code, Zap } from "lucide-react"
+import { Clock, DollarSign, Code } from "lucide-react"
 
 export function ProblemSection() {
   const problems = [
