@@ -1,24 +1,22 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, TrendingUp, Target, Zap, BarChart3, DollarSign, Play } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { ArrowLeft, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BlogHeader } from '@/components/layout/blog-header';
 import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-    title: 'TikTok Advertising Strategy: Complete Guide to High-Converting Campaigns',
-    description: 'Comprehensive TikTok advertising guide with proven conversion strategies, creative frameworks, and performance optimization techniques for 2025.',
-    keywords: ['TikTok advertising strategy', 'TikTok campaign optimization', 'social media advertising ROI', 'TikTok conversion tactics', 'video marketing strategy'],
+    title: 'Complete TikTok Ads Strategy Guide: From Setup to Scale',
+    description: 'Step-by-step guide to creating successful TikTok advertising campaigns, with optimization strategies and best practices for maximum ROI.',
+    keywords: ['TikTok ads guide', 'TikTok advertising strategy', 'TikTok campaign optimization', 'social media advertising', 'video marketing'],
     openGraph: {
-        title: 'TikTok Advertising Strategy: Complete Guide to High-Converting Campaigns',
-        description: 'Master TikTok advertising with data-driven strategies that deliver measurable business results.',
+        title: 'Complete TikTok Ads Strategy Guide: From Setup to Scale',
+        description: 'Master TikTok advertising with this comprehensive guide covering setup, optimization, and scaling strategies.',
         type: 'article',
     },
 };
 
-export default function TikTokAdvertisingStrategy() {
+export default function TikTokAdsGuide() {
     return (
         <div className="min-h-screen bg-white dark:bg-zinc-950">
             <BlogHeader />
@@ -26,258 +24,293 @@ export default function TikTokAdvertisingStrategy() {
             <main className="pt-16">
                 {/* Header del post */}
                 <div className="border-b border-gray-200 dark:border-zinc-800">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                         <Link
                             href="/blog"
-                            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8 text-sm font-medium"
+                            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8 text-sm font-medium transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             All posts
                         </Link>
 
-                        <div className="mb-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Badge className="bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white border-0">
-                                    Campaign Strategy
+                        <div className="mb-8">
+                            <div className="flex items-center gap-4 mb-6">
+                                <Badge variant="secondary" className="text-xs">
+                                    Strategy Guide
                                 </Badge>
                                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                                    Updated January 15, 2025
+                                    Published June 20, 2025
                                 </span>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">•</span>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">18 min read</span>
+                                <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <Clock className="h-3 w-3" />
+                                    16 min read
+                                </div>
                             </div>
 
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-                                TikTok Advertising Strategy: Complete Guide to High-Converting Campaigns
+                            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+                                Complete TikTok Ads Strategy Guide: From Setup to Scale
                             </h1>
 
-                            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
-                                Comprehensive guide to TikTok advertising success, featuring proven conversion frameworks,
-                                creative strategies, and optimization techniques that drive measurable business results.
+                            <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Step-by-step guide to creating successful TikTok advertising campaigns, from initial setup
+                                to scaling strategies, with optimization best practices for maximum ROI.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Contenuto dell'articolo */}
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    {/* Key Performance Indicators */}
-                    <section className="mb-16">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                            <Card className="p-6 text-center bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border-red-200 dark:border-red-800">
-                                <Play className="w-8 h-8 text-red-600 dark:text-red-400 mx-auto mb-3" />
-                                <div className="text-2xl font-bold text-red-700 dark:text-red-300">1.7B+</div>
-                                <div className="text-sm text-red-600 dark:text-red-400">Monthly Active Users</div>
-                            </Card>
-                            <Card className="p-6 text-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
-                                <TrendingUp className="w-8 h-8 text-green-600 dark:text-green-400 mx-auto mb-3" />
-                                <div className="text-2xl font-bold text-green-700 dark:text-green-300">73%</div>
-                                <div className="text-sm text-green-600 dark:text-green-400">Better Native Performance</div>
-                            </Card>
-                            <Card className="p-6 text-center bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
-                                <BarChart3 className="w-8 h-8 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
-                                <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">52min</div>
-                                <div className="text-sm text-blue-600 dark:text-blue-400">Avg. Session Duration</div>
-                            </Card>
-                            <Card className="p-6 text-center bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
-                                <DollarSign className="w-8 h-8 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
-                                <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">37.8M</div>
-                                <div className="text-sm text-purple-600 dark:text-purple-400">US Social Commerce Sales</div>
-                            </Card>
-                        </div>
-                    </section>
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">
 
-                    <div className="prose prose-lg max-w-none dark:prose-invert">
-                        {/* Strategic Framework */}
-                        <section className="mb-12">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
-                                <Target className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-3" />
-                                High-Converting Campaign Framework
+                        {/* Introduction */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                                Getting Started with TikTok Ads
                             </h2>
 
-                            <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800 mb-8">
-                                <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-                                    TikTok advertising success requires understanding the platform's unique ecosystem.
-                                    Our framework combines <strong>native content strategies</strong> with <strong>performance marketing principles</strong>
-                                    to achieve campaigns that feel authentic while driving <strong>measurable business results</strong>.
+                            <div className="bg-gray-50 dark:bg-zinc-900 p-8 rounded-lg mb-12">
+                                <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-0">
+                                    TikTok advertising offers unprecedented reach and engagement opportunities, with
+                                    <strong> 1.7 billion monthly active users</strong> and <strong>89 minutes average daily usage</strong>.
+                                    This comprehensive guide covers everything from account setup to advanced scaling strategies.
                                 </p>
-                            </Card>
+                            </div>
 
-                            <Card className="p-8 border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20 dark:border-red-400">
-                                <h3 className="text-xl font-semibold mb-4 text-red-700 dark:text-red-400">The HPSC Formula</h3>
-                                <p className="mb-6 text-gray-700 dark:text-gray-300">
-                                    Our proven framework for TikTok campaigns that consistently outperform industry benchmarks:
-                                </p>
-                                <div className="grid md:grid-cols-4 gap-6">
-                                    <div className="text-center">
-                                        <div className="bg-red-100 dark:bg-red-800/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                                            <span className="font-bold text-red-600 dark:text-red-400 text-lg">H</span>
-                                        </div>
-                                        <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Hook</h4>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Attention capture in first 1-3 seconds</p>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="bg-orange-100 dark:bg-orange-800/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                                            <span className="font-bold text-orange-600 dark:text-orange-400 text-lg">P</span>
-                                        </div>
-                                        <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Problem</h4>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Pain point identification</p>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="bg-green-100 dark:bg-green-800/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                                            <span className="font-bold text-green-600 dark:text-green-400 text-lg">S</span>
-                                        </div>
-                                        <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Solution</h4>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Product demonstration</p>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="bg-blue-100 dark:bg-blue-800/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                                            <span className="font-bold text-blue-600 dark:text-blue-400 text-lg">C</span>
-                                        </div>
-                                        <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Call-to-Action</h4>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Clear conversion driver</p>
-                                    </div>
+                            <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Why TikTok Advertising Works</h3>
+                            <ul className="space-y-4 text-gray-700 dark:text-gray-300 mb-12">
+                                <li>High engagement rates: 67% higher than other social platforms</li>
+                                <li>Advanced targeting capabilities with precise audience selection</li>
+                                <li>Creative-first platform that rewards authentic, engaging content</li>
+                                <li>Lower competition compared to Facebook and Google Ads</li>
+                            </ul>
+
+                            <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Key Success Metrics</h3>
+                            <div className="space-y-6 mb-12">
+                                <div className="border-l-4 border-green-500 pl-6">
+                                    <h4 className="font-semibold text-green-700 dark:text-green-400 mb-2">Engagement Rate</h4>
+                                    <p className="text-gray-600 dark:text-gray-400">Target: 6-9% for optimal performance</p>
                                 </div>
-                            </Card>
-                        </section>
-
-                        {/* Hook Strategies */}
-                        <section className="mb-12">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
-                                <Zap className="h-6 w-6 text-yellow-500 mr-3" />
-                                Advanced Hook Strategies
-                            </h2>
-
-                            <div className="space-y-8">
-                                <Card className="p-8 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-400">
-                                    <h3 className="text-xl font-semibold mb-4 text-yellow-700 dark:text-yellow-400">Hook Performance Analysis</h3>
-                                    <div className="grid md:grid-cols-3 gap-6 mb-6">
-                                        <div>
-                                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">85%</div>
-                                            <div className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Hook Retention Rate</div>
-                                            <div className="text-xs text-gray-600 dark:text-gray-400">Optimal first 3 seconds</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">42%</div>
-                                            <div className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Conversion Increase</div>
-                                            <div className="text-xs text-gray-600 dark:text-gray-400">Question-based hooks</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">67%</div>
-                                            <div className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Engagement Boost</div>
-                                            <div className="text-xs text-gray-600 dark:text-gray-400">Transformation hooks</div>
-                                        </div>
-                                    </div>
-                                </Card>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6 bg-white dark:bg-zinc-900">
-                                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">1. Pattern Interrupt Hook</h3>
-                                        <p className="text-gray-600 dark:text-gray-400 mb-3">Break expected patterns to capture attention immediately.</p>
-                                        <div className="bg-gray-50 dark:bg-zinc-800 p-3 rounded border-l-4 border-blue-400">
-                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">"This $12 tool does what a $300 machine can't..."</p>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 bg-white dark:bg-zinc-900">
-                                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">2. Social Proof Hook</h3>
-                                        <p className="text-gray-600 dark:text-gray-400 mb-3">Leverage user testimonials for instant credibility.</p>
-                                        <div className="bg-gray-50 dark:bg-zinc-800 p-3 rounded border-l-4 border-green-400">
-                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">"12,000 customers can't be wrong about this..."</p>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 bg-white dark:bg-zinc-900">
-                                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">3. Curiosity Gap Hook</h3>
-                                        <p className="text-gray-600 dark:text-gray-400 mb-3">Create knowledge gaps that demand resolution.</p>
-                                        <div className="bg-gray-50 dark:bg-zinc-800 p-3 rounded border-l-4 border-purple-400">
-                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">"The skincare secret dermatologists won't tell you"</p>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 bg-white dark:bg-zinc-900">
-                                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">4. Contradiction Hook</h3>
-                                        <p className="text-gray-600 dark:text-gray-400 mb-3">Challenge common beliefs or assumptions.</p>
-                                        <div className="bg-gray-50 dark:bg-zinc-800 p-3 rounded border-l-4 border-red-400">
-                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">"Everything you know about weight loss is wrong"</p>
-                                        </div>
-                                    </Card>
+                                <div className="border-l-4 border-blue-500 pl-6">
+                                    <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Video View Rate</h4>
+                                    <p className="text-gray-600 dark:text-gray-400">Target: 25-30% completion rate</p>
+                                </div>
+                                <div className="border-l-4 border-purple-500 pl-6">
+                                    <h4 className="font-semibold text-purple-700 dark:text-purple-400 mb-2">Cost Per Click</h4>
+                                    <p className="text-gray-600 dark:text-gray-400">Average: $0.50-$2.00 depending on niche</p>
                                 </div>
                             </div>
                         </section>
 
-                        {/* Implementation Guide */}
-                        <section className="mb-12">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
-                                <Target className="h-6 w-6 text-purple-500 mr-3" />
-                                Campaign Implementation Guide
+                        {/* Campaign Setup */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                                Campaign Setup & Structure
                             </h2>
 
-                            <div className="space-y-6">
-                                <div className="bg-gray-50 dark:bg-zinc-800 p-6 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Phase 1: Creative Development</h4>
-                                    <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                                        <li>• Research trending content and sounds in your niche</li>
-                                        <li>• Develop hook variations using HPSC framework</li>
-                                        <li>• Create user-generated content style videos</li>
-                                        <li>• Implement pattern interrupt techniques</li>
+                            <div className="space-y-12">
+                                <div>
+                                    <h3 className="text-2xl font-semibold mb-6 text-green-700 dark:text-green-400">Step 1: Account Setup</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-6">
+                                        Proper account configuration is crucial for campaign success and compliance with TikTok's policies.
+                                    </p>
+                                    <h4 className="font-semibold mb-4 text-gray-900 dark:text-white">Setup Checklist:</h4>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-6">
+                                        <li>Create TikTok Business Account with complete business information</li>
+                                        <li>Verify domain ownership and implement TikTok Pixel</li>
+                                        <li>Set up conversion tracking for all key actions</li>
+                                        <li>Configure payment methods and billing information</li>
+                                    </ul>
+                                    <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                                        <h5 className="font-semibold text-green-700 dark:text-green-400 mb-2">Pro Tip:</h5>
+                                        <p className="text-gray-700 dark:text-gray-300 text-sm">
+                                            Complete all account verification steps before creating campaigns to avoid delays and restrictions.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-400">Step 2: Campaign Structure</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-6">
+                                        Organize your campaigns for optimal performance and easy management.
+                                    </p>
+                                    <h4 className="font-semibold mb-4 text-gray-900 dark:text-white">Recommended Structure:</h4>
+                                    <div className="space-y-4 mb-6">
+                                        <div className="bg-gray-100 dark:bg-zinc-800 p-4 rounded-lg">
+                                            <h5 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Campaign Level</h5>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">Set objectives: Traffic, Conversions, App Installs, etc.</p>
+                                        </div>
+                                        <div className="bg-gray-100 dark:bg-zinc-800 p-4 rounded-lg">
+                                            <h5 className="font-semibold text-purple-700 dark:text-purple-400 mb-2">Ad Group Level</h5>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">Define targeting, budget, and bidding strategy</p>
+                                        </div>
+                                        <div className="bg-gray-100 dark:bg-zinc-800 p-4 rounded-lg">
+                                            <h5 className="font-semibold text-orange-700 dark:text-orange-400 mb-2">Ad Level</h5>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">Upload creative assets and write compelling copy</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-2xl font-semibold mb-6 text-purple-700 dark:text-purple-400">Step 3: Targeting Strategy</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-6">
+                                        TikTok offers sophisticated targeting options to reach your ideal audience.
+                                    </p>
+                                    <h4 className="font-semibold mb-4 text-gray-900 dark:text-white">Targeting Options:</h4>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-6">
+                                        <li>Demographics: Age, gender, location, language</li>
+                                        <li>Interests: Based on content interaction and engagement</li>
+                                        <li>Behavior: Device usage, spending patterns, app activity</li>
+                                        <li>Custom Audiences: Website visitors, app users, lookalikes</li>
+                                    </ul>
+                                    <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg">
+                                        <h5 className="font-semibold text-purple-700 dark:text-purple-400 mb-2">Best Practice:</h5>
+                                        <p className="text-gray-700 dark:text-gray-300 text-sm">
+                                            Start with broader targeting and narrow down based on performance data. TikTok's algorithm works best with larger audience sizes initially.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Creative Strategy */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                                Creative Strategy & Best Practices
+                            </h2>
+
+                            <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
+                                Creative is the most important factor in TikTok advertising success.
+                                Platform-native content consistently outperforms traditional advertising formats.
+                            </p>
+
+                            <div className="space-y-8">
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Video Content Guidelines</h3>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-6">
+                                        <li>Vertical format (9:16 aspect ratio) for optimal mobile viewing</li>
+                                        <li>15-60 seconds duration, with 15-30 seconds being optimal</li>
+                                        <li>Hook viewers within the first 3 seconds</li>
+                                        <li>Include captions for accessibility and sound-off viewing</li>
+                                        <li>Use trending audio and participate in popular challenges</li>
                                     </ul>
                                 </div>
 
-                                <div className="bg-gray-50 dark:bg-zinc-800 p-6 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Phase 2: Campaign Launch</h4>
-                                    <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                                        <li>• Start with small budget for creative testing</li>
-                                        <li>• Target broad, interest-based audiences</li>
-                                        <li>• Monitor engagement velocity in first 2 hours</li>
-                                        <li>• Scale successful creatives rapidly</li>
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Content Formats That Work</h3>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <h4 className="font-semibold mb-3 text-blue-700 dark:text-blue-400">Educational Content</h4>
+                                            <ul className="text-sm space-y-2 text-gray-700 dark:text-gray-300">
+                                                <li>How-to tutorials and demonstrations</li>
+                                                <li>Tips and tricks related to your product</li>
+                                                <li>Problem-solution scenarios</li>
+                                                <li>Before/after transformations</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold mb-3 text-green-700 dark:text-green-400">Entertainment Content</h4>
+                                            <ul className="text-sm space-y-2 text-gray-700 dark:text-gray-300">
+                                                <li>Behind-the-scenes content</li>
+                                                <li>User-generated content features</li>
+                                                <li>Trending challenges adaptations</li>
+                                                <li>Storytelling and testimonials</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Call-to-Action Strategy</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        Effective CTAs drive action without disrupting the TikTok experience.
+                                    </p>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                        <li>Integrate CTAs naturally into the content narrative</li>
+                                        <li>Use action words: "Try now", "Learn more", "Get yours"</li>
+                                        <li>Create urgency with limited-time offers</li>
+                                        <li>Test different CTA placements and formats</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Optimization & Scaling */}
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                                Optimization & Scaling Strategies
+                            </h2>
+
+                            <div className="space-y-8">
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Performance Monitoring</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        Regular monitoring and optimization are essential for campaign success.
+                                    </p>
+                                    <h4 className="font-semibold mb-3 text-gray-900 dark:text-white">Key Metrics to Track:</h4>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-6">
+                                        <li>Click-through rate (CTR): Target 1.5-3%</li>
+                                        <li>Cost per click (CPC): Monitor for efficiency</li>
+                                        <li>Conversion rate: Track and optimize funnel performance</li>
+                                        <li>Return on ad spend (ROAS): Aim for 3:1 minimum</li>
+                                        <li>Video view rate: Target 25-30% completion</li>
                                     </ul>
                                 </div>
 
-                                <div className="bg-gray-50 dark:bg-zinc-800 p-6 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Phase 3: Optimization & Scale</h4>
-                                    <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                                        <li>• Implement automated rules for budget allocation</li>
-                                        <li>• Create lookalike audiences from converters</li>
-                                        <li>• Develop creative refresh workflows</li>
-                                        <li>• Expand to new product lines and markets</li>
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Optimization Timeline</h3>
+                                    <div className="space-y-4">
+                                        <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                                            <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Days 1-3: Launch & Monitor</h4>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">
+                                                Let campaigns run without major changes. Monitor for obvious issues only.
+                                            </p>
+                                        </div>
+                                        <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                                            <h4 className="font-semibold text-green-700 dark:text-green-400 mb-2">Days 4-7: Initial Optimization</h4>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">
+                                                Pause underperforming ad groups, increase budget on winners, test new creatives.
+                                            </p>
+                                        </div>
+                                        <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg">
+                                            <h4 className="font-semibold text-purple-700 dark:text-purple-400 mb-2">Week 2+: Scale & Expand</h4>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">
+                                                Scale successful campaigns, duplicate winning ad groups, expand targeting.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Scaling Strategies</h3>
+                                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        Scale successful campaigns systematically to maintain performance.
+                                    </p>
+                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                        <li>Increase budget by 20-50% every 3-5 days for stable performers</li>
+                                        <li>Duplicate successful ad groups with slight variations</li>
+                                        <li>Expand targeting to similar audiences and interests</li>
+                                        <li>Test new creative formats while maintaining winning elements</li>
+                                        <li>Launch campaigns in new geographic markets</li>
                                     </ul>
                                 </div>
                             </div>
                         </section>
 
                         {/* Conclusion */}
-                        <section className="mb-12">
-                            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Conclusion</h2>
-                            <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
-                                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                    TikTok advertising success hinges on understanding platform-native content creation while maintaining
-                                    clear performance marketing principles. By implementing the HPSC framework and focusing on authentic,
-                                    engaging content that drives conversions, businesses can achieve significant ROI improvements on TikTok.
+                        <section className="mb-16">
+                            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                                Key Takeaways
+                            </h2>
+
+                            <div className="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-lg">
+                                <p className="text-lg text-blue-900 dark:text-blue-100 leading-relaxed mb-0">
+                                    Success with TikTok advertising requires understanding the platform's unique culture
+                                    and user behavior. Focus on creating authentic, engaging content that provides value
+                                    while seamlessly integrating your marketing message. Start with proper setup,
+                                    monitor performance closely, and scale systematically based on data.
                                 </p>
                             </div>
-                        </section>
-
-                        {/* CTA */}
-                        <section className="text-center py-8">
-                            <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
-                                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Ready to Create High-Converting TikTok Ads?</h3>
-                                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                                    Transform your TikTok advertising with AI-powered video creation that implements proven frameworks.
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
-                                        <Link href="/dashboard">
-                                            Start Creating Videos
-                                        </Link>
-                                    </Button>
-                                    <Button size="lg" variant="outline" asChild>
-                                        <Link href="/#demo">
-                                            Watch Demo
-                                        </Link>
-                                    </Button>
-                                </div>
-                            </Card>
                         </section>
                     </div>
                 </div>

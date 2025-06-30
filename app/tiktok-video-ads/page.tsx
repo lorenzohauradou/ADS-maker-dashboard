@@ -9,7 +9,6 @@ import {
     Play,
     ArrowRight,
     Smartphone,
-    Clock,
     TrendingUp,
     Zap,
     CheckCircle,
