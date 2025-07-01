@@ -72,11 +72,11 @@ export function AvatarSelectionSection() {
         },
         {
             id: 6,
-            name: "Aria",
+            name: "Lucia",
             category: "Warm",
             description: "Warm and reassuring tone, perfect for healthcare",
-            image: "/placeholder-user.jpg",
-            accent: "American",
+            image: "/avatar6.png",
+            accent: "Spanish",
             specialties: ["Healthcare", "Wellness", "Family"],
             styles: 4,
             isNew: false,
@@ -237,7 +237,7 @@ export function AvatarSelectionSection() {
                                         <div>
                                             <h3 className="font-bold text-lg text-foreground">{avatar.name}</h3>
                                             <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                                <span>{avatar.accent === 'British' ? '🇬🇧' : '🇺🇸'}</span>
+                                                <span>{avatar.accent === 'British' ? '🇬🇧' : avatar.accent === 'Spanish' ? '🇪🇸' : '🇺🇸'}</span>
                                                 {avatar.accent}
                                             </p>
                                         </div>
