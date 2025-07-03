@@ -43,14 +43,14 @@ export default function BlogPage() {
     const blogPosts = [
         {
             id: 1,
-            title: "TikTok Advertising ROI: Complete Performance Analysis for 2025",
-            excerpt: "Comprehensive analysis of TikTok advertising performance metrics, with real campaign data and optimization strategies that generated 340% ROAS improvement.",
-            category: "Performance Marketing",
+            title: "The AI Dropshipping Revolution: Ultimate 2025 Guide to Building Million-Dollar Brands",
+            excerpt: "Complete guide to AI-powered dropshipping: automated product research, AI content generation, brand building with artificial intelligence, and scaling strategies that generate $90K+ monthly revenue.",
+            category: "AI Dropshipping",
             readTime: "4 min read",
             publishDate: "2025-06-15",
-            slug: "viral-tiktok-ads-2025",
+            slug: "ai-dropshipping-revolution-2025",
             featured: true,
-            metrics: "340% ROAS",
+            metrics: "90K+ monthly revenue",
             difficulty: "Advanced",
             thumbnail: "from-pink-500 to-orange-500",
             icon: TrendingUp

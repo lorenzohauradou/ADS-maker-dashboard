@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -13,7 +14,9 @@ import {
     Calendar,
     Clock,
     Settings,
-    Sparkles
+    Sparkles,
+    Wand2,
+    Upload
 } from "lucide-react"
 import Image from "next/image"
 import { format } from 'date-fns'
@@ -26,7 +29,32 @@ interface VideoPreviewModalProps {
 }
 
 export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModalProps) {
+    // Stati per gestire i modali
+    const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false)
+    const [isWebsiteConfigModalOpen, setIsWebsiteConfigModalOpen] = useState(false)
+
+    // Stati per upload immagini
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [isUploading, setIsUploading] = useState(false)
+
+    // Stati per configurazione sito
+    const [selectedTemplate, setSelectedTemplate] = useState<'modern' | 'elegant'>('modern')
+    const [selectedAiStyle, setSelectedAiStyle] = useState<'professional' | 'casual' | 'creative'>('professional')
+    const [isGenerating, setIsGenerating] = useState(false)
+
     if (!project) return null
+
+    const handleClose = () => {
+        // Reset all modal states when closing
+        setIsImageUploadModalOpen(false)
+        setIsWebsiteConfigModalOpen(false)
+        setUploadedFiles([])
+        setIsUploading(false)
+        setIsGenerating(false)
+        setSelectedTemplate('modern')
+        setSelectedAiStyle('professional')
+        onClose()
+    }
 
     const handleDownload = () => {
         if (project.video?.url && !project.video.url.startsWith('processing_')) {
@@ -37,8 +65,110 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
         }
     }
 
+    const handleGenerateWebsite = () => {
+        // Se il progetto non ha immagini, mostra prima il modale di upload
+        if (project.image_count === 0) {
+            setIsImageUploadModalOpen(true)
+        } else {
+            // Altrimenti vai direttamente alla configurazione del sito
+            setIsWebsiteConfigModalOpen(true)
+        }
+    }
+
+    const handleImageUploadComplete = async () => {
+        if (uploadedFiles.length === 0) {
+            alert('Please select at least one image')
+            return
+        }
+
+        setIsUploading(true)
+
+        try {
+            const formData = new FormData()
+            uploadedFiles.forEach((file) => {
+                formData.append('files', file)
+            })
+
+            const response = await fetch(`/api/projects/${project.id}/upload-additional-images`, {
+                method: 'POST',
+                body: formData
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to upload images')
+            }
+
+            console.log('✅ Images uploaded successfully:', data)
+
+            // Update project image count locally
+            project.image_count = data.total_images
+
+            setIsImageUploadModalOpen(false)
+            setIsWebsiteConfigModalOpen(true)
+            setUploadedFiles([])
+
+        } catch (error) {
+            console.error('❌ Error uploading images:', error)
+            alert(`Error uploading images: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        } finally {
+            setIsUploading(false)
+        }
+    }
+
+    const handleWebsiteConfigComplete = async () => {
+        setIsGenerating(true)
+
+        try {
+            const response = await fetch(`/api/projects/${project.id}/generate-website`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    template_style: selectedTemplate,
+                    ai_style: selectedAiStyle,
+                    color_scheme: 'auto'
+                })
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to generate website')
+            }
+
+            console.log('✅ Website generated successfully:', data)
+
+            // Update project with new site URL
+            project.site_url = data.site_url
+
+            setIsWebsiteConfigModalOpen(false)
+
+            // Show success message and trigger a refresh of the parent component
+            alert(`Website generated successfully! You can now visit it.`)
+
+            // Optionally trigger a refresh of the project data in the parent component
+            // This could be done via a callback prop if needed
+
+        } catch (error) {
+            console.error('❌ Error generating website:', error)
+            alert(`Error generating website: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        } finally {
+            setIsGenerating(false)
+        }
+    }
+
+    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const files = Array.from(event.target.files)
+            setUploadedFiles(files)
+        }
+    }
+
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent
                 className="max-w-4xl w-[95vw] max-h-[95vh] overflow-y-auto bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 p-4 transition-all duration-500"
                 aria-describedby="video-preview-description"
@@ -69,7 +199,31 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
 
                 <div className="space-y-6">
                     {/* Video Preview */}
-                    {project.video?.url && !project.video.url.startsWith('processing_') ? (
+                    {project.status === 'failed' ? (
+                        <Card className="bg-red-50 dark:bg-red-900/20 rounded-xl p-12 text-center border-2 border-red-200 dark:border-red-800">
+                            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Video className="w-8 h-8 text-red-600 dark:text-red-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
+                                Video Generation Failed
+                            </h3>
+                            <p className="text-red-700 dark:text-red-300 mb-4">
+                                There was an error generating your video. This could be due to insufficient credits,
+                                invalid content, or technical issues.
+                            </p>
+                            <div className="space-y-2">
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                    • Check your Creatify credit balance
+                                </p>
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                    • Verify your product URL is accessible
+                                </p>
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                    • Try creating a new video with different settings
+                                </p>
+                            </div>
+                        </Card>
+                    ) : project.video?.url && !project.video.url.startsWith('processing_') ? (
                         <Card className="bg-black rounded-xl overflow-hidden border-2 border-purple-200 dark:border-purple-800">
                             <div className="relative flex items-center justify-center min-h-[300px] max-h-[70vh]">
                                 <video
@@ -83,7 +237,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                         height: 'auto'
                                     }}
                                     onError={(e) => {
-                                        console.error("Video failed to load:", e)
+                                        console.error("Video failed to load:", project.video?.url || 'No URL', e)
                                     }}
                                     onLoadedMetadata={(e) => {
                                         const video = e.target as HTMLVideoElement
@@ -129,7 +283,21 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                 Video Advertisement
                             </h4>
                             <div className="space-y-3">
-                                {project.video?.url && !project.video.url.startsWith('processing_') ? (
+                                {project.status === 'failed' ? (
+                                    <div className="text-center py-4">
+                                        <p className="text-sm text-red-500 dark:text-red-400 mb-3">
+                                            Video generation failed
+                                        </p>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full border-red-200 text-red-600 hover:bg-red-50"
+                                            onClick={() => window.location.reload()}
+                                        >
+                                            <Video className="w-4 h-4 mr-2" />
+                                            Try Again
+                                        </Button>
+                                    </div>
+                                ) : project.video?.url && !project.video.url.startsWith('processing_') ? (
                                     <>
                                         <Button
                                             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
@@ -179,20 +347,39 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                                         </p>
                                     </>
                                 ) : (
-                                    <p className="text-sm text-slate-500 dark:text-zinc-500 text-center py-4">
-                                        Landing page not available
-                                    </p>
+                                    <>
+                                        <Button
+                                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                                            onClick={handleGenerateWebsite}
+                                        >
+                                            <Wand2 className="w-4 h-4 mr-2" />
+                                            Generate Website
+                                        </Button>
+                                        <p className="text-xs text-slate-500 dark:text-zinc-500 text-center py-2">
+                                            {project.image_count === 0
+                                                ? "First upload your product images"
+                                                : "Automatically create a website for your product"
+                                            }
+                                        </p>
+                                    </>
                                 )}
                             </div>
                         </Card>
                     </div>
 
                     {/* Project Details */}
-                    <Card className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4 border border-green-200 dark:border-green-800 rounded-lg">
+                    <Card className={`p-4 rounded-lg ${project.status === 'failed'
+                        ? 'bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-800'
+                        : 'bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800'
+                        }`}>
                         <div className="flex items-start justify-between">
                             <div className="flex-1">
                                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center mb-2">
-                                    <Sparkles className="w-4 h-4 mr-2 text-green-600" />
+                                    {project.status === 'failed' ? (
+                                        <X className="w-4 h-4 mr-2 text-red-600" />
+                                    ) : (
+                                        <Sparkles className="w-4 h-4 mr-2 text-green-600" />
+                                    )}
                                     Project Details
                                 </h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
@@ -222,7 +409,7 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                     {/* Close Button */}
                     <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-zinc-700">
                         <Button
-                            onClick={onClose}
+                            onClick={handleClose}
                             className="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white min-w-24"
                         >
                             Close
@@ -230,6 +417,171 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                     </div>
                 </div>
             </DialogContent>
+
+            {/* Image Upload Modal */}
+            <Dialog open={isImageUploadModalOpen} onOpenChange={setIsImageUploadModalOpen}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center">
+                            <Upload className="w-5 h-5 mr-2 text-purple-600" />
+                            Upload Product Images
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <p className="text-sm text-slate-600 dark:text-zinc-400">
+                            To generate your personalized website, first upload some images of your product.
+                        </p>
+                        <div className="border-2 border-dashed border-slate-200 dark:border-zinc-700 rounded-lg p-8 text-center">
+                            <Upload className="w-12 h-12 text-slate-400 dark:text-zinc-500 mx-auto mb-4" />
+                            <p className="text-sm text-slate-600 dark:text-zinc-400 mb-4">
+                                Drag images here or click to select them
+                            </p>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileSelect}
+                                className="hidden"
+                                id="image-upload"
+                            />
+                            <Button
+                                variant="outline"
+                                onClick={() => document.getElementById('image-upload')?.click()}
+                            >
+                                Select Images
+                            </Button>
+                            {uploadedFiles.length > 0 && (
+                                <div className="mt-4 text-sm text-slate-600 dark:text-zinc-400">
+                                    {uploadedFiles.length} image(s) selected
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsImageUploadModalOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleImageUploadComplete}
+                                disabled={uploadedFiles.length === 0 || isUploading}
+                                className="bg-purple-600 hover:bg-purple-700 text-white"
+                            >
+                                {isUploading ? (
+                                    <>
+                                        <Upload className="w-4 h-4 mr-2 animate-spin" />
+                                        Uploading...
+                                    </>
+                                ) : (
+                                    'Continue'
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Website Configuration Modal */}
+            <Dialog open={isWebsiteConfigModalOpen} onOpenChange={setIsWebsiteConfigModalOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center">
+                            <Wand2 className="w-5 h-5 mr-2 text-purple-600" />
+                            Configure Your Website
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                        <div>
+                            <h3 className="text-lg font-semibold mb-4">Choose Template</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Card
+                                    className={`p-4 cursor-pointer border-2 transition-colors ${selectedTemplate === 'modern'
+                                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                                        : 'border-slate-200 dark:border-zinc-700 hover:border-purple-300'
+                                        }`}
+                                    onClick={() => setSelectedTemplate('modern')}
+                                >
+                                    <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 flex items-center justify-center">
+                                        <Globe className="w-8 h-8 text-purple-600" />
+                                    </div>
+                                    <h4 className="font-medium">Modern Template</h4>
+                                    <p className="text-sm text-slate-600 dark:text-zinc-400">Clean and minimalist design</p>
+                                </Card>
+                                <Card
+                                    className={`p-4 cursor-pointer border-2 transition-colors ${selectedTemplate === 'elegant'
+                                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                                        : 'border-slate-200 dark:border-zinc-700 hover:border-purple-300'
+                                        }`}
+                                    onClick={() => setSelectedTemplate('elegant')}
+                                >
+                                    <div className="aspect-video bg-gradient-to-br from-green-100 to-blue-100 rounded-lg mb-3 flex items-center justify-center">
+                                        <Sparkles className="w-8 h-8 text-blue-600" />
+                                    </div>
+                                    <h4 className="font-medium">Elegant Template</h4>
+                                    <p className="text-sm text-slate-600 dark:text-zinc-400">Sophisticated and professional style</p>
+                                </Card>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-semibold mb-4">AI Style</h3>
+                            <div className="grid grid-cols-3 gap-3">
+                                <Button
+                                    variant={selectedAiStyle === 'professional' ? 'default' : 'outline'}
+                                    className="h-auto p-3 flex flex-col items-center space-y-2"
+                                    onClick={() => setSelectedAiStyle('professional')}
+                                >
+                                    <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
+                                    <span className="text-sm">Professional</span>
+                                </Button>
+                                <Button
+                                    variant={selectedAiStyle === 'casual' ? 'default' : 'outline'}
+                                    className="h-auto p-3 flex flex-col items-center space-y-2"
+                                    onClick={() => setSelectedAiStyle('casual')}
+                                >
+                                    <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                                    <span className="text-sm">Casual</span>
+                                </Button>
+                                <Button
+                                    variant={selectedAiStyle === 'creative' ? 'default' : 'outline'}
+                                    className="h-auto p-3 flex flex-col items-center space-y-2"
+                                    onClick={() => setSelectedAiStyle('creative')}
+                                >
+                                    <div className="w-6 h-6 bg-purple-500 rounded-full"></div>
+                                    <span className="text-sm">Creative</span>
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end space-x-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsWebsiteConfigModalOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleWebsiteConfigComplete}
+                                disabled={isGenerating}
+                                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                            >
+                                {isGenerating ? (
+                                    <>
+                                        <Wand2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Generating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Wand2 className="w-4 h-4 mr-2" />
+                                        Generate Website
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Dialog>
     )
 } 

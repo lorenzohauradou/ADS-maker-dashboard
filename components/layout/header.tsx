@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Zap, Menu, Sun, Moon, User, LogOut } from "lucide-react"
+import { Play, Menu, Sun, Moon, User, LogOut } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/theme-provider"
 import { useSession, signOut } from "next-auth/react"

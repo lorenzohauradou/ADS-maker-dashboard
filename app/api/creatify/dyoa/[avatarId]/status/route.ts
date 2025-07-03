@@ -1,11 +1,9 @@
-// Da eliminare --  workflow monolitico
-
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
+export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
+  { params }: { params: Promise<{ avatarId: string }> }
 ) {
   try {
     // 🔐 Verifica autenticazione NextAuth
@@ -15,26 +13,23 @@ export async function POST(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const resolvedParams = await params
-    const projectId = resolvedParams.projectId
-    const body = await request.json()
+    const { avatarId } = await params
 
-    // 📡 Chiamata al backend per avviare il WORKFLOW ASINCRONO !!!
+    // 📡 Chiamata al backend per controllare status avatar
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/start-video-workflow/${projectId}`,
+      `${process.env.BACKEND_URL}/api/creatify/dyoa/${avatarId}/status`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
-        },
-        body: JSON.stringify(body)
+        }
       }
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
+      const errorData = await response.json()
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
@@ -42,9 +37,9 @@ export async function POST(
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Async workflow creation error:', error)
+    console.error('❌ DYOA status check error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start async workflow', 
+      error: 'Failed to check avatar status', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

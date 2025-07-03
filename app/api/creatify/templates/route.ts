@@ -1,12 +1,7 @@
-// Da eliminare --  workflow monolitico
-
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
-) {
+export async function GET(request: NextRequest) {
   try {
     // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
@@ -15,26 +10,21 @@ export async function POST(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const resolvedParams = await params
-    const projectId = resolvedParams.projectId
-    const body = await request.json()
-
-    // 📡 Chiamata al backend per avviare il WORKFLOW ASINCRONO !!!
+    // 📡 Chiamata al backend per ottenere lista templates
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/start-video-workflow/${projectId}`,
+      `${process.env.BACKEND_URL}/api/creatify/templates`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': session.user.id,
           'x-user-email': session.user.email,
-        },
-        body: JSON.stringify(body)
+        }
       }
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
+      const errorData = await response.json()
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
@@ -42,9 +32,9 @@ export async function POST(
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Async workflow creation error:', error)
+    console.error('❌ Templates fetch error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start async workflow', 
+      error: 'Failed to fetch custom templates', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

@@ -13,6 +13,7 @@ import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
 import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
 import { VideoConfiguration } from "./video-creation-workflow/types/video-configuration"
+import { UnifiedVideoWizard } from "./unified-video-wizard/index"
 import { toast } from "sonner"
 import { useSession } from "next-auth/react"
 import { trackBypassAttempt, trackLimitEvent } from '@/lib/posthog-pricing-enforcement'
@@ -40,10 +41,10 @@ export function CreateVideoSection() {
   const { can_create_video, loading, buyExtraVideo } = useUserLimits()
   const { checkCanCreateVideo, showLimitExceededToast, refreshLimits, startPolling, stopPolling } = useSubscriptionLimits()
 
-  // ✅ REF PER TRACCIARE SE IL COMPONENTE È MONTATO
+  // REF PER TRACCIARE SE IL COMPONENTE È MONTATO
   const isMountedRef = useRef(true)
 
-  // ✅ CLEANUP AUTOMATICO QUANDO COMPONENTE SI SMONTA
+  // CLEANUP AUTOMATICO QUANDO COMPONENTE SI SMONTA
   useEffect(() => {
     isMountedRef.current = true
     return () => {
@@ -58,6 +59,8 @@ export function CreateVideoSection() {
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
 
+  // NUOVO WIZARD UNIFICATO
+  const [isUnifiedWizardOpen, setIsUnifiedWizardOpen] = useState(false)
   // Project data
   const [projectId, setProjectId] = useState<number | null>(null)
   const [projectName, setProjectName] = useState("")
@@ -68,7 +71,7 @@ export function CreateVideoSection() {
   const [websiteUrl, setWebsiteUrl] = useState("")
   const [error, setError] = useState("")
 
-  // ✅ GESTIONE POLLING tramite hook useSubscriptionLimits
+  // GESTIONE POLLING tramite hook useSubscriptionLimits
   useEffect(() => {
     if (currentStep === "progress" && isProgressModalOpen) {
       console.log('🔄 Avvio polling tramite hook...')
@@ -80,8 +83,222 @@ export function CreateVideoSection() {
   }, [currentStep, isProgressModalOpen, startPolling, stopPolling])
 
   const handleCreateAction = () => {
-    if (!isMethodModalOpen && !isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen) {
+    if (!isMethodModalOpen && !isUploadModalOpen && !isConfigModalOpen && !isProgressModalOpen && !isUnifiedWizardOpen) {
       handleStartNewProject()
+    }
+  }
+
+  // GESTIONE WIZARD UNIFICATO
+  const handleStartUnifiedWizard = async () => {
+    // CONTROLLO LIMITI CON TRACCIAMENTO AUTOMATICO
+    const { canCreate, message } = await checkCanCreateVideo()
+
+    if (!canCreate) {
+      if (session?.user?.id) {
+        trackBypassAttempt({
+          plan: 'free',
+          videos_per_month: 1,
+          videos_used: 1,
+          videos_remaining: 0,
+          can_create_video: false,
+          extra_video_price: 9.0,
+          userId: session.user.id
+        }, 'unified_wizard_button_click')
+      }
+      showLimitExceededToast()
+      return
+    }
+
+    // APRI DIRETTAMENTE IL WIZARD
+    // Il progetto verrà creato solo quando l'utente completa tutto il wizard
+    setIsUnifiedWizardOpen(true)
+  }
+
+  const handleCloseUnifiedWizard = () => {
+    setIsUnifiedWizardOpen(false)
+  }
+
+  const handleCompleteUnifiedWizard = async (wizardData: any) => {
+    try {
+      // DETERMINE CREATION METHOD
+      const hasImages = wizardData.images && wizardData.images.length > 0
+      const hasUrl = wizardData.productUrl && wizardData.productUrl.trim() !== ""
+
+      if (hasUrl && !hasImages) {
+        // URL-ONLY FLOW: Use Creatify link_to_videos endpoint directly
+        console.log("🔗 URL-only flow: calling /api/link_to_videos/")
+
+        // Map wizard data to Creatify API parameters
+        const aspectRatio = wizardData.platform === 'youtube' ? '16:9' :
+          wizardData.platform === 'facebook' ? '1:1' : '9:16'
+
+        // Map target audience to expected format
+        const audienceMap: { [key: string]: string } = {
+          'young-adults': 'young_adults',
+          'families': 'families',
+          'professionals': 'professionals',
+          'seniors': 'seniors',
+          'teens': 'teenagers',
+          'general': 'general'
+        }
+
+        const creatifyPayload = {
+          name: wizardData.projectName,
+          target_platform: wizardData.platform.toLowerCase(),
+          target_audience: audienceMap[wizardData.targetAudience] || wizardData.targetAudience,
+          language: "en", // Default to English
+          video_length: wizardData.videoLength,
+          aspect_ratio: aspectRatio,
+          script_style: "BenefitsV2",
+          visual_style: "AvatarBubbleTemplate",
+          override_avatar: null, // TODO: Mappare correttamente gli UUID degli avatar
+          override_voice: null,
+          override_script: null,
+          background_music_url: null,
+          background_music_volume: 0.4,
+          voiceover_volume: 0.8,
+          webhook_url: null,
+          link: wizardData.productUrl,
+          no_background_music: false,
+          no_caption: false,
+          no_emotion: false,
+          no_cta: false,
+          no_stock_broll: false,
+          caption_style: "normal-black",
+          caption_offset_x: null,
+          caption_offset_y: null,
+          caption_setting: {
+            style: "normal-black",
+            offset: {
+              x: 0,
+              y: 0.4
+            },
+            font_family: "Montserrat",
+            font_size: 32,
+            font_style: "font-bold",
+            background_color: null,
+            text_color: null,
+            highlight_text_color: null,
+            max_width: 400,
+            line_height: 1.2,
+            text_shadow: null,
+            hidden: false
+          }
+        }
+
+        const linkVideoResponse = await fetch('/api/link_to_videos/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(creatifyPayload)
+        })
+
+        if (!linkVideoResponse.ok) {
+          const errorData = await linkVideoResponse.json()
+          throw new Error(errorData.detail || errorData.error || `HTTP ${linkVideoResponse.status}`)
+        }
+
+        const linkVideoResult = await linkVideoResponse.json()
+
+        toast.success('🎬 Video creation started from URL!', {
+          description: `Your video will be ready in 2-3 minutes. Project ID: ${linkVideoResult.project_id}`,
+          duration: 5000
+        })
+
+        // Refresh limits after video creation
+        refreshLimits()
+        setIsUnifiedWizardOpen(false)
+
+        return
+
+      } else if (hasImages) {
+        // IMAGE-BASED FLOW: Use Creatify product_to_videos/gen_image endpoint
+        console.log("🖼️ Image-based flow: calling /api/product_to_videos/gen_image/")
+
+        // First, create a project with images to get public URLs
+        const formData = new FormData()
+        formData.append('name', wizardData.projectName)
+        formData.append('product_type', 'physical')
+
+        // Add images for upload
+        wizardData.images.forEach((image: any, index: number) => {
+          formData.append('files', image.file)
+        })
+
+        // Create project and upload images to get public URLs
+        const projectResponse = await fetch('/api/projects', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!projectResponse.ok) {
+          throw new Error('Failed to create project with images')
+        }
+
+        const projectResult = await projectResponse.json()
+
+        // Get the first image URL from the created project
+        const projectDetailResponse = await fetch(`/api/projects/${projectResult.id}`)
+        if (!projectDetailResponse.ok) {
+          throw new Error('Failed to fetch project details')
+        }
+
+        const projectDetails = await projectDetailResponse.json()
+        const productShowcaseUrl = projectDetails.images?.[0]?.url || ""
+
+        // Map wizard data to Creatify product_to_videos API parameters
+        const aspectRatio = wizardData.platform === 'youtube' ? '16x9' :
+          wizardData.platform === 'facebook' ? '1x1' : '9x16'
+
+        // Determine type based on whether avatar is selected
+        const videoType = wizardData.selectedAvatar ? "product_avatar" : "product_anyshot"
+
+        const productVideoPayload = {
+          type: videoType,
+          product_url: wizardData.productUrl || productShowcaseUrl, // Usa l'URL dell'immagine se non c'è product URL
+          image_prompt: `Professional ${wizardData.targetAudience} promotional image for ${wizardData.projectName}`,
+          aspect_ratio: aspectRatio,
+          override_avatar: null, // TODO: Mappare correttamente gli UUID degli avatar
+          product_showcase_url: productShowcaseUrl,
+          webhook_url: null // Could be configured for status updates
+        }
+
+        const productVideoResponse = await fetch('/api/product_to_videos/gen_image/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...productVideoPayload,
+            existing_project_id: projectResult.id  // 🎯 Passa ID progetto esistente
+          })
+        })
+
+        if (!productVideoResponse.ok) {
+          const errorData = await productVideoResponse.json()
+          throw new Error(errorData.detail || errorData.error || `HTTP ${productVideoResponse.status}`)
+        }
+
+        const productVideoResult = await productVideoResponse.json()
+
+        toast.success('📸 Step 1/2: Image optimization started!', {
+          description: `Video generation is starting. Step 2 will begin automatically. Project ID: ${productVideoResult.project_id}`,
+          duration: 5000
+        })
+
+        // Refresh limits after video creation
+        refreshLimits()
+        setIsUnifiedWizardOpen(false)
+
+        console.log("✅ Product video generation started:", productVideoResult.project_id)
+
+      } else {
+        throw new Error('No images or URL provided')
+      }
+
+    } catch (error) {
+      console.error('Error completing unified wizard:', error)
+      toast.error('Error during video creation', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+        duration: 7000
+      })
     }
   }
 
@@ -131,10 +348,9 @@ export function CreateVideoSection() {
   const handleImagesUploaded = async (images: File[], name: string, domain?: string, project?: any) => {
     console.log("🎉 Progetto creato:", project?.id, "Nome:", name, "Immagini:", images.length)
 
-    // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+    // Controlla se il componente è ancora montato prima di aggiornare stati
     if (!isMountedRef.current) return
 
-    // ✅ USA L'ID REALE DAL BACKEND
     if (project?.id) {
       setProjectId(project.id)
       console.log("✅ Project ID reale:", project.id)
@@ -158,7 +374,6 @@ export function CreateVideoSection() {
   const handleConfigurationComplete = async (config: VideoConfiguration) => {
     console.log("Configuration completed:", config)
 
-    // ⚠️ Controlla se il componente è ancora montato
     if (!isMountedRef.current) return
 
     if (!projectId) {
@@ -175,76 +390,155 @@ export function CreateVideoSection() {
     setCurrentStep("progress")
     setIsProgressModalOpen(true)
 
-    // ✅ AVVIA POLLING quando inizia elaborazione video
     startPolling()
 
     try {
-      // 🚀 Avvia la creazione del video chiamando il backend
-      console.log("🎬 Starting video creation for project:", projectId)
+      // DETERMINE CREATION METHOD BASED ON PROJECT DATA
+      const hasUrl = websiteUrl && websiteUrl.trim() !== ""
+      const hasImages = uploadedImages && uploadedImages.length > 0
 
-      const response = await fetch(`/api/creatify/start-video-workflow/${projectId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          target_platform: config.target_platform,
-          target_audience: config.target_audience,
+      console.log(`🎯 Creation method: URL=${hasUrl}, Images=${hasImages}`)
+
+      if (hasUrl && !hasImages) {
+        // URL-ONLY FLOW: Use Link to Videos
+        console.log("🔗 Using Link to Videos workflow")
+
+        const aspectRatio = config.target_platform === 'youtube' ? '16x9' :
+          config.target_platform === 'facebook' ? '1x1' : '9x16'
+
+        // Map target audience to expected format
+        const audienceMap: { [key: string]: string } = {
+          'young-adults': 'young_adults',
+          'families': 'families',
+          'professionals': 'professionals',
+          'seniors': 'seniors',
+          'teens': 'teenagers',
+          'general': 'general'
+        }
+
+        const linkVideoPayload = {
+          name: projectName,
+          target_platform: config.target_platform.toLowerCase(),
+          target_audience: audienceMap[config.target_audience] || config.target_audience,
           language: config.language,
           video_length: config.video_length,
+          aspect_ratio: aspectRatio,
           script_style: config.script_style,
           visual_style: config.visual_style,
-
-          // 🎨 Landing page customization
-          landing_style: config.landing_style,
-          color_scheme: config.color_scheme,
-          cta_text: config.cta_text,
-
-          // 🎵 Audio settings
+          override_avatar: null, // TODO: Mappare correttamente gli UUID degli avatar
+          override_voice: config.voice_id || null,
+          override_script: config.override_script || null,
+          background_music_url: null,
           background_music_volume: config.background_music_volume,
           voiceover_volume: config.voiceover_volume,
+          webhook_url: null,
+          link: websiteUrl,
           no_background_music: config.no_background_music,
-
-          // 🎭 Creative controls
           no_caption: config.no_caption,
           no_emotion: config.no_emotion,
           no_cta: config.no_cta,
-          override_script: config.override_script,
-
-          // 🎨 Subtitle customization
+          no_stock_broll: false,
           caption_style: config.caption_style,
-          caption_font_family: config.caption_font_family,
-          caption_font_size: config.caption_font_size,
-          caption_font_style: config.caption_font_style,
-          caption_background_color: config.caption_background_color,
-          caption_text_color: config.caption_text_color,
-          caption_highlight_text_color: config.caption_highlight_text_color,
-          caption_text_shadow: config.caption_text_shadow,
-          caption_max_width: config.caption_max_width,
-          caption_line_height: config.caption_line_height,
           caption_offset_x: config.caption_offset_x,
           caption_offset_y: config.caption_offset_y,
+          caption_setting: {
+            style: config.caption_style,
+            offset: {
+              x: config.caption_offset_x || 0,
+              y: config.caption_offset_y || 0.4
+            },
+            font_family: config.caption_font_family,
+            font_size: config.caption_font_size,
+            font_style: config.caption_font_style,
+            background_color: config.caption_background_color,
+            text_color: config.caption_text_color,
+            highlight_text_color: config.caption_highlight_text_color,
+            max_width: config.caption_max_width,
+            line_height: config.caption_line_height,
+            text_shadow: config.caption_text_shadow,
+            hidden: config.no_caption
+          }
+        }
 
-          // 🎭 Premium avatar/voice selection
-          avatar_id: config.avatar_id,
-          voice_id: config.voice_id,
-
-          // 📋 Metadata
-          project_name: projectName,
-          image_count: uploadedImages.length
+        const response = await fetch('/api/link_to_videos/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(linkVideoPayload)
         })
-      })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `HTTP ${response.status}`)
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`)
+        }
+
+        const result = await response.json()
+        console.log("✅ Link to Videos creation started:", result)
+
+      } else if (hasImages) {
+        // IMAGE-BASED FLOW: Use Product to Videos
+        console.log("🖼️ Using Product to Videos workflow")
+
+        // Get existing project images from database instead of re-uploading
+        const projectResponse = await fetch(`/api/projects/${projectId}`)
+
+        if (!projectResponse.ok) {
+          throw new Error('Failed to fetch project images')
+        }
+
+        const projectData = await projectResponse.json()
+        const projectImages = projectData.images || []
+
+        if (projectImages.length === 0) {
+          throw new Error('No images found in project')
+        }
+
+        const productShowcaseUrl = projectImages[0].url // Use first image as showcase
+
+        // Map configuration to Product to Videos API parameters
+        const aspectRatio = config.target_platform === 'youtube' ? '16x9' :
+          config.target_platform === 'facebook' ? '1x1' : '9x16'
+
+        // Determine type based on whether avatar is selected
+        const videoType = config.avatar_id ? "product_avatar" : "product_anyshot"
+
+        const productVideoPayload = {
+          type: videoType,
+          product_url: websiteUrl || productShowcaseUrl, // Usa l'URL dell'immagine se non c'è website URL
+          image_prompt: `Professional ${config.target_audience} promotional image for ${projectName}`,
+          aspect_ratio: aspectRatio,
+          override_avatar: null, // TODO: Mappare correttamente gli UUID degli avatar
+          product_showcase_url: productShowcaseUrl,
+          webhook_url: null // Could be configured for status updates
+        }
+
+        const response = await fetch('/api/product_to_videos/gen_image/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...productVideoPayload,
+            existing_project_id: projectId  // Passa ID progetto esistente
+          })
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`)
+        }
+
+        const result = await response.json()
+        console.log("✅ Product to Videos generation started:", result)
+
+      } else {
+        throw new Error('No images or URL provided')
       }
 
-      const result = await response.json()
-      console.log("✅ Video creation started:", result)
+      // Refresh limits after video creation
+      refreshLimits()
 
     } catch (error) {
       console.error("❌ Error starting video creation:", error)
 
-      // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+      // Controlla se il componente è ancora montato prima di aggiornare stati
       if (!isMountedRef.current) return
 
       setError(`Failed to start video creation: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -257,18 +551,18 @@ export function CreateVideoSection() {
   }
 
   const handleProgressComplete = async (videoSuccess: boolean | null = true) => {
-    // ⚠️ Controlla se il componente è ancora montato prima di aggiornare stati
+    // Controlla se il componente è ancora montato prima di aggiornare stati
     if (!isMountedRef.current) return
 
     setIsProgressModalOpen(false)
     setCurrentStep("complete")
 
-    // ✅ GESTIONE BASATA SUL TIPO DI CHIUSURA
+    // GESTIONE BASATA SUL TIPO DI CHIUSURA
     if (videoSuccess === true) {
-      // 🎉 VIDEO COMPLETATO CON SUCCESSO
+      // VIDEO COMPLETATO CON SUCCESSO
       console.log('✅ Video completato con successo, aggiorno banner...')
 
-      // 🔄 REFRESH MULTIPLI per garantire aggiornamento banner
+      // REFRESH MULTIPLI per garantire aggiornamento banner
       console.log('🔄 Avvio refresh multipli per aggiornamento banner...')
 
       // Refresh immediato
@@ -304,7 +598,7 @@ export function CreateVideoSection() {
         duration: 5000
       })
 
-      // ✅ Usage già incrementato automaticamente nel backend durante il processo video
+      // Usage già incrementato automaticamente nel backend durante il processo video
       console.log('✅ Usage incrementato automaticamente dal backend')
 
     } else if (videoSuccess === null) {
@@ -430,7 +724,7 @@ export function CreateVideoSection() {
     setIsProgressModalOpen(false)
     setCurrentStep("method")
 
-    // ✅ FERMA POLLING se chiuso manualmente
+    // FERMA POLLING se chiuso manualmente
     stopPolling()
   }
 
@@ -455,31 +749,55 @@ export function CreateVideoSection() {
             with AI-powered automation
           </p>
 
-          <Button
-            size="lg"
-            onClick={handleStartNewProject}
-            className={`rounded-xl px-4 sm:px-6 lg:px-8 py-3 lg:py-4 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
-              ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              }`}
-            disabled={currentStep === "progress" || loading}
-          >
-            {!can_create_video && !loading ? (
-              <>
-                <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                <span className="hidden sm:inline">Limit Reached - Buy Extra Video</span>
-                <span className="sm:hidden">Limit Reached</span>
-                <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-              </>
-            ) : (
-              <>
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                <span className="hidden sm:inline">{currentStep === "progress" ? "Creating Video..." : "Create New Video Ad"}</span>
-                <span className="sm:hidden">{currentStep === "progress" ? "Creating..." : "Create Video"}</span>
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* 🎯 NEW UNIFIED WIZARD (FEATURED) */}
+            <Button
+              size="lg"
+              onClick={handleStartUnifiedWizard}
+              className={`rounded-xl px-4 sm:px-6 lg:px-8 py-3 lg:py-4 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
+                ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                }`}
+              disabled={loading || isUnifiedWizardOpen}
+            >
+              {!can_create_video && !loading ? (
+                <>
+                  <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">Limit Reached - Buy Extra Video</span>
+                  <span className="sm:hidden">Limit Reached</span>
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="hidden sm:inline">🎯 New AI Wizard</span>
+                  <span className="sm:hidden">🎯 AI Wizard</span>
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2 text-yellow-300" />
+                </>
+              )}
+            </Button>
+
+            {/* Original workflow button (for compatibility) */}
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleStartNewProject}
+              className="rounded-xl px-4 sm:px-6 lg:px-8 py-3 lg:py-4 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              disabled={currentStep === "progress" || loading}
+            >
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="hidden sm:inline">{currentStep === "progress" ? "Creating Video..." : "Classic Workflow"}</span>
+              <span className="sm:hidden">{currentStep === "progress" ? "Creating..." : "Classic"}</span>
+            </Button>
+          </div>
+
+          {/* Information note */}
+          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p className="flex items-center justify-center gap-2">
+              <Crown className="w-4 h-4 text-yellow-500" />
+              <span><strong>New!</strong> The AI Wizard combines all features in one intuitive conversational flow</span>
+            </p>
+          </div>
 
           {/* Progress Indicator */}
           {!["method", "upload"].includes(currentStep) && (
@@ -579,6 +897,14 @@ export function CreateVideoSection() {
         onUpgrade={() => {
           refreshLimits()
         }}
+      />
+
+      {/* WIZARD UNIFICATO */}
+      <UnifiedVideoWizard
+        isOpen={isUnifiedWizardOpen}
+        onClose={handleCloseUnifiedWizard}
+        onComplete={handleCompleteUnifiedWizard}
+        userId={session?.user?.id}
       />
     </>
   )

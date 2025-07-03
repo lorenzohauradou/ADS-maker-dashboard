@@ -27,6 +27,8 @@ import {
   Plus,
   LogOut,
   Sparkles,
+  Layout,
+  User,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -41,6 +43,16 @@ const menuItems = [
     title: "Projects",
     url: "/dashboard/projects",
     icon: FolderOpen,
+  },
+  {
+    title: "Video Templates",
+    url: "/dashboard/templates",
+    icon: Layout,
+  },
+  {
+    title: "Custom Avatars",
+    url: "/dashboard/custom-avatars",
+    icon: User,
   },
   /*{
     title: "Analytics",

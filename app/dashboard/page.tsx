@@ -1,5 +1,4 @@
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
-import { StatsCards } from "@/components/dashboard/stats-cards"
 import { RecentProjects } from "@/components/dashboard/recent-projects"
 import { CreateVideoSection } from "@/components/dashboard/create-video-section"
 
@@ -9,7 +8,6 @@ export default function DashboardPage() {
       <DashboardHeader />
       <main className="flex-1 p-6 space-y-8">
         <CreateVideoSection />
-        {/* <StatsCards /> */}
         <RecentProjects />
       </main>
     </div>

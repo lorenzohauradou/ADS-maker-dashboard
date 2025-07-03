@@ -313,6 +313,9 @@ export function AdvancedConfigTab({ config, updateConfig }: AdvancedConfigTabPro
                                         <SelectItem value="minimal">✨ Minimal</SelectItem>
                                         <SelectItem value="bold">🔥 Bold</SelectItem>
                                         <SelectItem value="elegant">💎 Elegant</SelectItem>
+                                        <SelectItem value="tech-dark">🌙 Tech-Dark</SelectItem>
+                                        <SelectItem value="dtc-clean">🧼 DTC-Clean</SelectItem>
+                                        <SelectItem value="vibrant-bold">🎯 Vibrant-Bold</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

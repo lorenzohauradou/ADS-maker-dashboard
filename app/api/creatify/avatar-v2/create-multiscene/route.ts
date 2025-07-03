@@ -1,12 +1,7 @@
-// Da eliminare --  workflow monolitico
-
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
-) {
+export async function POST(request: NextRequest) {
   try {
     // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
@@ -15,13 +10,28 @@ export async function POST(
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const resolvedParams = await params
-    const projectId = resolvedParams.projectId
+    // 📋 Ottieni i dati della richiesta
     const body = await request.json()
+    
+    // Validazione basic
+    if (!body.video_inputs || !Array.isArray(body.video_inputs) || body.video_inputs.length === 0) {
+      return NextResponse.json({ 
+        error: 'video_inputs è obbligatorio e deve essere un array non vuoto' 
+      }, { status: 400 })
+    }
 
-    // 📡 Chiamata al backend per avviare il WORKFLOW ASINCRONO !!!
+    // Validazione struttura video_inputs
+    for (const input of body.video_inputs) {
+      if (!input.character || !input.voice) {
+        return NextResponse.json({ 
+          error: 'Ogni video_input deve avere character e voice' 
+        }, { status: 400 })
+      }
+    }
+
+    // 📡 Chiamata al backend per creare video multi-scena
     const response = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/start-video-workflow/${projectId}`,
+      `${process.env.BACKEND_URL}/api/creatify/avatar-v2/create-multiscene`,
       {
         method: 'POST',
         headers: {
@@ -34,7 +44,7 @@ export async function POST(
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
+      const errorData = await response.json()
       throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
@@ -42,9 +52,9 @@ export async function POST(
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Async workflow creation error:', error)
+    console.error('❌ Multi-scene video creation error:', error)
     return NextResponse.json({ 
-      error: 'Failed to start async workflow', 
+      error: 'Failed to create multi-scene video', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
