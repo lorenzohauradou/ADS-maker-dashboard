@@ -23,28 +23,24 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react"
-import { ImageUploadModal } from "./video-creation-workflow/image-upload-modal"
 import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
-import { VideoConfigurationModal } from "./video-creation-workflow/video-configuration-modal"
-import { VideoProgressModal } from "./video-creation-workflow/video-progress-modal"
 import { format } from 'date-fns';
 import { Project } from "@/types/project";
 import { useVideoControls } from "@/hooks/useVideoControls"
 import { useUserLimits } from "@/hooks/use-user-limits"
+import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { Crown, CreditCard } from "lucide-react"
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
+import { UnifiedVideoWizard } from "./unified-video-wizard"
+import { trackBypassAttempt } from '@/lib/posthog-pricing-enforcement'
 
 export function ProjectsContent() {
   const { data: session } = useSession()
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
-  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false)
-  const [currentProject, setCurrentProject] = useState<any>(null)
 
   // Stati per gestire il caricamento dei dati
   const [projects, setProjects] = useState<Project[]>([])
@@ -66,6 +62,11 @@ export function ProjectsContent() {
     loading: limitsLoading,
     buyExtraVideo
   } = useUserLimits()
+
+  const { checkCanCreateVideo, showLimitExceededToast } = useSubscriptionLimits()
+
+  // State for unified wizard
+  const [isUnifiedWizardOpen, setIsUnifiedWizardOpen] = useState(false)
 
   // Usa il hook per i controlli video
   const {
@@ -160,26 +161,7 @@ export function ProjectsContent() {
     fetchProjects()
   }, [])
 
-  const handleImagesUploaded = async (images: File[], projectName: string, customDomain?: string, project?: any) => {
-    console.log("Images uploaded from projects page:", images.length, "Project:", projectName)
 
-    if (project?.id) {
-      console.log("Project created successfully, opening configuration modal...")
-      // Salva i dati del progetto per la configurazione
-      setCurrentProject({
-        ...project,
-        imageCount: images.length,
-        customDomain: customDomain
-      })
-      // Chiudi il modale di upload e apri quello di configurazione  
-      setIsModalOpen(false)
-      setIsConfigModalOpen(true)
-    } else {
-      // Fallback se non c'è progetto
-      setIsModalOpen(false)
-      fetchProjects()
-    }
-  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -288,47 +270,42 @@ export function ProjectsContent() {
     }
   }
 
-  const handleVideoConfiguration = async (configuration: any) => {
-    console.log("Starting video creation with configuration:", configuration)
+  // 🆕 GESTIONE WIZARD UNIFICATO
+  const handleCreateNewProject = async () => {
+    // Check limits with automatic tracking
+    const { canCreate, message } = await checkCanCreateVideo()
 
-    if (!currentProject?.id) {
-      alert("Errore: Progetto non trovato")
+    if (!canCreate) {
+      if (session?.user?.id) {
+        trackBypassAttempt({
+          plan: (plan || 'free') as any,
+          videos_per_month: videos_per_month || 1,
+          videos_used: videos_used || 0,
+          videos_remaining: (videos_per_month || 1) - (videos_used || 0),
+          can_create_video: false,
+          extra_video_price: extra_video_price || 9.0,
+          userId: session.user.id
+        }, 'projects_create_button_click')
+      }
+      showLimitExceededToast()
       return
     }
 
-    try {
-      // Avvia il workflow completo con la configurazione personalizzata
-      const response = await fetch(`/api/creatify/start-video-workflow/${currentProject.id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...configuration,
-          custom_domain: currentProject.customDomain
-        })
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        console.log("Workflow started successfully:", result)
-
-        // Salva la configurazione nel progetto corrente per il modale di progresso
-        setCurrentProject((prev: any) => ({ ...prev, configuration }))
-
-        // Chiudi il modale di configurazione e apri quello di progresso
-        setIsConfigModalOpen(false)
-        setIsProgressModalOpen(true)
-      } else {
-        console.error("Failed to start workflow:", response.status)
-        const errorData = await response.json().catch(() => ({}))
-        alert(`Errore nell'avvio del processo: ${errorData.error || response.status}`)
-      }
-    } catch (error) {
-      console.error("Error starting workflow:", error)
-      alert(`Errore nell'avvio del processo: ${error}`)
-    }
+    // Open unified wizard
+    setIsUnifiedWizardOpen(true)
   }
+
+  const handleCloseUnifiedWizard = () => {
+    setIsUnifiedWizardOpen(false)
+  }
+
+  const handleCompleteUnifiedWizard = async (wizardData: any) => {
+    setIsUnifiedWizardOpen(false)
+    // Refresh projects list after video creation
+    fetchProjects()
+  }
+
+
 
   return (
     <>
@@ -344,7 +321,7 @@ export function ProjectsContent() {
           {!limitsLoading && can_create_video ? (
             // ✅ UTENTE PUÒ CREARE VIDEO - MOSTRA BOTTONE NORMALE
             <Button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleCreateNewProject}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl shadow-lg text-white"
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -646,7 +623,7 @@ export function ProjectsContent() {
               <>
                 <p className="text-slate-600 dark:text-zinc-400 mb-6">Create your first project to get started!</p>
                 <Button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={handleCreateNewProject}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white"
                 >
                   <Plus className="w-5 h-5 mr-2" />
@@ -689,40 +666,10 @@ export function ProjectsContent() {
         )}
       </div>
 
-      <ImageUploadModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onComplete={handleImagesUploaded}
-      />
-
       <VideoPreviewModal
         isOpen={isPreviewOpen}
         onClose={handleClosePreview}
         project={selectedProject}
-      />
-
-      <VideoConfigurationModal
-        isOpen={isConfigModalOpen}
-        onClose={() => {
-          setIsConfigModalOpen(false)
-          setCurrentProject(null)
-        }}
-        onStartCreation={handleVideoConfiguration}
-        projectName={currentProject?.name || ""}
-        imageCount={currentProject?.imageCount || 0}
-      />
-
-      <VideoProgressModal
-        isOpen={isProgressModalOpen}
-        onClose={() => {
-          setIsProgressModalOpen(false)
-          setCurrentProject(null)
-          fetchProjects() // Ricarica i progetti quando si chiude
-        }}
-        projectName={currentProject?.name || ""}
-        projectId={currentProject?.id}
-        configuration={currentProject?.configuration || {}}
-        workflowAlreadyStarted={true}
       />
 
       <DeleteConfirmationDialog
@@ -736,6 +683,15 @@ export function ProjectsContent() {
         description={`Sei sicuro di voler eliminare il progetto "${projectToDelete?.name}"? Questa azione non può essere annullata.`}
         isLoading={isDeleting}
       />
+
+      {/* Unified Video Wizard */}
+      {isUnifiedWizardOpen && (
+        <UnifiedVideoWizard
+          isOpen={isUnifiedWizardOpen}
+          onClose={handleCloseUnifiedWizard}
+          onComplete={handleCompleteUnifiedWizard}
+        />
+      )}
     </>
   )
 }
