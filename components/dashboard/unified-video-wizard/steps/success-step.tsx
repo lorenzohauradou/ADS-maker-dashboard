@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { motion } from "framer-motion"
 import { CheckCircle2, Target, Mail } from "lucide-react"
 
 interface SuccessStepProps {
@@ -18,8 +17,12 @@ export function SuccessStep({
     onComplete
 }: SuccessStepProps) {
     const [showCheck, setShowCheck] = useState(false)
+    const [isVisible, setIsVisible] = useState(false)
 
     useEffect(() => {
+        // Show the modal immediately
+        setIsVisible(true)
+
         // Show checkmark after brief delay
         const timer = setTimeout(() => {
             setShowCheck(true)
@@ -37,48 +40,17 @@ export function SuccessStep({
     }, [onComplete])
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
-        >
-            <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-center px-8 py-12 max-w-md"
-            >
+        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`text-center px-8 py-12 max-w-md transform transition-all duration-400 ease-out ${isVisible ? 'scale-100 opacity-100' : 'scale-80 opacity-0'}`}>
                 {/* Success Icon */}
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: showCheck ? 1 : 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-                    className="mx-auto w-20 h-20 mb-8"
-                >
-                    <motion.div
-                        animate={{
-                            rotate: [0, 5, -5, 0],
-                            scale: [1, 1.05, 1]
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                        className="w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg"
-                    >
+                <div className="mx-auto w-20 h-20 mb-8">
+                    <div className={`w-full h-full bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-500 ease-out ${showCheck ? 'scale-100 animate-pulse' : 'scale-0'}`}>
                         <CheckCircle2 className="w-10 h-10 text-white" />
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
 
                 {/* Success Message */}
-                <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                    className="space-y-6"
-                >
+                <div className={`space-y-6 transform transition-all duration-500 delay-600 ${showCheck ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}`}>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                         Video Creation Started! 🎉
                     </h2>
@@ -93,34 +65,21 @@ export function SuccessStep({
                             <span>We'll email you when it's ready ({estimatedTime})</span>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Subtle loading indicator */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="mt-8 flex justify-center"
-                >
+                <div className={`mt-8 flex justify-center transition-opacity duration-300 delay-1000 ${showCheck ? 'opacity-100' : 'opacity-0'}`}>
                     <div className="flex space-x-1">
                         {[0, 1, 2].map((i) => (
-                            <motion.div
+                            <div
                                 key={i}
-                                animate={{
-                                    scale: [1, 1.2, 1],
-                                    opacity: [0.3, 1, 0.3]
-                                }}
-                                transition={{
-                                    duration: 1.5,
-                                    repeat: Infinity,
-                                    delay: i * 0.2
-                                }}
-                                className="w-2 h-2 bg-blue-500 rounded-full"
+                                className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                                style={{ animationDelay: `${i * 0.2}s` }}
                             />
                         ))}
                     </div>
-                </motion.div>
-            </motion.div>
-        </motion.div>
+                </div>
+            </div>
+        </div>
     )
 } 
