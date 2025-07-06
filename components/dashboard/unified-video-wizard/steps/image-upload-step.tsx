@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
 import {
     Upload,
     X,
@@ -13,10 +12,7 @@ import {
     CheckCircle,
     AlertCircle,
     Plus,
-    Trash2,
-    Link,
-    Camera,
-    ArrowRight
+    Camera
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -29,15 +25,13 @@ interface ImageFile {
 interface ImageUploadStepProps {
     images: ImageFile[]
     projectName: string
-    productUrl: string
-    onImagesUpdate: (images: ImageFile[], projectName: string, productUrl: string) => void
+    onImagesUpdate: (images: ImageFile[], projectName: string) => void
     onContinue?: () => void
 }
 
-export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdate, onContinue }: ImageUploadStepProps) {
+export function ImageUploadStep({ images, projectName, onImagesUpdate, onContinue }: ImageUploadStepProps) {
     const [isDragging, setIsDragging] = useState(false)
     const [error, setError] = useState("")
-    const [urlError, setUrlError] = useState("")
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const validateFile = (file: File): boolean => {
@@ -81,12 +75,12 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
         })
 
         const updatedImages = [...images, ...validFiles]
-        onImagesUpdate(updatedImages, projectName, productUrl)
+        onImagesUpdate(updatedImages, projectName)
 
         if (validFiles.length > 0) {
             toast.success(`${validFiles.length} image(s) added!`)
         }
-    }, [images, projectName, productUrl, onImagesUpdate])
+    }, [images, projectName, onImagesUpdate])
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault()
@@ -111,69 +105,18 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
         }
 
         const updatedImages = images.filter(img => img.id !== id)
-        onImagesUpdate(updatedImages, projectName, productUrl)
+        onImagesUpdate(updatedImages, projectName)
 
         toast.success("Image removed")
     }
 
     const handleProjectNameChange = (name: string) => {
-        onImagesUpdate(images, name, productUrl)
+        onImagesUpdate(images, name)
     }
 
-    const validateUrl = (url: string) => {
-        if (!url.trim()) {
-            setUrlError("")
-            return
-        }
-
-        try {
-            const urlObj = new URL(url)
-            if (!['http:', 'https:'].includes(urlObj.protocol)) {
-                setUrlError("URL must start with http:// or https://")
-                return
-            }
-            setUrlError("")
-        } catch (e) {
-            setUrlError("Please enter a valid URL")
-        }
-    }
-
-    const handleProductUrlChange = (url: string) => {
-        onImagesUpdate(images, projectName, url)
-        validateUrl(url)
-    }
-
-    // Check if user can proceed (either has URL or has images + project name)
+    // Check if user can proceed (project name + at least 1 image)
     const canProceed = () => {
-        if (productUrl.trim()) {
-            // If URL is provided, must be valid + project name required
-            return projectName.trim() !== "" && !urlError
-        } else {
-            // If no URL, need at least project name and 1 image
-            return projectName.trim() !== "" && images.length > 0
-        }
-    }
-
-    // Check if user can continue with URL only (both project name and URL are filled and valid)
-    const canContinueWithUrl = () => {
-        return projectName.trim() !== "" && productUrl.trim() !== "" && !urlError
-    }
-
-    const getMethodType = () => {
-        if (productUrl.trim() && images.length === 0) {
-            return "url"
-        } else if (images.length > 0) {
-            return "images"
-        } else {
-            return "none"
-        }
-    }
-
-    const handleContinue = () => {
-        if (canContinueWithUrl() && onContinue) {
-            onContinue()
-            toast.success("Proceeding with URL-based creation!")
-        }
+        return projectName.trim() !== "" && images.length > 0
     }
 
     return (
@@ -187,34 +130,9 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
                     Add Your Product Content
                 </h2>
                 <p className="text-gray-600 dark:text-slate-400 max-w-lg mx-auto">
-                    Provide either a product URL or upload images to create the perfect video
+                    Upload your product images and give your project a name
                 </p>
             </div>
-
-            {/* Creation Method Indicator */}
-            {(productUrl.trim() || images.length > 0) && (
-                <div className="flex justify-center">
-                    <Badge
-                        className={`${getMethodType() === "url"
-                            ? "bg-gradient-to-r from-green-500 to-emerald-600"
-                            : "bg-gradient-to-r from-purple-500 to-blue-600"
-                            } text-white px-4 py-2`}
-                    >
-                        {getMethodType() === "url" && (
-                            <>
-                                <Link className="w-4 h-4 mr-2" />
-                                URL-based Creation
-                            </>
-                        )}
-                        {getMethodType() === "images" && (
-                            <>
-                                <Camera className="w-4 h-4 mr-2" />
-                                Image-based Creation
-                            </>
-                        )}
-                    </Badge>
-                </div>
-            )}
 
             {/* Project Details */}
             <Card className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-900/50 dark:to-slate-900/50 border-2 border-slate-200 dark:border-slate-700 rounded-xl p-6">
@@ -228,50 +146,6 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
                         onChange={(e) => handleProjectNameChange(e.target.value)}
                         className="bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 text-lg"
                     />
-
-                    <Label className="text-lg font-bold text-slate-900 dark:text-white">
-                        Product URL (Optional)
-                    </Label>
-                    <Input
-                        placeholder="https://yourstore.com/product (optional)"
-                        value={productUrl}
-                        onChange={(e) => handleProductUrlChange(e.target.value)}
-                        className={`bg-white dark:bg-slate-800 border-2 ${urlError
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
-                            }`}
-                    />
-                    {urlError && (
-                        <p className="text-sm text-red-600 dark:text-red-400">
-                            {urlError}
-                        </p>
-                    )}
-                    {!urlError && (
-                        <p className="text-sm text-slate-500 dark:text-slate-500">
-                            💡 If you provide a URL, AI will analyze the page for additional information
-                        </p>
-                    )}
-
-                    {/* Continue Button for URL-based creation */}
-                    {canContinueWithUrl() && (
-                        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <CheckCircle className="w-5 h-5 text-green-600" />
-                                    <span className="text-sm text-green-700 dark:text-green-300">
-                                        Ready to create your video with URL analysis
-                                    </span>
-                                </div>
-                                <Button
-                                    onClick={handleContinue}
-                                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200"
-                                >
-                                    Continue
-                                    <ArrowRight className="w-4 h-4 ml-2" />
-                                </Button>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </Card>
 
@@ -310,17 +184,8 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
                             <div className="text-sm text-slate-500 dark:text-slate-500 space-y-1">
                                 <p>📱 Supported formats: JPG, PNG, WebP</p>
                                 <p>📏 Maximum size: 10MB per image</p>
-                                <p>🔢 Optional if URL provided, maximum 6 images</p>
+                                <p>🔢 At least 1 image required, maximum 6 images</p>
                             </div>
-
-                            {productUrl.trim() && (
-                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                                    <p className="text-blue-700 dark:text-blue-300 text-sm">
-                                        💡 Since you provided a URL, uploading images is optional.
-                                        You can proceed to the next step or add images for better results.
-                                    </p>
-                                </div>
-                            )}
 
                             <Button
                                 onClick={() => fileInputRef.current?.click()}
@@ -328,7 +193,7 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
                                 className="mt-4 border-2 border-dashed border-blue-300 dark:border-blue-700 hover:border-blue-500 dark:hover:border-blue-500 text-blue-600 dark:text-blue-400"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
-                                Add Images (Optional)
+                                Add Images
                             </Button>
                         </div>
                     ) : (
@@ -384,7 +249,7 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
             )}
 
             {/* Progress Indicator */}
-            {canProceed() && !canContinueWithUrl() && (
+            {canProceed() && (
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
                     <div className="flex items-center space-x-3">
                         <CheckCircle className="w-6 h-6 text-green-600" />
@@ -393,10 +258,7 @@ export function ImageUploadStep({ images, projectName, productUrl, onImagesUpdat
                                 Ready to proceed!
                             </p>
                             <p className="text-sm text-green-600 dark:text-green-400">
-                                {getMethodType() === "url"
-                                    ? "AI will analyze your URL and create a video"
-                                    : `Project with ${images.length} image${images.length !== 1 ? 's' : ''} ready`
-                                }
+                                Project with {images.length} image{images.length !== 1 ? 's' : ''} ready
                             </p>
                         </div>
                     </div>
