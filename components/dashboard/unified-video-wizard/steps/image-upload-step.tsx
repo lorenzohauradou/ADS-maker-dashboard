@@ -141,7 +141,7 @@ export function ImageUploadStep({ images, projectName, onImagesUpdate, onContinu
                         Project Name *
                     </Label>
                     <Input
-                        placeholder="e.g., Pro Vacuum Cleaner Ad Video"
+                        placeholder="e.g., Magic Moon Lamp"
                         value={projectName}
                         onChange={(e) => handleProjectNameChange(e.target.value)}
                         className="bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 text-lg"
