@@ -81,6 +81,7 @@ export function PricingSection() {
         { text: "Auto-generated website", included: true },
         { text: "Full avatar library (750+ avatars)", included: true },
         { text: "Video templates library", included: true },
+        { text: "Limited AI image studio access", included: true },
         { text: "Extra videos at $7 each", included: true },
         { text: "Standard support", included: true },
         { text: "Custom avatar creation", included: false },
@@ -99,10 +100,11 @@ export function PricingSection() {
       bgColor: "bg-blue-50 dark:bg-blue-900/40",
       popular: true,
       features: [
-        { text: "20 video creations per month", included: true },
+        { text: "35 video creations per month", included: true },
         { text: "Full avatar library (750+ avatars)", included: true },
         { text: "Design Your Own Avatar from text (5/month)", included: true },
         { text: "🔥 Bring Your Own Avatar (3/month)", included: true, highlight: true },
+        { text: "Full AI image studio access", included: true },
         { text: "Unlimited websites generation", included: true },
         { text: "Premium templates", included: true },
         { text: "Priority support", included: true },
@@ -119,7 +121,7 @@ export function PricingSection() {
       borderColor: "border-purple-300 dark:border-purple-500",
       bgColor: "bg-purple-50 dark:bg-purple-500/5",
       features: [
-        { text: "Unlimited video creations", included: true },
+        { text: "", included: true },
         { text: "Everything in Pro plan", included: true },
         { text: "Design Your Own Avatar (15/month)", included: true },
         { text: "Bring Your Own Avatar (10/month)", included: true },
@@ -189,7 +191,7 @@ export function PricingSection() {
                 </div>
                 {plan.name !== "Free" && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    ~${plan.name === "Starter" ? "3.90" : plan.name === "Pro" ? "3.16" : "2.70"} per video
+                    ~${plan.name === "Starter" ? "3.90" : plan.name === "Pro" ? "2.25" : "2.12"} per video
                   </p>
                 )}
               </div>
