@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { CheckCircle2, Target, Mail } from "lucide-react"
+import { CheckCircle2, Mail } from "lucide-react"
 
 interface SuccessStepProps {
     projectName: string
@@ -12,8 +12,7 @@ interface SuccessStepProps {
 
 export function SuccessStep({
     projectName,
-    estimatedTime = "2-4 minutes",
-    userEmail,
+    estimatedTime = "1-2 minutes",
     onComplete
 }: SuccessStepProps) {
     const [showCheck, setShowCheck] = useState(false)
@@ -62,7 +61,7 @@ export function SuccessStep({
 
                         <div className="flex items-center justify-center space-x-2 text-slate-600 dark:text-slate-400">
                             <Mail className="w-5 h-5 text-blue-500" />
-                            <span>We'll email you when it's ready ({estimatedTime})</span>
+                            <span>We'll send you an email when it's ready ({estimatedTime})</span>
                         </div>
                     </div>
                 </div>

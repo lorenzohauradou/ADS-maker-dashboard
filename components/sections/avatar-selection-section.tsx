@@ -12,10 +12,10 @@ export function AvatarSelectionSection() {
     const avatars = [
         {
             id: 1,
-            name: "Anna",
+            name: "Donald",
             category: "Professional",
             description: "Warm professional voice, perfect for B2B and services",
-            image: "/avatar1.png",
+            image: "/avatar0.png",
             accent: "American",
             specialties: ["B2B", "Professional Services", "Tech"],
             styles: 5,

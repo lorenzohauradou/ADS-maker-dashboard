@@ -24,13 +24,14 @@ import {
   Home,
   FolderOpen,
   Settings,
-  HelpCircle,
   Crown,
   Plus,
   LogOut,
   Sparkles,
-  Layout,
+  // Layout,
   User,
+  Image as ImageIcon,
+  BarChart3,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -49,20 +50,20 @@ const menuItems = [
     icon: FolderOpen,
   },
   {
-    title: "Video Templates",
-    url: "/dashboard/templates",
-    icon: Layout,
+    title: "AI Image Studio",
+    url: "/dashboard/ai-image-studio",
+    icon: ImageIcon,
   },
   {
     title: "Custom Avatars",
     url: "/dashboard/custom-avatars",
     icon: User,
   },
-  /*{
-    title: "Analytics",
-    url: "/dashboard/analytics",
-    icon: BarChart3,
-  },*/
+  // {
+  //   title: "Analytics",
+  //   url: "/dashboard/analytics",
+  //   icon: BarChart3,
+  // },
   {
     title: "Settings",
     url: "/dashboard/settings",
@@ -264,14 +265,6 @@ export function Sidebar() {
             {state === "expanded" && "Upgrade Plan"}
           </Button>
 
-          {/* Help & Support */}
-          <Button
-            variant="ghost"
-            className="w-full justify-start rounded-xl hover:bg-slate-50 dark:hover:bg-zinc-800/50 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white border-0"
-          >
-            <HelpCircle className="w-5 h-5 mr-3" />
-            {state === "expanded" && "Help & Support"}
-          </Button>
 
           {/* Logout */}
           <Button

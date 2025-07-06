@@ -120,7 +120,7 @@ export function HeroSection() {
           <br />
           <span className="relative">
             <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 dark:from-purple-400 dark:via-pink-400 dark:to-purple-600 bg-clip-text text-transparent">
-              in 5 minutes
+              in 60 seconds
             </span>
             <div className="absolute -top-4 -right-4">
               <Zap className="w-8 h-8 text-yellow-500 animate-bounce" />

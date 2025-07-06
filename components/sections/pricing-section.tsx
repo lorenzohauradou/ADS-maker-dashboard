@@ -1,10 +1,11 @@
 "use client"
 
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, X, Crown, Zap, Gift, Building2, Star } from "lucide-react"
+import { Check, X, Crown, Zap, Gift, Building2 } from "lucide-react"
 import { useState } from "react"
+import { cn } from "@/lib/utils"
 
 export function PricingSection() {
   const [loading, setLoading] = useState<string | null>(null)
@@ -58,7 +59,9 @@ export function PricingSection() {
       features: [
         { text: "1 free video", included: true },
         { text: "Free Generated website", included: true },
+        { text: "Basic avatar library (100+ avatars)", included: true },
         { text: "Extra videos at $9 each", included: true },
+        { text: "Custom avatar creation", included: false },
         { text: "Priority support", included: false },
       ],
       cta: "Start Free",
@@ -76,10 +79,11 @@ export function PricingSection() {
       features: [
         { text: "10 advertising videos per month", included: true },
         { text: "Auto-generated website", included: true },
-        //{ text: "1 custom domain", included: true },
-        { text: "HD + 4K downloads", included: true },
+        { text: "Full avatar library (750+ avatars)", included: true },
+        { text: "Video templates library", included: true },
         { text: "Extra videos at $7 each", included: true },
-        { text: "Email support", included: true },
+        { text: "Standard support", included: true },
+        { text: "Custom avatar creation", included: false },
       ],
       cta: "Start Now",
       popular: false,
@@ -88,42 +92,45 @@ export function PricingSection() {
       name: "Pro",
       price: "79",
       period: "month",
-      description: "For businesses that want to scale fast",
+      description: "Perfect for content creators and small businesses",
       icon: Crown,
-      color: "from-purple-600 to-pink-600",
-      borderColor: "border-purple-300 dark:border-purple-500",
-      bgColor: "bg-purple-50 dark:bg-purple-500/5",
+      color: "from-blue-600 to-purple-600",
+      borderColor: "border-blue-300 dark:border-blue-700",
+      bgColor: "bg-blue-50 dark:bg-blue-900/40",
+      popular: true,
       features: [
-        { text: "25 advertising videos per month", included: true },
-        { text: "Unlimited generated websites", included: true },
-        //{ text: "Automatic A/B testing", included: true },
-        //{ text: "Advanced analytics", included: true },
-        { text: "Extra videos at $5 each", included: true },
+        { text: "20 video creations per month", included: true },
+        { text: "Full avatar library (750+ avatars)", included: true },
+        { text: "Design Your Own Avatar from text (5/month)", included: true },
+        { text: "🔥 Bring Your Own Avatar (3/month)", included: true, highlight: true },
+        { text: "Unlimited websites generation", included: true },
+        { text: "Premium templates", included: true },
         { text: "Priority support", included: true },
-        //{ text: "Auto social media publishing", included: true },
       ],
       cta: "Choose Pro",
-      popular: true,
     },
     {
       name: "Business",
       price: "149",
       period: "month",
-      description: "For enterprise companies and agencies",
+      description: "For agencies and teams that need maximum power",
       icon: Building2,
-      color: "from-orange-600 to-red-600",
-      borderColor: "border-orange-300 dark:border-orange-500",
-      bgColor: "bg-orange-50 dark:bg-orange-500/5",
+      color: "from-purple-600 to-pink-600",
+      borderColor: "border-purple-300 dark:border-purple-500",
+      bgColor: "bg-purple-50 dark:bg-purple-500/5",
       features: [
-        { text: "55 advertising videos per month", included: true },
-        { text: "Unlimited websites", included: true },
-        { text: "Complete white-label", included: true },
-        { text: "Full API access", included: true },
-        { text: "Extra videos at $3 each", included: true },
-        //{ text: "Dedicated account manager", included: true },
-        { text: "24/7 priority support", included: true },
-        //{ text: "Custom dashboard", included: true },
-        //{ text: "CRM integration", included: true },
+        { text: "Unlimited video creations", included: true },
+        { text: "Everything in Pro plan", included: true },
+        { text: "Design Your Own Avatar (15/month)", included: true },
+        { text: "Bring Your Own Avatar (10/month)", included: true },
+        { text: "Multi-scene avatar videos", included: true },
+        { text: "Team collaboration (5 seats)", included: true },
+        { text: "White-label solutions", included: true },
+        { text: "API access", included: true },
+        { text: "Custom branding", included: true },
+        { text: "Advanced analytics", included: true },
+        { text: "24/7 dedicated support", included: true },
+        { text: "Custom integrations", included: true },
       ],
       cta: "Contact Sales",
       popular: false,
@@ -189,15 +196,36 @@ export function PricingSection() {
 
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start">
-                    {feature.included ? (
-                      <Check className="w-5 h-5 text-green-600 dark:text-green-400 mr-3 flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <X className="w-5 h-5 text-muted-foreground mr-3 flex-shrink-0 mt-0.5" />
+                  <li
+                    key={featureIndex}
+                    className={cn(
+                      "flex items-center space-x-3",
+                      feature.included ? "text-gray-700 dark:text-gray-300" : "text-gray-400 dark:text-gray-500"
                     )}
-                    <span className={`text-sm ${feature.included ? "text-foreground" : "text-muted-foreground"}`}>
+                  >
+                    <div className={cn(
+                      "w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0",
+                      feature.included
+                        ? "bg-green-100 dark:bg-green-900/30"
+                        : "bg-gray-100 dark:bg-gray-800"
+                    )}>
+                      {feature.included ? (
+                        <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
+                      ) : (
+                        <X className="w-3 h-3 text-gray-400" />
+                      )}
+                    </div>
+                    <span className={cn(
+                      "text-sm",
+                      feature.highlight && "font-bold text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+                    )}>
                       {feature.text}
                     </span>
+                    {feature.highlight && (
+                      <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                        NEW
+                      </Badge>
+                    )}
                   </li>
                 ))}
               </ul>

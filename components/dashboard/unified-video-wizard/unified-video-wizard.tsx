@@ -373,14 +373,14 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
                     <AvatarConfigStep
                         avatarType={wizardData.avatarType}
                         selectedAvatar={wizardData.selectedAvatar}
-                        onAvatarSelect={(type, avatar, config) => {
+                        onAvatarSelect={(avatar, type) => {
                             setWizardData(prev => ({
                                 ...prev,
-                                avatarType: type,
-                                selectedAvatar: avatar,
-                                ...config
+                                avatarType: type === 'stock' ? 'stock' : wizardData.avatarType,
+                                selectedAvatar: avatar
                             }))
                         }}
+                        onContinue={() => handleStepComplete({})}
                     />
                 )
             case 3:
