@@ -168,6 +168,11 @@ export function RecentProjects() {
                     <video
                       {...getVideoProps(project)}
                     />
+                  ) : project.status === 'processing' ? (
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                      <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Processing...</span>
+                    </div>
                   ) : (
                     <>
                       {project.video?.thumbnail ? (

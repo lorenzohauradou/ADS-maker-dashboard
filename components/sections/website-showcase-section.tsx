@@ -1,313 +1,273 @@
 "use client"
 
-import { useState, useEffect } from "react"
+
+import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Monitor, Smartphone, Tablet, Globe, Eye, TrendingUp, ArrowRight } from "lucide-react"
+import { Globe, ArrowRight, TrendingUp } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function WebsiteShowcaseSection() {
-    const [isDesktop, setIsDesktop] = useState(false)
+    const isMobile = useIsMobile()
 
-    // Detect screen size
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsDesktop(window.innerWidth >= 1024)
-        }
+    return (
+        <section id="websites" className="py-20 md:py-32 px-4 relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
+            {/* Subtle Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/3 to-background"></div>
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/3 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-green-500/3 rounded-full blur-3xl"></div>
+            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/2 rounded-full blur-3xl"></div>
 
-        checkScreenSize()
-        window.addEventListener('resize', checkScreenSize)
+            <div className="container mx-auto relative z-10">
+                {/* Header */}
+                <div className="text-center mb-20 md:mb-28">
+                    <Badge
+                        variant="secondary"
+                        className="mb-8 bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400 border-green-500/20"
+                    >
+                        <Globe className="w-4 h-4 mr-2" />
+                        High-Converting Landing Pages
+                    </Badge>
 
-        return () => window.removeEventListener('resize', checkScreenSize)
-    }, [])
+                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
+                        Beautiful{" "}
+                        <span className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 dark:from-green-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                            Websites
+                        </span>
+                        <br />
+                        <span className="text-xl md:text-3xl lg:text-4xl text-muted-foreground font-normal">
+                            That Actually Convert
+                        </span>
+                    </h2>
 
-    const websites = [
-        {
-            id: 1,
-            name: "Enchanting Moon Lamp",
-            category: "E-commerce",
-            device: "desktop",
-            image: "/pc_website1.png",
-            conversionRate: "4.2%",
-            visits: "12K",
-            deviceIcon: Monitor,
-        },
-        {
-            id: 2,
-            name: "Micro-Vent",
-            category: "Health & Wellness",
-            device: "mobile",
-            image: "/vent_mobile.png",
-            conversionRate: "5.8%",
-            visits: "8.5K",
-            deviceIcon: Smartphone,
-        },
-        {
-            id: 3,
-            name: "Smart Coffee Maker",
-            category: "Home & Kitchen",
-            device: "tablet",
-            image: "/placeholder.jpg",
-            conversionRate: "3.9%",
-            visits: "15K",
-            deviceIcon: Tablet,
-        },
-        {
-            id: 4,
-            name: "Gaming Headset Elite",
-            category: "Gaming",
-            device: "desktop",
-            image: "/placeholder.jpg",
-            conversionRate: "6.1%",
-            visits: "22K",
-            deviceIcon: Monitor,
-        },
-        {
-            id: 5,
-            name: "Yoga Mat Premium",
-            category: "Sports",
-            device: "mobile",
-            image: "/placeholder.jpg",
-            conversionRate: "4.7%",
-            visits: "9.8K",
-            deviceIcon: Smartphone,
-        },
-    ]
+                    <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                        Every video ad comes with a professionally designed landing page
+                        <br className="hidden md:block" />
+                        optimized for maximum conversions across all devices.
+                    </p>
+                </div>
 
-    const getDeviceGradient = (device: string) => {
-        switch (device) {
-            case "desktop": return "from-blue-500 to-cyan-500"
-            case "mobile": return "from-purple-500 to-pink-500"
-            case "tablet": return "from-green-500 to-emerald-500"
-            default: return "from-gray-500 to-slate-500"
-        }
-    }
+                {/* Devices Showcase */}
+                {isMobile ? (
+                    // Mobile Layout
+                    <div className="relative min-h-[700px] flex flex-col items-center justify-center px-6 space-y-12">
+                        {/* Mobile Device - Center */}
+                        <div className="relative group">
+                            <div className="relative transform hover:scale-105 transition-all duration-500">
+                                <Image
+                                    src="/mobile1.png"
+                                    alt="Mobile Landing Page"
+                                    width={280}
+                                    height={608}
+                                    className="w-48 h-auto rounded-2xl shadow-xl drop-shadow-xl"
+                                    priority
+                                />
+                                {/* Simplified Glow Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-green-500/15 to-blue-500/15 rounded-2xl blur-lg opacity-40 -z-10"></div>
 
-    const getDeviceFrame = (device: string, children: React.ReactNode) => {
-        switch (device) {
-            case "desktop":
-                return (
-                    <div className="relative">
-                        {/* Monitor frame */}
-                        <div className="bg-slate-800 rounded-t-lg p-1">
-                            <div className="bg-black rounded-t-md h-32 sm:h-40 lg:h-48 overflow-hidden">
-                                {children}
+                                {/* Floating Badge */}
+                                <div className="absolute -top-3 -right-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg border border-border/30">
+                                    <div className="flex items-center gap-1.5 text-sm font-medium">
+                                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                        <span className="text-green-600 dark:text-green-400">8.2%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        {/* Monitor stand */}
-                        <div className="bg-slate-700 h-3 w-16 mx-auto rounded-b-sm"></div>
-                        <div className="bg-slate-600 h-2 w-24 mx-auto rounded-b-lg"></div>
-                    </div>
-                )
-            case "mobile":
-                return (
-                    <div className="relative">
-                        {/* Phone frame */}
-                        <div className="bg-slate-800 rounded-2xl p-1">
-                            <div className="bg-black rounded-xl h-40 sm:h-48 lg:h-56 w-24 sm:w-28 lg:w-32 overflow-hidden relative">
-                                {/* Notch */}
-                                <div className="absolute top-1 left-1/2 transform -translate-x-1/2 bg-slate-700 rounded-full w-8 h-1"></div>
-                                <div className="pt-3">
-                                    {children}
+
+                        {/* Desktop Devices Row */}
+                        <div className="flex items-center justify-center gap-8 w-full px-2">
+                            {/* Desktop 1 - Left */}
+                            <div className="relative group flex-1 flex justify-end">
+                                <div className="relative transform rotate-[-3deg] hover:rotate-[-1deg] transition-all duration-500 hover:scale-105">
+                                    <Image
+                                        src="/pc1.png"
+                                        alt="Desktop Landing Page"
+                                        width={500}
+                                        height={500}
+                                        className="w-40 h-auto rounded-lg shadow-lg drop-shadow-lg"
+                                        priority
+                                    />
+                                    {/* Simplified Glow Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-pink-500/15 to-purple-500/15 rounded-lg blur-md opacity-40 -z-10"></div>
+
+                                    {/* Floating Badge */}
+                                    <div className="absolute -top-3 -left-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg border border-border/30">
+                                        <div className="flex items-center gap-1.5 text-sm font-medium">
+                                            <TrendingUp className="w-3 h-3 text-pink-500" />
+                                            <span className="text-pink-600 dark:text-pink-400">7.6%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Desktop 2 - Right */}
+                            <div className="relative group flex-1 flex justify-start">
+                                <div className="relative transform rotate-[3deg] hover:rotate-[1deg] transition-all duration-500 hover:scale-105">
+                                    <Image
+                                        src="/pc2.png"
+                                        alt="Desktop Landing Page"
+                                        width={240}
+                                        height={180}
+                                        className="w-40 h-auto rounded-lg shadow-lg drop-shadow-lg"
+                                        priority
+                                    />
+                                    {/* Simplified Glow Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/15 to-cyan-500/15 rounded-lg blur-md opacity-40 -z-10"></div>
+
+                                    {/* Floating Badge */}
+                                    <div className="absolute -top-3 -right-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg border border-border/30">
+                                        <div className="flex items-center gap-1.5 text-sm font-medium">
+                                            <TrendingUp className="w-3 h-3 text-blue-500" />
+                                            <span className="text-blue-600 dark:text-blue-400">6.1%</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                )
-            case "tablet":
-                return (
-                    <div className="relative">
-                        {/* Tablet frame */}
-                        <div className="bg-slate-800 rounded-lg p-1">
-                            <div className="bg-black rounded-md h-36 sm:h-44 lg:h-52 w-28 sm:w-36 lg:w-40 overflow-hidden">
-                                {children}
+                ) : (
+                    // Desktop Layout (unchanged)
+                    <div className="relative min-h-[850px] md:min-h-[750px] flex items-center justify-center px-4 md:px-8 lg:px-16">
+
+                        {/* Desktop 1 - Left */}
+                        <div
+                            className="absolute left-2 md:left-8 lg:left-20 xl:left-28 top-[50%] transform -translate-y-1/2 z-10"
+                        >
+                            <div className="relative group">
+                                <div className="relative transform rotate-[-6deg] hover:rotate-[-3deg] transition-all duration-700 hover:scale-105">
+                                    <Image
+                                        src="/pc1.png"
+                                        alt="Desktop Landing Page"
+                                        width={480}
+                                        height={360}
+                                        className="w-80 md:w-88 lg:w-[480px] h-auto rounded-xl shadow-2xl drop-shadow-2xl"
+                                        priority
+                                    />
+                                    {/* Enhanced Glow Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-lg blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-lg blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 -z-20"></div>
+
+                                    {/* Floating Badge */}
+                                    <div className="absolute -top-4 -left-12 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg border border-border/30 opacity-75 group-hover:opacity-95 transition-all duration-300 group-hover:scale-102">
+                                        <div className="flex items-center gap-1.5 text-xs font-medium">
+                                            <TrendingUp className="w-3 h-3 text-pink-500" />
+                                            <span className="text-pink-600 dark:text-pink-400">7.6% CVR</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Mobile - Center */}
+                        <div
+                            className="absolute left-1/2 top-[40%] transform -translate-x-1/2 -translate-y-1/2 z-30"
+                        >
+                            <div className="relative group">
+                                <div className="relative transform hover:scale-110 transition-all duration-700">
+                                    <Image
+                                        src="/mobile1.png"
+                                        alt="Mobile Landing Page"
+                                        width={320}
+                                        height={692}
+                                        className="w-52 md:w-60 lg:w-80 h-auto rounded-2xl drop-shadow-2xl"
+                                        priority
+                                    />
+                                    {/* Enhanced Glow Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 -z-20"></div>
+
+                                    {/* Floating Badge */}
+                                    <div className="absolute -top-4 -left-8 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg border border-border/30 opacity-75 group-hover:opacity-95 transition-all duration-300 group-hover:scale-102">
+                                        <div className="flex items-center gap-1.5 text-xs font-medium">
+                                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span className="text-green-600 dark:text-green-400">8.2% CVR</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Desktop 2 - Right */}
+                        <div
+                            className="absolute right-2 md:right-8 lg:right-20 xl:right-28 top-[55%] transform -translate-y-1/2 z-20"
+                        >
+                            <div className="relative group">
+                                <div className="mb-24 transform rotate-[4deg] hover:rotate-[2deg] transition-all duration-700 hover:scale-105">
+                                    <Image
+                                        src="/pc2.png"
+                                        alt="Desktop Landing Page"
+                                        width={480}
+                                        height={360}
+                                        className="w-80 md:w-88 lg:w-[480px] h-auto rounded-xl shadow-2xl drop-shadow-2xl"
+                                        priority
+                                    />
+                                    {/* Enhanced Glow Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-purple-500/20 rounded-lg blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-purple-500/10 rounded-lg blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 -z-20"></div>
+
+                                    {/* Floating Badge */}
+                                    <div className="absolute -top-4 -right-8 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg border border-border/30 opacity-75 group-hover:opacity-95 transition-all duration-300 group-hover:scale-102">
+                                        <div className="flex items-center gap-1.5 text-xs font-medium">
+                                            <TrendingUp className="w-3 h-3 text-blue-500" />
+                                            <span className="text-blue-600 dark:text-blue-400">6.1% CVR</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                )
-            default:
-                return <div>{children}</div>
-        }
-    }
+                )}
 
-    return (
-        <section id="websites" className="py-16 md:py-24 px-4 relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background"></div>
-            <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-green-600/10 dark:bg-green-600/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-600/10 dark:bg-blue-600/5 rounded-full blur-3xl"></div>
-
-            <div className="container mx-auto relative z-10">
-                <div className="text-center mb-12 md:mb-20">
-                    <Badge
-                        variant="secondary"
-                        className="mb-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400 border-green-500/20"
-                    >
-                        <Globe className="w-4 h-4 mr-2" />
-                        Auto-Generated Landing Pages
-                    </Badge>
-
-                    <h2 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight">
-                        Beautiful{" "}
-                        <span className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 dark:from-green-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent animate-gradient">
-                            Websites
-                        </span>
-                        <br />
-                        <span className="text-lg md:text-3xl lg:text-4xl text-muted-foreground font-normal">Created automatically</span>
-                    </h2>
-
-                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-                        Every video ad comes with a professionally designed landing page, optimized for conversions across all devices.
-                    </p>
-                </div>
-
-                {/* Website Showcase - Scattered Layout */}
-                <div className="relative">
-                    {/* Desktop: Scattered layout */}
-                    <div className="hidden lg:block">
-                        <div className="relative h-[800px] w-full overflow-visible">
-                            {websites.map((website, index) => {
-                                // Define specific positions for each website
-                                const positions = [
-                                    { x: '10%', y: '20%', rotate: -8, scale: 1.1 }, // PC - top left, larger
-                                    { x: '65%', y: '10%', rotate: 12, scale: 0.7 }, // Mobile - top right
-                                    { x: '75%', y: '65%', rotate: -6, scale: 0.8 }, // Tablet - bottom right
-                                    { x: '15%', y: '70%', rotate: 8, scale: 0.9 }, // Desktop - bottom left
-                                    { x: '45%', y: '45%', rotate: -12, scale: 0.6 }, // Mobile - center
-                                ]
-
-                                const position = positions[index] || { x: '50%', y: '50%', rotate: 0, scale: 1 }
-
-                                return (
-                                    <div
-                                        key={website.id}
-                                        className="absolute transition-all duration-700 hover:scale-110 hover:rotate-0 hover:z-50 group cursor-pointer"
-                                        style={{
-                                            left: position.x,
-                                            top: position.y,
-                                            transform: `translate(-50%, -50%) rotate(${position.rotate}deg) scale(${position.scale})`,
-                                            zIndex: website.device === 'desktop' ? 20 : 10,
-                                        }}
-                                    >
-                                        <div className="relative">
-                                            {/* Direct image without card wrapper */}
-                                            <div className="relative shadow-2xl group-hover:shadow-4xl transition-all duration-500">
-                                                <img
-                                                    src={website.image}
-                                                    alt={website.name}
-                                                    className="rounded-lg object-contain max-w-none"
-                                                    style={{
-                                                        width: website.device === 'desktop' ? '400px' :
-                                                            website.device === 'tablet' ? '280px' : '160px',
-                                                        height: 'auto'
-                                                    }}
-                                                />
-
-                                                {/* Floating info badge */}
-                                                <div className="absolute -bottom-4 -right-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                                    <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-border p-3 min-w-[200px]">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <Badge variant="secondary" className="text-xs">
-                                                                {website.category}
-                                                            </Badge>
-                                                            <website.deviceIcon className="w-4 h-4 text-muted-foreground" />
-                                                        </div>
-                                                        <h3 className="font-semibold text-sm text-foreground mb-2">{website.name}</h3>
-                                                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                            <span className="flex items-center">
-                                                                <Eye className="w-3 h-3 mr-1" />
-                                                                {website.visits}
-                                                            </span>
-                                                            <span className="flex items-center">
-                                                                <TrendingUp className="w-3 h-3 mr-1" />
-                                                                {website.conversionRate}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Subtle glow effect */}
-                                                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-green-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Mobile & Tablet: Horizontal scroll */}
-                    <div className="lg:hidden">
-                        <div className="relative">
-                            {/* Scroll container */}
-                            <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 px-4">
-                                {websites.slice(0, 3).map((website, index) => (
-                                    <div
-                                        key={website.id}
-                                        className="flex-shrink-0 w-72 group cursor-pointer"
-                                    >
-                                        <div className="relative">
-                                            <img
-                                                src={website.image}
-                                                alt={website.name}
-                                                className="w-full h-auto rounded-lg shadow-lg transition-all duration-300 group-hover:shadow-xl"
-                                            />
-
-                                            {/* Mobile info card */}
-                                            <div className="mt-3 bg-card border border-border rounded-lg p-3 shadow-sm">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <Badge variant="secondary" className="text-xs">
-                                                        {website.category}
-                                                    </Badge>
-                                                    <website.deviceIcon className="w-4 h-4 text-muted-foreground" />
-                                                </div>
-                                                <h3 className="font-semibold text-sm text-foreground mb-2">{website.name}</h3>
-                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                    <span className="flex items-center">
-                                                        <Eye className="w-3 h-3 mr-1" />
-                                                        {website.visits}
-                                                    </span>
-                                                    <span className="flex items-center">
-                                                        <TrendingUp className="w-3 h-3 mr-1" />
-                                                        {website.conversionRate}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                {/* Stats Section */}
+                <div className="text-center mt-12 md:mt-16">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-4xl mx-auto mb-16">
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+                                7.2%
                             </div>
-
-                            {/* Gradient fade on edges */}
-                            <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent pointer-events-none"></div>
-                            <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none"></div>
+                            <div className="text-sm md:text-base text-muted-foreground">
+                                Average Conversion Rate
+                            </div>
                         </div>
-
-                        {/* Scroll indicator */}
-                        <div className="flex justify-center mt-4 gap-2">
-                            {websites.slice(0, 3).map((_, index) => (
-                                <div
-                                    key={index}
-                                    className="w-2 h-2 rounded-full bg-muted-foreground/30"
-                                ></div>
-                            ))}
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                                150K+
+                            </div>
+                            <div className="text-sm md:text-base text-muted-foreground">
+                                Monthly Visitors
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl md:text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                                98%
+                            </div>
+                            <div className="text-sm md:text-base text-muted-foreground">
+                                Customer Satisfaction
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Bottom CTA */}
-                <div className="text-center mt-12 md:mt-20">
-                    <p className="text-sm md:text-base text-muted-foreground mb-6">
-                        Our AI-generated landing pages achieve an average{" "}
-                        <span className="text-green-600 dark:text-green-400 font-semibold">4.8% conversion rate</span>
-                    </p>
-                    <Button
-                        size="lg"
-                        className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 text-white"
-                    >
-                        <Globe className="w-4 md:w-5 h-4 md:h-5 mr-2" />
-                        Create Your Landing Page
-                        <ArrowRight className="w-4 md:w-5 h-4 md:h-5 ml-2" />
-                    </Button>
+                    {/* CTA */}
+                    <div className="max-w-3xl mx-auto">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-6">
+                            Ready to Create Your High-Converting Landing Page?
+                        </h3>
+                        <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+                            Join thousands of successful entrepreneurs who are already
+                            <br className="hidden md:block" />
+                            converting visitors into customers with our AI-powered landing pages.
+                        </p>
+
+                        <Button
+                            size="lg"
+                            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-lg px-8 py-4 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                            <Globe className="w-5 h-5 mr-2" />
+                            Start Creating Now
+                            <ArrowRight className="w-5 h-5 ml-2" />
+                        </Button>
+                    </div>
                 </div>
             </div>
         </section>

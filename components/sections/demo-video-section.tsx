@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Play, ArrowRight, Sparkles, Zap, Brain } from "lucide-react"
+import Image from "next/image"
 
 export function DemoVideoSection() {
     const [currentStep, setCurrentStep] = useState(0)
@@ -108,21 +109,14 @@ export function DemoVideoSection() {
                                         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
                                             {currentProjectData.productImages.map((img, index) => (
                                                 <div key={index} className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-lg flex items-center justify-center">
-                                                    <img
+                                                    <Image
                                                         src={img}
                                                         alt={`Product ${index + 1}`}
+                                                        width={200}
+                                                        height={200}
                                                         className="w-full h-full object-cover rounded-lg"
-                                                        onError={(e) => {
-                                                            // Fallback to placeholder if image fails to load
-                                                            const target = e.currentTarget as HTMLImageElement
-                                                            const fallback = target.nextElementSibling as HTMLElement
-                                                            target.style.display = 'none'
-                                                            if (fallback) fallback.style.display = 'flex'
-                                                        }}
+                                                        priority
                                                     />
-                                                    <div className="w-full h-full hidden items-center justify-center text-gray-500">
-                                                        <span className="text-4xl">🖼️</span>
-                                                    </div>
                                                 </div>
                                             ))}
                                         </div>

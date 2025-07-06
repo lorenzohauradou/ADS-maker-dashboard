@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Smartphone } from "lucide-react"
+import Image from "next/image"
 
 export function DeviceShowcaseSection() {
     const devices = [
@@ -76,11 +77,11 @@ export function DeviceShowcaseSection() {
                 </div>
 
                 {/* Device Showcase */}
-                <div className="relative h-[600px] md:h-[800px] w-full">
+                <div className="relative h-[500px] md:h-[700px] w-full">
                     {devices.map((device, index) => {
                         const isPhone = device.type === "phone"
-                        const deviceWidth = isPhone ? "w-48 md:w-64" : "w-64 md:w-80"
-                        const deviceHeight = isPhone ? "h-[390px] md:h-[520px]" : "h-[435px] md:h-[580px]"
+                        const deviceWidth = isPhone ? "w-40 md:w-56" : "w-56 md:w-72"
+                        const deviceHeight = isPhone ? "h-[320px] md:h-[450px]" : "h-[380px] md:h-[520px]"
 
                         // Mobile positioning and rotation classes
                         let positionClasses = ""
@@ -117,10 +118,13 @@ export function DeviceShowcaseSection() {
 
                                         {/* Content */}
                                         <div className="w-full h-full relative">
-                                            <img
+                                            <Image
                                                 src={device.content.src || "/placeholder.svg"}
                                                 alt={device.content.title}
+                                                width={400}
+                                                height={600}
                                                 className="w-full h-full object-cover"
+                                                priority
                                             />
 
                                             {/* Overlay */}

@@ -441,6 +441,11 @@ export function ProjectsContent() {
                       <video
                         {...getVideoProps(project)}
                       />
+                    ) : project.status === 'processing' ? (
+                      <div className="flex flex-col items-center justify-center space-y-3">
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                        <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Processing...</span>
+                      </div>
                     ) : (
                       <>
                         {project.video?.thumbnail ? (
@@ -555,7 +560,9 @@ export function ProjectsContent() {
                         <td className="p-4">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-slate-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
-                              {project.video?.thumbnail ? (
+                              {project.status === 'processing' ? (
+                                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                              ) : project.video?.thumbnail ? (
                                 <img src={project.video.thumbnail} alt={project.name} className="w-full h-full object-cover rounded-lg" />
                               ) : (
                                 <ImageIcon className="w-5 h-5 text-slate-400 dark:text-zinc-500" />

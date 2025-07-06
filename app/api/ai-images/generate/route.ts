@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       const body = await request.json()
 
       // 🔍 Rileva se contiene image_url (studio workflow) vs solo prompt (generazione pura)
-      if (body.image_url && body.style) {
+      if (body.image_url && (body.style || body.custom_prompt)) {
         // 📸 CASO: AI Image Studio con URL - usa endpoint edit del backend
         const result = await fetchBackendJson(`/api/ai-images/edit-from-url`, {
           method: 'POST',

@@ -22,9 +22,12 @@ import {
     PresetSelector,
     CustomPromptInput,
     GeneratingState,
-    BeforeAfterSlider
+    BeforeAfterSlider,
+    StreamingPreview
 } from "./components"
+import { DynamicPromptSelector } from "./components/dynamic-prompt-selector"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 export default function AIImageStudioPage() {
     const { data: session } = useSession()
@@ -39,11 +42,25 @@ export default function AIImageStudioPage() {
         result,
         error,
 
+        // AI Analysis & Dynamic Prompts
+        dynamicPrompts,
+        selectedDynamicPrompt,
+        isAnalyzing,
+        analysisComplete,
+        aiAnalysis,
+
+        // Streaming state
+        streaming,
+        useStreaming,
+        setUseStreaming,
+
         // Handlers
         handleImageUpload,
         handleStyleSelect,
+        handleDynamicPromptSelect,
         handleCustomPromptChange,
         handleEnhanceImage,
+        handleEnhanceImageStreaming,
         handleDownloadImage,
         handleStartOver,
         handleUseImageAndContinue,
@@ -70,9 +87,6 @@ export default function AIImageStudioPage() {
                                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
                                     AI Image Studio
                                 </h1>
-                                <p className="text-slate-600 dark:text-zinc-400">
-                                    Transform product photos into professional e-commerce and marketing assets in seconds
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -133,19 +147,54 @@ export default function AIImageStudioPage() {
                                                     </div>
                                                 )}
 
-                                                <PresetSelector
-                                                    onStyleSelect={handleStyleSelect}
-                                                    selectedStyle={selectedStyle}
-                                                    isGenerating={isGenerating}
+                                                {/* AI-Generated Dynamic Prompts */}
+                                                <DynamicPromptSelector
+                                                    dynamicPrompts={dynamicPrompts}
+                                                    selectedPrompt={selectedDynamicPrompt}
+                                                    onPromptSelect={handleDynamicPromptSelect}
+                                                    isAnalyzing={isAnalyzing}
+                                                    analysisComplete={analysisComplete}
+                                                    aiAnalysis={aiAnalysis}
+                                                    isGenerating={isGenerating || streaming.isStreaming}
                                                 />
 
+                                                {/* Fallback to Manual Presets */}
+                                                {analysisComplete && dynamicPrompts.length === 0 && (
+                                                    <PresetSelector
+                                                        onStyleSelect={handleStyleSelect}
+                                                        selectedStyle={selectedStyle}
+                                                        isGenerating={isGenerating || streaming.isStreaming}
+                                                    />
+                                                )}
+
+                                                {/* Streaming Toggle */}
+                                                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-zinc-800 rounded-lg">
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="text-sm">
+                                                            <div className="font-medium text-slate-900 dark:text-white">
+                                                                Live Preview
+                                                            </div>
+                                                            <div className="text-xs text-slate-500 dark:text-zinc-400">
+                                                                See generation in real-time
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <Switch
+                                                        checked={useStreaming}
+                                                        onCheckedChange={setUseStreaming}
+                                                        disabled={isGenerating || streaming.isStreaming}
+                                                    />
+                                                </div>
+
                                                 <Button
-                                                    onClick={handleEnhanceImage}
-                                                    disabled={!selectedStyle || isGenerating}
+                                                    onClick={useStreaming ? handleEnhanceImageStreaming : handleEnhanceImage}
+                                                    disabled={(!selectedStyle && !selectedDynamicPrompt && !customPrompt.trim()) || isGenerating || streaming.isStreaming}
                                                     className="text-white w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-base font-semibold"
                                                 >
                                                     <Sparkles className="w-5 h-5 mr-2 text-white" />
-                                                    Create Marketing Asset
+                                                    {(isGenerating || streaming.isStreaming) ? 'Creating...' :
+                                                        selectedDynamicPrompt ? 'Create with AI Analysis' :
+                                                            selectedStyle ? 'Create Marketing Asset' : 'Create with Custom Instructions'}
                                                 </Button>
 
                                                 <CustomPromptInput
@@ -156,12 +205,37 @@ export default function AIImageStudioPage() {
                                             </div>
                                         )}
 
-                                        {currentStep === 'generating' && selectedStyle && (
+                                        {currentStep === 'generating' && (
                                             <div className="animate-in slide-in-from-left-3 fade-in duration-500">
-                                                <GeneratingState
-                                                    progress={progress}
-                                                    style={selectedStyle}
-                                                />
+                                                {useStreaming ? (
+                                                    <div className="text-center space-y-4">
+                                                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse">
+                                                            <Sparkles className="w-8 h-8 text-white" />
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                                                                {streaming.stage.charAt(0).toUpperCase() + streaming.stage.slice(1).replace('_', ' ')}
+                                                            </h3>
+                                                            <p className="text-slate-600 dark:text-zinc-400 mb-4">
+                                                                {streaming.message}
+                                                            </p>
+                                                            <div className="w-full bg-slate-200 dark:bg-zinc-700 rounded-full h-2">
+                                                                <div
+                                                                    className="h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300"
+                                                                    style={{ width: `${streaming.progress}%` }}
+                                                                />
+                                                            </div>
+                                                            <p className="text-sm text-slate-500 dark:text-zinc-400 mt-2">
+                                                                {streaming.progress}% completato
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <GeneratingState
+                                                        progress={progress}
+                                                        style={selectedStyle}
+                                                    />
+                                                )}
                                             </div>
                                         )}
 
@@ -229,7 +303,7 @@ export default function AIImageStudioPage() {
                                     <div className="transition-all duration-500 ease-in-out h-full">
                                         {currentStep === 'initial' && (
                                             <div className="h-full flex items-center justify-center animate-in fade-in duration-700">
-                                                <WelcomeState />
+                                                <WelcomeState onImageUpload={handleImageUpload} />
                                             </div>
                                         )}
 
@@ -245,12 +319,25 @@ export default function AIImageStudioPage() {
                                             </div>
                                         )}
 
-                                        {currentStep === 'generating' && selectedStyle && (
+                                        {currentStep === 'generating' && (
                                             <div className="h-full flex items-center justify-center animate-in fade-in duration-500">
-                                                <GeneratingState
-                                                    progress={progress}
-                                                    style={selectedStyle}
-                                                />
+                                                {useStreaming && uploadedImageUrl ? (
+                                                    <div className="w-full max-w-md">
+                                                        <StreamingPreview
+                                                            originalImage={uploadedImageUrl}
+                                                            isStreaming={streaming.isStreaming}
+                                                            progress={streaming.progress}
+                                                            message={streaming.message}
+                                                            stage={streaming.stage}
+                                                            error={streaming.error}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <GeneratingState
+                                                        progress={isGenerating ? progress : streaming.progress}
+                                                        style={selectedStyle}
+                                                    />
+                                                )}
                                             </div>
                                         )}
 

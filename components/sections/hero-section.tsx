@@ -7,6 +7,7 @@ import { Play, ArrowRight, Sparkles, Zap, Brain } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import Image from "next/image"
 import { useVideoControls } from "@/hooks/useVideoControls"
 
 export function HeroSection() {
@@ -181,16 +182,13 @@ export function HeroSection() {
                       <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto">
                         {currentProjectData.productImages.map((img, index) => (
                           <div key={index} className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-lg flex items-center justify-center">
-                            <img
+                            <Image
                               src={img}
                               alt={`Product ${index + 1}`}
+                              width={150}
+                              height={150}
                               className="w-full h-full object-cover rounded-lg"
-                              onError={(e) => {
-                                const target = e.currentTarget as HTMLImageElement
-                                const fallback = target.nextElementSibling as HTMLElement
-                                target.style.display = 'none'
-                                if (fallback) fallback.style.display = 'flex'
-                              }}
+                              priority
                             />
                           </div>
                         ))}
@@ -290,16 +288,13 @@ export function HeroSection() {
                         <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto mb-4">
                           {currentProjectData.productImages.map((img, index) => (
                             <div key={index} className="aspect-square bg-white rounded-lg p-2 shadow-lg">
-                              <img
+                              <Image
                                 src={img}
                                 alt={`Product ${index + 1}`}
+                                width={120}
+                                height={120}
                                 className="w-full h-full object-cover rounded"
-                                onError={(e) => {
-                                  const target = e.currentTarget as HTMLImageElement
-                                  const fallback = target.nextElementSibling as HTMLElement
-                                  target.style.display = 'none'
-                                  if (fallback) fallback.style.display = 'flex'
-                                }}
+                                priority
                               />
                             </div>
                           ))}

@@ -3,16 +3,33 @@ import { Button } from "@/components/ui/button"
 import { PresetSelectorProps } from "../types"
 import { PRESET_STYLES } from "../constants/preset-styles"
 import { useState } from "react"
+import { X } from "lucide-react"
 
 export const PresetSelector = ({ onStyleSelect, selectedStyle, isGenerating }: PresetSelectorProps) => {
     const [hoveredPreset, setHoveredPreset] = useState<string | null>(null)
 
     return (
         <div className="space-y-4">
-            <div>
-                <Label className="text-slate-700 dark:text-zinc-300 font-medium">
-                    Choose Marketing Style
-                </Label>
+            <div className="flex items-center justify-between">
+                <div>
+                    <Label className="text-slate-700 dark:text-zinc-300 font-medium">
+                        Choose Marketing Style (Optional)
+                    </Label>
+                    <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">
+                        Select a preset style or use custom instructions below
+                    </p>
+                </div>
+                {selectedStyle && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onStyleSelect(null)}
+                        className="text-slate-500 hover:text-slate-700 p-2 h-8"
+                        title="Clear selection"
+                    >
+                        <X className="w-4 h-4" />
+                    </Button>
+                )}
             </div>
 
             <div className="space-y-2.5 relative">

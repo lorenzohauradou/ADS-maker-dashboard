@@ -34,7 +34,7 @@ export interface FileUploadProps {
 }
 
 export interface PresetSelectorProps {
-    onStyleSelect: (style: PresetStyle) => void
+    onStyleSelect: (style: PresetStyle | null) => void
     selectedStyle: PresetStyle | null
     isGenerating: boolean
 }
@@ -47,7 +47,7 @@ export interface CustomPromptInputProps {
 
 export interface GeneratingStateProps {
     progress: number
-    style: PresetStyle
+    style: PresetStyle | null
 }
 
 export interface BeforeAfterSliderProps {

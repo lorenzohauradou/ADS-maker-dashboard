@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Play, User, Sparkles, Crown, CheckCircle, ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 export function AvatarSelectionSection() {
     const [selectedAvatar, setSelectedAvatar] = useState<number | null>(1)
@@ -24,11 +25,11 @@ export function AvatarSelectionSection() {
         },
         {
             id: 2,
-            name: "Marcus",
+            name: "Palmira",
             category: "Friendly",
             description: "Friendly and engaging tone, ideal for e-commerce",
-            image: "/placeholder-user.jpg",
-            accent: "American",
+            image: "/avatar1.png",
+            accent: "Spanish",
             specialties: ["E-commerce", "Retail", "Lifestyle"],
             styles: 4,
             isNew: false,
@@ -48,11 +49,11 @@ export function AvatarSelectionSection() {
         },
         {
             id: 4,
-            name: "Maxen",
+            name: "Diego",
             category: "Authoritative",
             description: "Authoritative and convincing voice for premium sectors",
-            image: "/placeholder-user.jpg",
-            accent: "British",
+            image: "/avatar3.png",
+            accent: "Italian",
             specialties: ["Luxury", "Finance", "Automotive"],
             styles: 7,
             isNew: true,
@@ -60,10 +61,10 @@ export function AvatarSelectionSection() {
         },
         {
             id: 5,
-            name: "Leo",
+            name: "Lucia",
             category: "Modern",
             description: "Modern and direct style for startups and innovation",
-            image: "/avatar5.png",
+            image: "/avatar4.png",
             accent: "American",
             specialties: ["Startup", "Apps", "Innovation"],
             styles: 5,
@@ -72,11 +73,11 @@ export function AvatarSelectionSection() {
         },
         {
             id: 6,
-            name: "Lucia",
+            name: "Leo",
             category: "Warm",
             description: "Warm and reassuring tone, perfect for healthcare",
-            image: "/avatar6.png",
-            accent: "Spanish",
+            image: "/avatar5.png",
+            accent: "American",
             specialties: ["Healthcare", "Wellness", "Family"],
             styles: 4,
             isNew: false,
@@ -87,7 +88,7 @@ export function AvatarSelectionSection() {
             name: "Thomas",
             category: "Distinguished",
             description: "Distinguished and trustworthy voice for financial services",
-            image: "/placeholder-user.jpg",
+            image: "/avatar6.png",
             accent: "British",
             specialties: ["Finance", "Insurance", "Legal"],
             styles: 3,
@@ -96,10 +97,10 @@ export function AvatarSelectionSection() {
         },
         {
             id: 8,
-            name: "Rio",
+            name: "Sarah",
             category: "Dynamic",
             description: "Dynamic and energetic for sports and active lifestyle",
-            image: "/placeholder-user.jpg",
+            image: "/avatar7.png",
             accent: "American",
             specialties: ["Sports", "Fitness", "Outdoor"],
             styles: 4,
@@ -111,7 +112,7 @@ export function AvatarSelectionSection() {
             name: "Faye",
             category: "Elegant",
             description: "Elegant and sophisticated for luxury brands",
-            image: "/placeholder-user.jpg",
+            image: "/avatar8.png",
             accent: "British",
             specialties: ["Luxury", "Fashion", "Beauty"],
             styles: 8,
@@ -183,10 +184,13 @@ export function AvatarSelectionSection() {
                             <div className="relative overflow-hidden">
                                 {/* Avatar Image/Video - Takes most of the card */}
                                 <div className="relative w-full h-80 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
-                                    <img
+                                    <Image
                                         src={avatar.image}
                                         alt={avatar.name}
+                                        width={320}
+                                        height={320}
                                         className="w-full h-full object-cover object-center"
+                                        priority
                                     />
 
                                     {/* Top badges */}
