@@ -105,5 +105,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/blog/tiktok-50k-month-ai-ugc-strategy`,
+      lastModified: new Date('2025-07-07'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
   ]
 } 

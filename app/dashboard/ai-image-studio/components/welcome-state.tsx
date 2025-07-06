@@ -14,13 +14,13 @@ export const WelcomeState = ({ onImageUpload }: WelcomeStateProps) => {
     // Preview images for each feature
     const featureExamples = {
         "professional-studio": {
-            before: "/olio_latta.jpg", // Immagine prodotto originale
-            after: "/olio_gpt.png", // Versione studio professionale 
+            before: "/raw_redbull.png", // Immagine prodotto originale
+            after: "/ai_redbull.png", // Versione studio professionale 
             title: "Professional Studio"
         },
         "cinematic-lighting": {
-            before: "/aspiratore.jpg", // Stessa immagine originale
-            after: "/vent.jpg", // Versione con lighting drammatico
+            before: "/olio_latta.jpg", // Stessa immagine originale
+            after: "/olio_gpt.png", // Versione con lighting drammatico
             title: "Cinematic Lighting"
         },
         "transparent-background": {

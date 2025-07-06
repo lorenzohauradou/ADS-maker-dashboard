@@ -43,6 +43,20 @@ export default function BlogPage() {
     const blogPosts = [
         {
             id: 1,
+            title: "How Creators Are Hitting $50K/Month with TikTok Organic & AI-Generated UGC",
+            excerpt: "The secret strategy that's allowing creators and brands to generate $50,000+ per month on TikTok using AI-generated UGC content and organic algorithm.",
+            category: "TikTok Marketing",
+            readTime: "4 min read",
+            publishDate: "2025-06-20",
+            slug: "tiktok-50k-month-ai-ugc-strategy",
+            featured: true,
+            metrics: "$50K+ monthly revenue",
+            difficulty: "Advanced",
+            thumbnail: "from-pink-500 to-purple-500",
+            icon: TrendingUp
+        },
+        {
+            id: 2,
             title: "The AI Dropshipping Revolution: Ultimate 2025 Guide to Building Million-Dollar Brands",
             excerpt: "Complete guide to AI-powered dropshipping: automated product research, AI content generation, brand building with artificial intelligence, and scaling strategies that generate $90K+ monthly revenue.",
             category: "AI Dropshipping",
@@ -56,7 +70,7 @@ export default function BlogPage() {
             icon: TrendingUp
         },
         {
-            id: 2,
+            id: 3,
             title: "Instagram Reels Algorithm: Technical Analysis and Optimization Framework",
             excerpt: "Data-driven breakdown of Instagram's 2025 algorithm changes, with actionable optimization strategies based on 50,000+ Reels performance analysis.",
             category: "Algorithm Optimization",
@@ -70,7 +84,7 @@ export default function BlogPage() {
             icon: BarChart3
         },
         {
-            id: 3,
+            id: 4,
             title: "AI Video Creation: Complete ROI Analysis and Implementation Guide",
             excerpt: "Comprehensive evaluation of AI video tools for e-commerce, including cost-benefit analysis, performance benchmarks, and implementation roadmap.",
             category: "AI Tools",
@@ -84,7 +98,7 @@ export default function BlogPage() {
             icon: Bot
         },
         {
-            id: 4,
+            id: 5,
             title: "E-commerce Growth Strategies: Market Analysis and Forecasting for 2025",
             excerpt: "Strategic analysis of e-commerce trends, market opportunities, and growth frameworks based on industry research and performance data.",
             category: "Industry Insights",
@@ -98,7 +112,7 @@ export default function BlogPage() {
             icon: Target
         },
         {
-            id: 5,
+            id: 6,
             title: "Instagram Video Formats: Performance Comparison and Best Practices",
             excerpt: "Complete analysis of different Instagram video formats with performance metrics and best practices for maximum engagement.",
             category: "Platform Updates",
@@ -112,7 +126,7 @@ export default function BlogPage() {
             icon: Users
         },
         {
-            id: 6,
+            id: 7,
             title: "Viral TikTok Ads: Complete Analysis and Optimization Guide",
             excerpt: "Step-by-step breakdown of viral TikTok advertisements with actionable insights for creating high-converting video content.",
             category: "Case Studies",
