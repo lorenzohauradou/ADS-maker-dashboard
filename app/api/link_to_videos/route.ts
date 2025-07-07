@@ -15,13 +15,50 @@ export async function POST(request: NextRequest) {
     
     console.log('🔗 LINK_TO_VIDEOS: Dati wizard ricevuti:', wizardData)
 
+    // 🎯 STEP 1: Crea progetto se non esiste
+    let projectId = wizardData.projectId
+    if (!projectId) {
+      // 📋 USA ENDPOINT NEXTJS che attiva il polling automatico
+      const projectResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000'}/api/projects/create-for-wizard`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': request.headers.get('cookie') || '', // Per sessione NextAuth
+        },
+        body: JSON.stringify({
+          name: wizardData.projectName || 'Video Project',
+          platform: wizardData.platform || 'instagram', 
+          target_audience: wizardData.targetAudience || 'young-adults',
+          description: 'Video project creato dal wizard unificato'
+        }),
+      })
+
+      if (!projectResponse.ok) {
+        const errorData = await projectResponse.text()
+        console.error('❌ PROJECT CREATION ERROR:', errorData)
+        return NextResponse.json(
+          { error: `Errore creazione progetto: ${errorData}` }, 
+          { status: projectResponse.status }
+        )
+      }
+
+      const projectResult = await projectResponse.json()
+      projectId = projectResult.project?.id || projectResult.id
+      console.log('✅ Progetto creato tramite NextJS:', projectId)
+    }
+
     // 🎯 MAPPING COMPLETO: Wizard Data → Creatify link_to_videos
     const mappedData = mapWizardToCreatifyParams(wizardData)
     
     console.log('🔗 LINK_TO_VIDEOS: Strategia mappata:', mappedData)
 
+    // 🔗 STEP 2: Costruisci URL con query parameters obbligatori (no doppio encoding)
+    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/api/creatify/link_to_videos`)
+    backendUrl.searchParams.append('project_id', projectId.toString())
+    backendUrl.searchParams.append('project_name', wizardData.projectName || 'Video Project')
+
     // Chiamata al backend
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/api/creatify/link_to_videos`, {
+    const backendResponse = await fetch(backendUrl.toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +108,12 @@ export async function POST(request: NextRequest) {
     const result = await backendResponse.json()
     console.log('✅ LINK_TO_VIDEOS: Risposta backend ricevuta:', result)
 
-    return NextResponse.json(result)
+    // 🎯 Aggiungi project_id alla risposta per la navigazione frontend
+    return NextResponse.json({
+      ...result,
+      project_id: projectId,
+      project_name: wizardData.projectName || 'Video Project'
+    })
     
   } catch (error) {
     console.error('❌ LINK_TO_VIDEOS Error:', error)

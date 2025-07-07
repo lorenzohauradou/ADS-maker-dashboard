@@ -172,12 +172,7 @@ export function CreateVideoSection() {
       // 🔄 AGGIORNA LIMITI
       refreshLimits()
 
-      // 🎯 NAVIGA AL PROGETTO o DASHBOARD
-      if (result.project_id) {
-        router.push(`/dashboard/projects/${result.project_id}`)
-      } else {
-        router.push('/dashboard')
-      }
+      router.push('/dashboard')
 
     } catch (error) {
       console.error('❌ Video creation error:', error)

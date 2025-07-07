@@ -111,7 +111,10 @@ export function ProjectsContent() {
 
         // Controlla automaticamente i video in processing (solo se ci sono)
         const processingProjects = (data.projects || []).filter((p: any) =>
-          p.video?.status === 'processing' && p.video?.url?.startsWith('processing_')
+          p.video?.status === 'processing' && (
+            p.video?.url?.startsWith('processing_') ||
+            p.video?.file_path?.startsWith('processing_')
+          )
         )
 
         if (processingProjects.length > 0) {

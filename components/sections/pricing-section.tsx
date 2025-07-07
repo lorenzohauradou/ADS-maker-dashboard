@@ -121,7 +121,7 @@ export function PricingSection() {
       borderColor: "border-purple-300 dark:border-purple-500",
       bgColor: "bg-purple-50 dark:bg-purple-500/5",
       features: [
-        { text: "", included: true },
+        { text: "100 video creations per month", included: true },
         { text: "Everything in Pro plan", included: true },
         { text: "Design Your Own Avatar (15/month)", included: true },
         { text: "Bring Your Own Avatar (10/month)", included: true },

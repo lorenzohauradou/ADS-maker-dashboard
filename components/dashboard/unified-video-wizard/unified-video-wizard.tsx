@@ -25,6 +25,12 @@ import { TemplateSelectionStep } from "./steps/template-selection-step"
 import { SimpleReviewStep } from "@/components/dashboard/unified-video-wizard/steps/simple-review-step"
 import { SuccessStep } from "@/components/dashboard/unified-video-wizard/steps/success-step"
 
+interface ImageFile {
+    file: File
+    preview: string
+    id: string
+}
+
 interface UnifiedVideoWizardProps {
     isOpen: boolean
     onClose: () => void
@@ -35,7 +41,7 @@ interface UnifiedVideoWizardProps {
 // 🎯 NEW CONVERSATIONAL WIZARD - 7 SINGLE-PURPOSE STEPS
 interface WizardData {
     // Step 1: Upload Images
-    images: any[]
+    images: ImageFile[]
     projectName: string
     productUrl: string
 
@@ -339,8 +345,7 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
                 // Can proceed with either:
                 // 1. Project name + URL (no images required)
                 // 2. Project name + at least 1 image
-                return wizardData.projectName.trim() !== "" &&
-                    (wizardData.productUrl.trim() !== "" || wizardData.images.length > 0)
+                return wizardData.projectName.trim() !== "" && wizardData.images.length > 0
             case 2: return wizardData.selectedAvatar !== null
             case 3: return wizardData.platform !== ""
             case 4: return wizardData.targetAudience !== ""
@@ -361,9 +366,8 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
                     <ImageUploadStep
                         images={wizardData.images}
                         projectName={wizardData.projectName}
-                        productUrl={wizardData.productUrl}
-                        onImagesUpdate={(images, projectName, productUrl) => {
-                            setWizardData(prev => ({ ...prev, images, projectName, productUrl }))
+                        onImagesUpdate={(images: ImageFile[], projectName: string) => {
+                            setWizardData(prev => ({ ...prev, images, projectName }))
                         }}
                         onContinue={() => handleStepComplete({})}
                     />
