@@ -23,10 +23,10 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: body.name || `Nuovo Video Ad - ${new Date().toLocaleDateString()}`,
-        description: body.description || 'Progetto creato dal Wizard Unificato',
-        platform: body.platform || 'instagram',
-        target_audience: body.target_audience || 'giovani adulti'
+        name: body.name,
+        description: body.description,
+        platform: body.platform,
+        target_audience: body.target_audience
       }),
       timeout: TIMEOUTS.QUICK,
     })

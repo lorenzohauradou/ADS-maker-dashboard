@@ -322,9 +322,87 @@ export function ProjectsContent() {
   }
 
   const handleCompleteUnifiedWizard = async (wizardData: any) => {
-    setIsUnifiedWizardOpen(false)
-    // Refresh projects list after video creation
-    fetchProjects()
+    try {
+      console.log('🧙‍♂️ WIZARD COMPLETATO: Avvio creazione video con dati:', wizardData)
+
+      // STEP 1: Upload immagini su storage se presenti
+      let uploadedImageUrls: string[] = []
+
+      if (wizardData.images && wizardData.images.length > 0) {
+        console.log(`📸 Caricamento ${wizardData.images.length} immagini su storage...`)
+
+        const formData = new FormData()
+        formData.append('project_name', wizardData.projectName || 'Wizard Project')
+
+        // Aggiungi tutte le immagini al FormData
+        wizardData.images.forEach((imageFile: any, index: number) => {
+          formData.append('images', imageFile.file)
+        })
+
+        // Upload immagini
+        const uploadResponse = await fetch('/api/upload-product-images', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!uploadResponse.ok) {
+          const uploadError = await uploadResponse.json()
+          throw new Error(uploadError.error || 'Errore durante il caricamento delle immagini')
+        }
+
+        const uploadResult = await uploadResponse.json()
+        uploadedImageUrls = uploadResult.image_urls || []
+
+        console.log(`✅ ${uploadedImageUrls.length} immagini caricate su storage:`, uploadedImageUrls)
+      }
+
+      // STEP 2: Prepara dati per link_to_videos con URL immagini caricate
+      const finalWizardData = {
+        ...wizardData,
+        // Sostituisce le immagini File con gli URL pubblici
+        uploadedImageUrls: uploadedImageUrls,
+        // Mantieni il primo URL immagine come fallback per link se non c'è productUrl
+        primaryImageUrl: uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null
+      }
+
+      console.log('🎬 Dati finali per creazione video:', finalWizardData)
+
+      // STEP 3: CHIAMA API LINK_TO_VIDEOS con i dati del wizard e URL immagini
+      const response = await fetch('/api/link_to_videos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(finalWizardData)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Errore durante la creazione del video')
+      }
+
+      const result = await response.json()
+
+      console.log('✅ VIDEO CREATED:', result)
+
+      // 🎉 NOTIFICA SUCCESSO
+      toast.success('🎬 Video Generation Started Successfully!', {
+        description: `The video "${wizardData.projectName}" has been started. You will receive a notification when it is ready.`,
+        duration: 5000,
+        icon: "🎬"
+      })
+
+      // Chiudi wizard e aggiorna progetti
+      setIsUnifiedWizardOpen(false)
+      fetchProjects()
+
+    } catch (error) {
+      console.error('❌ Video creation error:', error)
+      toast.error('❌ Error during video creation', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+        duration: 5000
+      })
+    }
   }
 
 
