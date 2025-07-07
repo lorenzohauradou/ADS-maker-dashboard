@@ -111,10 +111,10 @@ export function ProjectsContent() {
 
         // Controlla automaticamente i video in processing (solo se ci sono)
         const processingProjects = (data.projects || []).filter((p: any) =>
-          p.video?.status === 'processing' && (
-            p.video?.url?.startsWith('processing_') ||
-            p.video?.file_path?.startsWith('processing_')
-          )
+          // ✅ FILTRO MIGLIORATO: Progetto in processing O video con URL processing
+          p.status === 'processing' ||
+          p.video?.status === 'processing' ||
+          p.video?.url?.startsWith('processing_')
         )
 
         if (processingProjects.length > 0) {
@@ -163,6 +163,25 @@ export function ProjectsContent() {
   useEffect(() => {
     fetchProjects()
   }, [])
+
+  // 🔄 POLLING CONTINUO per video in processing
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Controlla se ci sono progetti in processing
+      const hasProcessingProjects = projects.some(p =>
+        p.status === 'processing' ||
+        p.video?.status === 'processing' ||
+        p.video?.url?.startsWith('processing_')
+      )
+
+      if (hasProcessingProjects) {
+        console.log('🔄 Polling automatico: Controllo video in processing...')
+        checkAllPendingVideos()
+      }
+    }, 30000) // Ogni 30 secondi
+
+    return () => clearInterval(interval)
+  }, [projects]) // Dipende da projects per rilevare cambiamenti
 
 
 
