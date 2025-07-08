@@ -109,12 +109,12 @@ export function ProjectsContent() {
           setProjects([])
         }
 
-        // Controlla automaticamente i video in processing (solo se ci sono)
+        // Controlla automaticamente i video in processing/pending (solo se ci sono)
         const processingProjects = (data.projects || []).filter((p: any) =>
-          // ✅ FILTRO MIGLIORATO: Progetto in processing O video con URL processing
-          p.status === 'processing' ||
-          p.video?.status === 'processing' ||
-          p.video?.url?.startsWith('processing_')
+          // ✅ FIX: Include PENDING e PROCESSING
+          p.status === 'pending' || p.status === 'processing' ||
+          p.video?.status === 'pending' || p.video?.status === 'processing' ||
+          p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
         )
 
         if (processingProjects.length > 0) {
@@ -207,12 +207,12 @@ export function ProjectsContent() {
 
   }, [])
 
-  // 🔄 POLLING INTELLIGENTE per video in processing
+  // 🔄 POLLING INTELLIGENTE per video in pending/processing
   useEffect(() => {
     const hasProcessingProjects = projects.some(p =>
-      p.status === 'processing' ||
-      p.video?.status === 'processing' ||
-      p.video?.url?.startsWith('processing_')
+      p.status === 'pending' || p.status === 'processing' ||
+      p.video?.status === 'pending' || p.video?.status === 'processing' ||
+      p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
     )
 
     if (!hasProcessingProjects) {
@@ -220,10 +220,10 @@ export function ProjectsContent() {
     }
 
     console.log(`🎯 POLLING ATTIVATO: Trovati ${projects.filter(p =>
-      p.status === 'processing' ||
-      p.video?.status === 'processing' ||
-      p.video?.url?.startsWith('processing_')
-    ).length} progetti in processing`)
+      p.status === 'pending' || p.status === 'processing' ||
+      p.video?.status === 'pending' || p.video?.status === 'processing' ||
+      p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
+    ).length} progetti in pending/processing`)
 
     // 🚀 POLLING AGGRESSIVO per i primi 5 minuti (ogni 10 secondi)
     const aggressiveInterval = setInterval(() => {
@@ -236,11 +236,11 @@ export function ProjectsContent() {
       clearInterval(aggressiveInterval)
 
       const regularInterval = setInterval(() => {
-        // Ricontrolla se ci sono ancora progetti in processing
+        // Ricontrolla se ci sono ancora progetti in pending/processing
         const stillProcessing = projects.some(p =>
-          p.status === 'processing' ||
-          p.video?.status === 'processing' ||
-          p.video?.url?.startsWith('processing_')
+          p.status === 'pending' || p.status === 'processing' ||
+          p.video?.status === 'pending' || p.video?.status === 'processing' ||
+          p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
         )
 
         if (stillProcessing) {
@@ -274,6 +274,8 @@ export function ProjectsContent() {
         return 'bg-green-100 text-green-800 border-green-300';
       case 'processing':
         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'pending':  // ✅ FIX: Nuovo stato pending
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'failed':
         return 'bg-red-100 text-red-800 border-red-300';
       default:

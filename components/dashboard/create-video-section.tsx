@@ -102,11 +102,21 @@ export function CreateVideoSection() {
     try {
       console.log('🧙‍♂️ WIZARD COMPLETATO: Avvio creazione video con dati:', wizardData)
 
+      // 📊 DIAGNOSTICA INIZIALE
+      const diagnosticData = {
+        hasImages: wizardData.images?.length > 0,
+        imageCount: wizardData.images?.length || 0,
+        hasProjectName: !!wizardData.projectName?.trim(),
+        projectName: wizardData.projectName,
+        timestamp: new Date().toISOString()
+      }
+      console.log('🔍 DIAGNOSTICA WIZARD:', diagnosticData)
+
       // STEP 1: Upload immagini su storage se presenti
       let uploadedImageUrls: string[] = []
 
       if (wizardData.images && wizardData.images.length > 0) {
-        console.log(`📸 Caricamento ${wizardData.images.length} immagini su storage...`)
+        console.log(`📸 STEP 1: Caricamento ${wizardData.images.length} immagini su storage...`)
 
         const formData = new FormData()
         formData.append('project_name', wizardData.projectName || 'Wizard Project')
@@ -114,23 +124,40 @@ export function CreateVideoSection() {
         // Aggiungi tutte le immagini al FormData
         wizardData.images.forEach((imageFile: any, index: number) => {
           formData.append('images', imageFile.file)
+          console.log(`📸 Aggiunta immagine ${index + 1}: ${imageFile.file.name} (${imageFile.file.size} bytes)`)
         })
 
         // Upload immagini
+        console.log('📡 Chiamata /api/upload-product-images...')
         const uploadResponse = await fetch('/api/upload-product-images', {
           method: 'POST',
           body: formData
         })
 
+        console.log('📊 UPLOAD RESPONSE:', {
+          ok: uploadResponse.ok,
+          status: uploadResponse.status,
+          statusText: uploadResponse.statusText,
+          headers: Object.fromEntries(uploadResponse.headers.entries())
+        })
+
         if (!uploadResponse.ok) {
-          const uploadError = await uploadResponse.json()
-          throw new Error(uploadError.error || 'Errore durante il caricamento delle immagini')
+          const uploadError = await uploadResponse.json().catch(() => ({}))
+          console.error('❌ UPLOAD ERROR:', uploadError)
+          throw new Error(uploadError.error || `Upload failed: HTTP ${uploadResponse.status}`)
         }
 
         const uploadResult = await uploadResponse.json()
         uploadedImageUrls = uploadResult.image_urls || []
 
-        console.log(`✅ ${uploadedImageUrls.length} immagini caricate su storage:`, uploadedImageUrls)
+        console.log(`✅ STEP 1 COMPLETATO: ${uploadedImageUrls.length} immagini caricate:`, uploadedImageUrls)
+
+        // 🚨 CONTROLLO CRITICO
+        if (uploadedImageUrls.length === 0) {
+          throw new Error('Nessun URL immagine ricevuto dal backend dopo upload')
+        }
+      } else {
+        console.log('⚠️ STEP 1 SALTATO: Nessuna immagine da caricare')
       }
 
       // STEP 2: Prepara dati per link_to_videos con URL immagini caricate
@@ -142,10 +169,19 @@ export function CreateVideoSection() {
         primaryImageUrl: uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null
       }
 
-      console.log('🎬 Dati finali per creazione video:', finalWizardData)
+      console.log('🎬 STEP 2: Dati finali preparati per creazione video:')
+      console.log('📊 Final Wizard Data:', {
+        projectName: finalWizardData.projectName,
+        platform: finalWizardData.platform,
+        uploadedImageCount: finalWizardData.uploadedImageUrls?.length || 0,
+        uploadedImageUrls: finalWizardData.uploadedImageUrls,
+        hasProductUrl: !!finalWizardData.productUrl,
+        avatarType: finalWizardData.avatarType,
+        selectedAvatar: finalWizardData.selectedAvatar
+      })
 
       // STEP 3: CHIAMA API LINK_TO_VIDEOS con i dati del wizard e URL immagini
-      console.log('📡 Avvio chiamata /api/link_to_videos...')
+      console.log('📡 STEP 3: Avvio chiamata /api/link_to_videos...')
 
       const response = await fetch('/api/link_to_videos', {
         method: 'POST',
@@ -155,20 +191,33 @@ export function CreateVideoSection() {
         body: JSON.stringify(finalWizardData)
       })
 
-      console.log('📊 Risposta /api/link_to_videos ricevuta:', {
+      console.log('📊 LINK_TO_VIDEOS RESPONSE:', {
         ok: response.ok,
         status: response.status,
-        statusText: response.statusText
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Errore durante la creazione del video')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ LINK_TO_VIDEOS ERROR:', errorData)
+        throw new Error(errorData.error || `Video creation failed: HTTP ${response.status} - ${response.statusText}`)
       }
 
       const result = await response.json()
 
-      console.log('✅ VIDEO CREATED:', result)
+      console.log('✅ STEP 3 COMPLETATO - VIDEO CREATED:', result)
+
+      // 🚨 CONTROLLO CRITICO DEL RISULTATO
+      if (!result.success) {
+        console.error('❌ Backend returned success=false:', result)
+        throw new Error(result.error || 'Backend non ha confermato successo creazione video')
+      }
+
+      if (!result.video_result?.id && !result.project_id) {
+        console.error('❌ Missing critical data in response:', result)
+        throw new Error('Risposta backend incompleta: mancano video_result.id o project_id')
+      }
 
       // 🎉 NOTIFICA SUCCESSO
       toast.success('🎬 Video Generation Started Successfully!', {
@@ -180,11 +229,27 @@ export function CreateVideoSection() {
       // 🔄 AGGIORNA LIMITI
       refreshLimits()
 
-      // 🚀 AVVIA CONTROLLO AUTOMATICO dopo 45 secondi (per dare tempo al backend)
-      if (result.video_result?.id) {
+      // 🚀 SISTEMA DI POLLING MIGLIORATO
+      const videoJobId = result.video_result?.id
+      const projectId = result.project_id
+
+      if (videoJobId) {
+        console.log('🔄 AVVIO POLLING INTELLIGENTE per video:', videoJobId)
+
+        // Polling immediato per feedback veloce
         setTimeout(async () => {
           try {
-            console.log('🔄 Controllo automatico post-creazione video...')
+            console.log('🔄 Primo controllo automatico (15s)...')
+            await checkVideoStatus(videoJobId, projectId, 1, 5) // Max 5 tentativi ogni 15s
+          } catch (error) {
+            console.warn('⚠️ Primo controllo fallito:', error)
+          }
+        }, 15000) // 15 secondi
+
+        // Polling robusto per completamento
+        setTimeout(async () => {
+          try {
+            console.log('🔄 Controllo robusto post-creazione (45s)...')
             const checkResponse = await fetch('/api/creatify/check-all-pending-videos', {
               method: 'POST'
             })
@@ -195,6 +260,10 @@ export function CreateVideoSection() {
 
               if (checkResult.updated > 0) {
                 console.log('🎉 Video completato automaticamente!')
+                toast.success('🎉 Video Ready!', {
+                  description: 'Your video has been completed and is ready for download.',
+                  duration: 5000
+                })
               }
             }
           } catch (error) {
@@ -206,11 +275,66 @@ export function CreateVideoSection() {
       router.push('/dashboard')
 
     } catch (error) {
-      console.error('❌ Video creation error:', error)
+      console.error('❌ VIDEO CREATION ERROR:', error)
+
+      // 📊 DIAGNOSTICA ERRORE DETTAGLIATA
+      const errorDetails = {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      }
+      console.error('🔍 ERROR DIAGNOSTICS:', errorDetails)
+
       toast.error('❌ Error during video creation', {
-        description: error instanceof Error ? error.message : 'Unknown error',
-        duration: 5000
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+        duration: 8000
       })
+    }
+  }
+
+  // 🔄 FUNZIONE DI POLLING MIGLIORATA
+  const checkVideoStatus = async (videoJobId: string, projectId: number, attempt: number = 1, maxAttempts: number = 5) => {
+    try {
+      console.log(`🔍 Controllo status video ${videoJobId} (tentativo ${attempt}/${maxAttempts})`)
+
+      const statusResponse = await fetch(`/api/creatify/update-video-status/${videoJobId}`, {
+        method: 'POST'
+      })
+
+      if (statusResponse.ok) {
+        const statusResult = await statusResponse.json()
+        console.log('📊 Status result:', statusResult)
+
+        if (statusResult.success && statusResult.video?.status === 'completed') {
+          console.log('🎉 Video completato durante polling!')
+          toast.success('🎉 Video Ready!', {
+            description: 'Your video has been completed and is ready for download.',
+            duration: 5000
+          })
+          return true
+        }
+      }
+
+      // Continua polling se non completato
+      if (attempt < maxAttempts) {
+        setTimeout(() => {
+          checkVideoStatus(videoJobId, projectId, attempt + 1, maxAttempts)
+        }, 20000) // 20 secondi tra tentativi
+      }
+
+      return false
+    } catch (error) {
+      console.warn(`⚠️ Tentativo ${attempt} di controllo status fallito:`, error)
+
+      // Continua con il prossimo tentativo
+      if (attempt < maxAttempts) {
+        setTimeout(() => {
+          checkVideoStatus(videoJobId, projectId, attempt + 1, maxAttempts)
+        }, 20000)
+      }
+      return false
     }
   }
 

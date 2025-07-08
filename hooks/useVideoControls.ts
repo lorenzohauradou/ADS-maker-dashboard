@@ -104,7 +104,8 @@ export function useVideoControls() {
   const canPlayVideo = useCallback((project: Project) => {
     return project.video?.url && 
            project.status === 'completed' && 
-           !project.video.url.startsWith('processing_')
+           !project.video.url.startsWith('processing_') &&
+           !project.video.url.startsWith('pending_')  // ✅ FIX: Include pending
   }, [])
 
   return {
