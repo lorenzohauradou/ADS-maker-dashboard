@@ -145,12 +145,20 @@ export function CreateVideoSection() {
       console.log('🎬 Dati finali per creazione video:', finalWizardData)
 
       // STEP 3: CHIAMA API LINK_TO_VIDEOS con i dati del wizard e URL immagini
+      console.log('📡 Avvio chiamata /api/link_to_videos...')
+
       const response = await fetch('/api/link_to_videos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(finalWizardData)
+      })
+
+      console.log('📊 Risposta /api/link_to_videos ricevuta:', {
+        ok: response.ok,
+        status: response.status,
+        statusText: response.statusText
       })
 
       if (!response.ok) {
@@ -171,6 +179,29 @@ export function CreateVideoSection() {
 
       // 🔄 AGGIORNA LIMITI
       refreshLimits()
+
+      // 🚀 AVVIA CONTROLLO AUTOMATICO dopo 45 secondi (per dare tempo al backend)
+      if (result.video_result?.id) {
+        setTimeout(async () => {
+          try {
+            console.log('🔄 Controllo automatico post-creazione video...')
+            const checkResponse = await fetch('/api/creatify/check-all-pending-videos', {
+              method: 'POST'
+            })
+
+            if (checkResponse.ok) {
+              const checkResult = await checkResponse.json()
+              console.log('✅ Controllo post-creazione completato:', checkResult)
+
+              if (checkResult.updated > 0) {
+                console.log('🎉 Video completato automaticamente!')
+              }
+            }
+          } catch (error) {
+            console.warn('⚠️ Controllo post-creazione fallito:', error)
+          }
+        }, 45000) // 45 secondi per dare tempo a Creatify di processare
+      }
 
       router.push('/dashboard')
 

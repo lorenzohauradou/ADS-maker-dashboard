@@ -141,46 +141,129 @@ export function ProjectsContent() {
 
   const checkAllPendingVideos = async () => {
     try {
+      console.log('📡 Avvio controllo video pending...')
       const response = await fetch('/api/creatify/check-all-pending-videos', {
         method: 'POST'
       })
       if (response.ok) {
         const result = await response.json()
-        console.log('Video status check result:', result)
+        console.log('📊 Video status check result:', result)
+
+        // 🔄 SEMPRE RICARICA I PROGETTI (anche se updated = 0)
+        // Questo garantisce che il frontend sia sempre aggiornato
+        console.log('🔄 Ricarico progetti per sincronizzazione...')
+        setTimeout(() => {
+          fetchProjects()
+        }, 1000)
+
         if (result.updated > 0) {
-          // Se ci sono stati aggiornamenti, ricarica i progetti
+          console.log(`🎉 ${result.updated} video completati!`)
+
+          // 🎉 NOTIFICA UTENTE dei video completati
+          if (typeof window !== 'undefined' && 'Notification' in window) {
+            // Richiedi permessi notifiche se necessario
+            if (Notification.permission === 'default') {
+              Notification.requestPermission()
+            }
+
+            // Invia notifica se permesso
+            if (Notification.permission === 'granted') {
+              new Notification('🎉 Video Completato!', {
+                body: `${result.updated} video ${result.updated > 1 ? 'sono stati completati' : 'è stato completato'} e ${result.updated > 1 ? 'sono pronti' : 'è pronto'} per il download.`,
+                icon: '/logo.png',
+                badge: '/logo.png'
+              })
+            }
+          }
+
+          // 🎊 TOAST NOTIFICA nel frontend
           setTimeout(() => {
-            fetchProjects()
-          }, 1000)
+            toast.success('🎉 Video Completed!', {
+              description: `${result.updated} video ${result.updated > 1 ? 'completati' : 'completato'} e ${result.updated > 1 ? 'pronti' : 'pronto'} per il download.`,
+              duration: 6000,
+              icon: "🎬"
+            })
+          }, 1500)
+        } else {
+          console.log('ℹ️ Nessun video aggiornato in questo controllo')
         }
+      } else {
+        console.error('❌ Errore nel controllo video:', response.status)
       }
     } catch (error) {
-      console.error('Error checking pending videos:', error)
+      console.error('❌ Error checking pending videos:', error)
     }
   }
 
   // Carica i progetti quando il componente viene montato
   useEffect(() => {
     fetchProjects()
+
+    // 🚀 CONTROLLO IMMEDIATO: Forza verifica video pending al caricamento
+    setTimeout(() => {
+      console.log('🔄 Controllo immediato video pending al caricamento...')
+      checkAllPendingVideos()
+    }, 3000) // Aspetta 3 secondi dopo il mount
+
   }, [])
 
-  // 🔄 POLLING CONTINUO per video in processing
+  // 🔄 POLLING INTELLIGENTE per video in processing
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Controlla se ci sono progetti in processing
-      const hasProcessingProjects = projects.some(p =>
-        p.status === 'processing' ||
-        p.video?.status === 'processing' ||
-        p.video?.url?.startsWith('processing_')
-      )
+    const hasProcessingProjects = projects.some(p =>
+      p.status === 'processing' ||
+      p.video?.status === 'processing' ||
+      p.video?.url?.startsWith('processing_')
+    )
 
-      if (hasProcessingProjects) {
-        console.log('🔄 Polling automatico: Controllo video in processing...')
-        checkAllPendingVideos()
-      }
-    }, 30000) // Ogni 30 secondi
+    if (!hasProcessingProjects) {
+      return // Nessun polling necessario
+    }
 
-    return () => clearInterval(interval)
+    console.log(`🎯 POLLING ATTIVATO: Trovati ${projects.filter(p =>
+      p.status === 'processing' ||
+      p.video?.status === 'processing' ||
+      p.video?.url?.startsWith('processing_')
+    ).length} progetti in processing`)
+
+    // 🚀 POLLING AGGRESSIVO per i primi 5 minuti (ogni 10 secondi)
+    const aggressiveInterval = setInterval(() => {
+      console.log('🔄 Polling aggressivo: Controllo video in processing...')
+      checkAllPendingVideos()
+    }, 10000) // Ogni 10 secondi (più frequente)
+
+    // 🕐 POLLING NORMALE dopo 5 minuti (ogni 30 secondi)
+    const normalInterval = setTimeout(() => {
+      clearInterval(aggressiveInterval)
+
+      const regularInterval = setInterval(() => {
+        // Ricontrolla se ci sono ancora progetti in processing
+        const stillProcessing = projects.some(p =>
+          p.status === 'processing' ||
+          p.video?.status === 'processing' ||
+          p.video?.url?.startsWith('processing_')
+        )
+
+        if (stillProcessing) {
+          console.log('🔄 Polling normale: Controllo video in processing...')
+          checkAllPendingVideos()
+        } else {
+          clearInterval(regularInterval)
+          console.log('✅ Polling fermato: nessun video in processing')
+        }
+      }, 30000) // Ogni 30 secondi
+
+      // Cleanup interval normale dopo 20 minuti totali
+      setTimeout(() => {
+        clearInterval(regularInterval)
+        console.log('⏰ Polling terminato dopo 20 minuti')
+      }, 900000) // 15 minuti aggiuntivi = 20 minuti totali
+
+    }, 300000) // 5 minuti
+
+    return () => {
+      clearInterval(aggressiveInterval)
+      clearTimeout(normalInterval)
+    }
   }, [projects]) // Dipende da projects per rilevare cambiamenti
 
 
