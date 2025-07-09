@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/components/providers/session-provider'
 import { PostHogProviderWrapper } from '@/components/providers/posthog-provider'
 import { GoogleAnalytics } from '@/components/analytics/google-analytics'
+import { FacebookPixel } from '@/components/analytics/facebook-pixel'
 
 export const metadata: Metadata = {
   title: {
@@ -247,6 +248,9 @@ export default function RootLayout({
 
         {/* Google Analytics 4 - Replace with your GA4 tracking ID */}
         <GoogleAnalytics />
+
+        {/* Facebook Pixel */}
+        <FacebookPixel />
       </body>
     </html>
   )
