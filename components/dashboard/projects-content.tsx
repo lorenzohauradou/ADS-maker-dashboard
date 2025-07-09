@@ -109,11 +109,11 @@ export function ProjectsContent() {
           setProjects([])
         }
 
-        // Controlla automaticamente i video in processing/pending (solo se ci sono)
+        // Controlla automaticamente i video in processing/pending/rendering (solo se ci sono)
         const processingProjects = (data.projects || []).filter((p: any) =>
-          // ✅ FIX: Include PENDING e PROCESSING
-          p.status === 'pending' || p.status === 'processing' ||
-          p.video?.status === 'pending' || p.video?.status === 'processing' ||
+          // ✅ FIX: Include PENDING, PROCESSING e RENDERING
+          p.status === 'pending' || p.status === 'processing' || p.status === 'rendering' ||
+          p.video?.status === 'pending' || p.video?.status === 'processing' || p.video?.status === 'rendering' ||
           p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
         )
 
@@ -207,11 +207,11 @@ export function ProjectsContent() {
 
   }, [])
 
-  // 🔄 POLLING INTELLIGENTE per video in pending/processing
+  // 🔄 POLLING INTELLIGENTE per video in pending/processing/rendering
   useEffect(() => {
     const hasProcessingProjects = projects.some(p =>
-      p.status === 'pending' || p.status === 'processing' ||
-      p.video?.status === 'pending' || p.video?.status === 'processing' ||
+      p.status === 'pending' || p.status === 'processing' || p.status === 'rendering' ||
+      p.video?.status === 'pending' || p.video?.status === 'processing' || p.video?.status === 'rendering' ||
       p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
     )
 
@@ -220,10 +220,10 @@ export function ProjectsContent() {
     }
 
     console.log(`🎯 POLLING ATTIVATO: Trovati ${projects.filter(p =>
-      p.status === 'pending' || p.status === 'processing' ||
-      p.video?.status === 'pending' || p.video?.status === 'processing' ||
+      p.status === 'pending' || p.status === 'processing' || p.status === 'rendering' ||
+      p.video?.status === 'pending' || p.video?.status === 'processing' || p.video?.status === 'rendering' ||
       p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
-    ).length} progetti in pending/processing`)
+    ).length} progetti in pending/processing/rendering`)
 
     // 🚀 POLLING AGGRESSIVO per i primi 5 minuti (ogni 10 secondi)
     const aggressiveInterval = setInterval(() => {
@@ -274,7 +274,9 @@ export function ProjectsContent() {
         return 'bg-green-100 text-green-800 border-green-300';
       case 'processing':
         return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'pending':  // ✅ FIX: Nuovo stato pending
+      case 'rendering':  // ✅ NUOVO: Stato rendering
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'failed':
         return 'bg-red-100 text-red-800 border-red-300';
@@ -566,6 +568,8 @@ export function ProjectsContent() {
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
+                  <SelectItem value="rendering">Rendering</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="failed">Failed</SelectItem>
                   <SelectItem value="created">Draft</SelectItem>
                 </SelectContent>
@@ -630,6 +634,11 @@ export function ProjectsContent() {
                       <div className="flex flex-col items-center justify-center space-y-3">
                         <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                         <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Processing...</span>
+                      </div>
+                    ) : project.status === 'rendering' ? (
+                      <div className="flex flex-col items-center justify-center space-y-3">
+                        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                        <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Rendering...</span>
                       </div>
                     ) : (
                       <>

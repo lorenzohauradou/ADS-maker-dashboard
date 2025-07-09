@@ -11,6 +11,7 @@ import { Project } from "@/types/project"
 import { useVideoControls } from "@/hooks/useVideoControls"
 import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
+import { toast } from "sonner"
 
 export function RecentProjects() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -19,6 +20,7 @@ export function RecentProjects() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+
   const router = useRouter()
 
   // Usa il hook per i controlli video
@@ -32,6 +34,8 @@ export function RecentProjects() {
     hasActiveAudio,
     canPlayVideo
   } = useVideoControls()
+
+
 
   useEffect(() => {
     async function fetchRecentProjects() {
@@ -64,6 +68,10 @@ export function RecentProjects() {
         return 'bg-green-100 text-green-800 border-green-300';
       case 'processing':
         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'rendering':
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'failed':
         return 'bg-red-100 text-red-800 border-red-300';
       default:
@@ -84,25 +92,18 @@ export function RecentProjects() {
       const response = await fetch(`/api/projects/${projectToDelete.id}`, {
         method: 'DELETE'
       })
-      if (response.ok) {
-        // Ricarica i progetti
-        const newResponse = await fetch('/api/projects')
-        if (newResponse.ok) {
-          const result = await newResponse.json()
-          if (result.success) {
-            setProjects(result.projects.slice(0, 3))
-          }
-        }
-      } else {
+
+      if (!response.ok) {
         throw new Error('Failed to delete project')
       }
 
-      // Chiudi il dialog
+      // Remove project from state
+      setProjects(prev => prev.filter(p => p.id !== projectToDelete.id))
       setIsDeleteDialogOpen(false)
       setProjectToDelete(null)
     } catch (error) {
-      console.error('Error deleting project:', error)
-      // Mantieni il dialog aperto per mostrare l'errore
+      console.error('Delete error:', error)
+      // Handle error (show toast, etc.)
     } finally {
       setIsDeleting(false)
     }
@@ -172,6 +173,11 @@ export function RecentProjects() {
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                       <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Processing...</span>
+                    </div>
+                  ) : project.status === 'rendering' ? (
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                      <span className="text-sm text-slate-600 dark:text-zinc-400 font-medium">Rendering...</span>
                     </div>
                   ) : (
                     <>
