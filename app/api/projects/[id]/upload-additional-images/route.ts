@@ -3,20 +3,21 @@ import { auth } from '@/auth'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the authenticated session
     const session = await auth()
     
-    if (!session?.user?.email) {
+    if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
 
-    const projectId = params.id
+    const { id } = await params
+    const projectId = id
     const formData = await request.formData()
 
     console.log(`📸 Frontend API: Uploading additional images for project ${projectId}`)
@@ -26,7 +27,8 @@ export async function POST(
     const response = await fetch(`${backendUrl}/api/projects/${projectId}/upload-additional-images`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${session.user.email}`, // Pass user info for auth
+        'x-user-id': session.user.id,
+        'x-user-email': session.user.email,
       },
       body: formData // Forward the FormData directly
     })

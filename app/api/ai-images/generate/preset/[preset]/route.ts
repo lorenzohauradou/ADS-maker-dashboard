@@ -4,7 +4,7 @@ import { TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { preset: string } }
+  { params }: { params: Promise<{ preset: string }> }
 ) {
   try {
     // Verifica autenticazione NextAuth
@@ -13,6 +13,8 @@ export async function POST(
     if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
+
+    const { preset } = await params
 
     // Parse del FormData
     const formData = await request.formData()
@@ -28,7 +30,7 @@ export async function POST(
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.PROCESSING) // 60s timeout
     
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/ai-images/generate/preset/${params.preset}`, {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/ai-images/generate/preset/${preset}`, {
         method: 'POST',
         headers: {
           'x-user-id': session.user.id,

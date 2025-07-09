@@ -3,20 +3,21 @@ import { auth } from '@/auth'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the authenticated session
     const session = await auth()
     
-    if (!session?.user?.email) {
+    if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
 
-    const projectId = params.id
+    const { id } = await params
+    const projectId = id
     const body = await request.json()
 
     // Validate request body
@@ -36,7 +37,8 @@ export async function POST(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.user.email}`, // Pass user info for auth
+        'x-user-id': session.user.id,
+        'x-user-email': session.user.email,
       },
       body: JSON.stringify({
         template_style,
