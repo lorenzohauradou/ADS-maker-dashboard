@@ -83,7 +83,6 @@ const WIZARD_STEPS = [
 
 export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: UnifiedVideoWizardProps) {
     const [currentStep, setCurrentStep] = useState(1)
-    const [sessionId, setSessionId] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [wizardData, setWizardData] = useState<WizardData>({
         // Step 1: Upload Images
@@ -116,66 +115,6 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
         isVideoCreated: false
     })
 
-    // ✅ SESSION MANAGEMENT FOR PRODUCTION
-    useEffect(() => {
-        if (isOpen && userId && !sessionId) {
-            initializeSession()
-        }
-    }, [isOpen, userId])
-
-    const initializeSession = async () => {
-        if (!userId) return
-
-        setIsLoading(true)
-        try {
-            const response = await fetch('/api/video-sessions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    force_new_session: true,
-                    initial_config: {
-                        wizard_type: 'conversational',
-                        started_at: new Date().toISOString(),
-                        reset_policy: 'always_fresh'
-                    }
-                })
-            })
-
-            const result = await response.json()
-
-            if (result.success) {
-                setSessionId(result.session_id)
-                setCurrentStep(1)
-                console.log('✅ New conversational wizard session:', result.session_id)
-            } else {
-                console.error('Session creation error:', result.error)
-                toast.error('Unable to save progress - local mode')
-            }
-        } catch (error) {
-            console.error('Session initialization error:', error)
-            toast.error('Unable to save progress - local mode')
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    const saveStepToDatabase = async (step: number, stepData: any) => {
-        if (!sessionId) return
-
-        try {
-            await fetch(`/api/video-sessions/${sessionId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    current_step: step,
-                    [`step_${step}_data`]: stepData
-                })
-            })
-        } catch (error) {
-            console.error('Step save error:', error)
-        }
-    }
-
     const handleStepComplete = async (stepData: Partial<WizardData>) => {
         const updatedData = { ...wizardData, ...stepData }
         setWizardData(updatedData)
@@ -190,10 +129,6 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
                 duration: 1500
             })
         }
-
-        // Prepare step data for database
-        const dbStepData = formatStepDataForDatabase(currentStep, stepData)
-        await saveStepToDatabase(currentStep, dbStepData)
 
         if (currentStep < 7) {
             // 🌊 SMOOTH TRANSITION
@@ -218,65 +153,8 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
         }
     }
 
-    const formatStepDataForDatabase = (step: number, data: Partial<WizardData>) => {
-        switch (step) {
-            case 1:
-                return {
-                    images: data.images,
-                    project_name: data.projectName,
-                    product_url: data.productUrl
-                }
-            case 2:
-                return {
-                    avatar_type: data.avatarType,
-                    selected_avatar: data.selectedAvatar
-                }
-            case 3:
-                return {
-                    platform: data.platform
-                }
-            case 4:
-                return {
-                    target_audience: data.targetAudience
-                }
-            case 5:
-                return {
-                    video_length: data.videoLength
-                }
-            case 6:
-                return {
-                    selected_template: data.selectedTemplate,
-                    template_category: data.templateCategory,
-                    use_custom_template: data.useCustomTemplate
-                }
-            case 7:
-                return {
-                    finalize_ready: data.finalizeReady
-                }
-            default:
-                return {}
-        }
-    }
-
     const handleFinalizeWizard = async (finalData: WizardData) => {
         try {
-            if (sessionId) {
-                await fetch(`/api/video-sessions/${sessionId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        current_step: 7,
-                        step_7_data: formatStepDataForDatabase(7, finalData),
-                        is_completed: true,
-                        final_result: {
-                            wizard_completed: true,
-                            completed_at: new Date().toISOString(),
-                            final_data: finalData
-                        }
-                    })
-                })
-            }
-
             // Start video creation process
             onComplete(finalData)
 
@@ -308,7 +186,6 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
         console.log('🔄 Closing wizard - complete reset for next opening')
 
         setCurrentStep(1)
-        setSessionId(null)
         setIsLoading(false)
         setWizardData({
             images: [],
@@ -471,7 +348,7 @@ export function UnifiedVideoWizard({ isOpen, onClose, onComplete, userId }: Unif
                                 {/* Left side - Logo and Title */}
                                 <div className="flex items-center">
                                     <Image src="/fastadslogo.png" alt="FAST ADS AI Logo" width={28} height={28} className="mr-3 sm:mr-4 w-7 h-7 sm:w-8 sm:h-8" />
-                                    <span className="text-lg sm:text-2xl">{isLoading ? "Initializing Wizard..." : "AI Video Creation"}</span>
+                                    <span className="text-lg sm:text-2xl">{isLoading ? "Processing..." : "AI Video Creation"}</span>
                                 </div>
 
                                 {/* Right side - Step Indicator */}
