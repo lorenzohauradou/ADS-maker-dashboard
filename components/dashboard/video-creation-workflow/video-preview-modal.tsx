@@ -206,12 +206,18 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                         !project.video.url.startsWith('processing_') &&
                         !project.video.url.startsWith('pending_') ? (
                         <Card className="bg-black rounded-xl overflow-hidden relative">
-                            <div className="relative aspect-video">
+                            <div className="relative flex items-center justify-center min-h-[300px] max-h-[70vh]">
                                 <video
                                     ref={videoRef}
-                                    className="w-full h-full object-cover"
+                                    className="max-w-full max-h-full object-contain"
                                     controls
-                                    preload="metadata"
+                                    autoPlay
+                                    muted={false}
+                                    style={{
+                                        maxHeight: '70vh',
+                                        width: 'auto',
+                                        height: 'auto'
+                                    }}
                                     onError={(e) => {
                                         console.error("Video failed to load:", project.video?.url || 'No URL', e)
                                     }}
