@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
-// 🚀 CACHE SEMPLICE PER LIMITI (30 secondi)
+// 🚀 CACHE SEMPLICE PER LIMITI (60 secondi)
 const limitsCache = new Map<string, { data: any, timestamp: number }>()
-const CACHE_DURATION = 30000 // 30 secondi
+const CACHE_DURATION = 60000 // 60 secondi (aumentato da 30s per ridurre carico DB)
 
 export async function GET(
   request: NextRequest,

@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
-) {
+export async function POST(request: NextRequest) {
   try {
     // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    }
-
-    const { userId } = await params
-
-    if (session.user.id !== userId) {
-      return NextResponse.json({ error: 'Accesso negato' }, { status: 403 })
     }
 
     // 📋 Leggi FormData con immagini

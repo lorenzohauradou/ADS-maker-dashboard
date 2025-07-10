@@ -157,7 +157,7 @@ export function useSubscriptionLimits() {
   useEffect(() => {
     if (!isPolling || !session?.user?.id || !isMountedRef.current) return
 
-    console.log('🔄 Polling attivato - aggiornamento ogni 10 secondi')
+    console.log('🔄 Polling attivato - aggiornamento ogni 30 secondi')
     
     // Primo fetch immediato
     fetchLimits()
@@ -168,7 +168,7 @@ export function useSubscriptionLimits() {
         console.log('🔄 Polling aggiornamento limiti...')
         fetchLimits()
       }
-    }, 10000) // Ogni 10 secondi durante elaborazione
+    }, 30000) // Ogni 30 secondi durante elaborazione (ridotto da 10s)
 
     return () => {
       console.log('⏹️ Cleanup polling interval')

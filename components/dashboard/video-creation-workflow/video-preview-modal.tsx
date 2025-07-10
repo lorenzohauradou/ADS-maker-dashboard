@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -29,6 +29,9 @@ interface VideoPreviewModalProps {
 }
 
 export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModalProps) {
+    // Ref per il video element
+    const videoRef = useRef<HTMLVideoElement>(null)
+
     // Stati per gestire i modali
     const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false)
     const [isWebsiteConfigModalOpen, setIsWebsiteConfigModalOpen] = useState(false)
@@ -198,44 +201,17 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                 </DialogHeader>
 
                 <div className="space-y-6">
-                    {/* Video Preview */}
-                    {project.status === 'failed' ? (
-                        <Card className="bg-red-50 dark:bg-red-900/20 rounded-xl p-12 text-center border-2 border-red-200 dark:border-red-800">
-                            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Video className="w-8 h-8 text-red-600 dark:text-red-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
-                                Video Generation Failed
-                            </h3>
-                            <p className="text-red-700 dark:text-red-300 mb-4">
-                                There was an error generating your video. This could be due to insufficient credits,
-                                invalid content, or technical issues.
-                            </p>
-                            <div className="space-y-2">
-                                <p className="text-sm text-red-600 dark:text-red-400">
-                                    • Check your Creatify credit balance
-                                </p>
-                                <p className="text-sm text-red-600 dark:text-red-400">
-                                    • Verify your product URL is accessible
-                                </p>
-                                <p className="text-sm text-red-600 dark:text-red-400">
-                                    • Try creating a new video with different settings
-                                </p>
-                            </div>
-                        </Card>
-                    ) : project.video?.url && !project.video.url.startsWith('processing_') ? (
-                        <Card className="bg-black rounded-xl overflow-hidden border-2 border-purple-200 dark:border-purple-800">
-                            <div className="relative flex items-center justify-center min-h-[300px] max-h-[70vh]">
+                    {/* Video Player */}
+                    {project.video?.url &&
+                        !project.video.url.startsWith('processing_') &&
+                        !project.video.url.startsWith('pending_') ? (
+                        <Card className="bg-black rounded-xl overflow-hidden relative">
+                            <div className="relative aspect-video">
                                 <video
+                                    ref={videoRef}
+                                    className="w-full h-full object-cover"
                                     controls
-                                    autoPlay
-                                    muted={false}
-                                    className="max-w-full max-h-full object-contain"
-                                    style={{
-                                        maxHeight: '70vh',
-                                        width: 'auto',
-                                        height: 'auto'
-                                    }}
+                                    preload="metadata"
                                     onError={(e) => {
                                         console.error("Video failed to load:", project.video?.url || 'No URL', e)
                                     }}
@@ -258,18 +234,27 @@ export function VideoPreviewModal({ isOpen, onClose, project }: VideoPreviewModa
                         <Card className="bg-slate-100 dark:bg-zinc-800 rounded-xl p-12 text-center">
                             <Video className="w-16 h-16 text-slate-400 dark:text-zinc-500 mx-auto mb-4" />
                             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                                {project.video?.url?.startsWith('processing_') ? 'Video Processing' : 'Video Available Soon'}
+                                {project.video?.url?.startsWith('processing_') ? 'Video Processing' :
+                                    project.video?.url?.startsWith('pending_') ? 'Video Generation Starting' :
+                                        'Video Available Soon'}
                             </h3>
                             <p className="text-slate-600 dark:text-zinc-400">
                                 {project.video?.url?.startsWith('processing_')
                                     ? 'Your video is being generated with AI technology. You\'ll receive an email notification when it\'s ready.'
-                                    : 'We are working on it. You\'ll receive an email notification when it\'s ready.'
+                                    : project.video?.url?.startsWith('pending_')
+                                        ? 'Your video generation is starting. This may take a few minutes.'
+                                        : 'We are working on it. You\'ll receive an email notification when it\'s ready.'
                                 }
                             </p>
-                            {project.video?.url?.startsWith('processing_') && (
-                                <p className="text-xs text-purple-600 dark:text-purple-400 mt-2">
-                                    Video will be available shortly. Refresh the page in a few minutes.
-                                </p>
+                            {(project.video?.url?.startsWith('processing_') || project.video?.url?.startsWith('pending_')) && (
+                                <div className="mt-4 space-y-2">
+                                    <div className="w-full bg-slate-200 dark:bg-zinc-700 rounded-full h-2">
+                                        <div className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                                    </div>
+                                    <p className="text-xs text-purple-600 dark:text-purple-400">
+                                        {project.video?.url?.startsWith('pending_') ? 'Initializing video generation...' : 'Video will be available shortly. Refresh the page in a few minutes.'}
+                                    </p>
+                                </div>
                             )}
                         </Card>
                     )}

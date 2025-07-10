@@ -225,13 +225,13 @@ export function ProjectsContent() {
       p.video?.url?.startsWith('processing_') || p.video?.url?.startsWith('pending_')
     ).length} progetti in pending/processing/rendering`)
 
-    // 🚀 POLLING AGGRESSIVO per i primi 5 minuti (ogni 10 secondi)
+    // 🚀 POLLING AGGRESSIVO per i primi 5 minuti (ogni 20 secondi)
     const aggressiveInterval = setInterval(() => {
       console.log('🔄 Polling aggressivo: Controllo video in processing...')
       checkAllPendingVideos()
-    }, 10000) // Ogni 10 secondi (più frequente)
+    }, 20000) // Ogni 20 secondi (ridotto da 10s per ridurre carico DB)
 
-    // 🕐 POLLING NORMALE dopo 5 minuti (ogni 30 secondi)
+    // 🕐 POLLING NORMALE dopo 5 minuti (ogni 60 secondi)
     const normalInterval = setTimeout(() => {
       clearInterval(aggressiveInterval)
 
@@ -250,7 +250,7 @@ export function ProjectsContent() {
           clearInterval(regularInterval)
           console.log('✅ Polling fermato: nessun video in processing')
         }
-      }, 30000) // Ogni 30 secondi
+      }, 60000) // Ogni 60 secondi (ridotto da 30s)
 
       // Cleanup interval normale dopo 20 minuti totali
       setTimeout(() => {

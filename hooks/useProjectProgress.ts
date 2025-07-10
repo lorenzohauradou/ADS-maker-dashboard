@@ -37,7 +37,7 @@ export const useProjectProgress = ({
   projectId,
   onComplete,
   onError,
-  pollingInterval = 3000, // 🚀 Ridotto a 3 secondi 
+  pollingInterval = 10000, // 10 secondi per ridurre carico DB
   enabled = true
 }: UseProjectProgressOptions) => {
   const { data: session } = useSession()
