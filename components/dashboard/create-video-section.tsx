@@ -229,52 +229,7 @@ export function CreateVideoSection() {
       // 🔄 AGGIORNA LIMITI
       refreshLimits()
 
-      // 🚀 SISTEMA DI POLLING MIGLIORATO
-      const videoJobId = result.video_result?.id
-      const projectId = result.project_id
-
-      if (videoJobId) {
-        console.log('🔄 AVVIO POLLING INTELLIGENTE per video:', videoJobId)
-
-        // Polling immediato per feedback veloce
-        setTimeout(async () => {
-          try {
-            console.log('🔄 Primo controllo automatico (15s)...')
-            await checkVideoStatus(videoJobId, projectId, 1, 5) // Max 5 tentativi ogni 15s
-          } catch (error) {
-            console.warn('⚠️ Primo controllo fallito:', error)
-          }
-        }, 15000) // 15 secondi
-
-        // Polling robusto per completamento
-        setTimeout(async () => {
-          try {
-            console.log('🔄 Controllo robusto post-creazione (45s)...')
-            const checkResponse = await fetch('/api/creatify/check-all-pending-videos', {
-              method: 'POST'
-            })
-
-            if (checkResponse.ok) {
-              const checkResult = await checkResponse.json()
-              console.log('✅ Controllo post-creazione completato:', checkResult)
-
-              if (checkResult.updated > 0) {
-                console.log('🎉 Video completato automaticamente!')
-                toast.success('🎉 Video Ready!', {
-                  description: 'Your video has been completed and is ready for download.',
-                  duration: 5000
-                })
-
-                // 🔥 AGGIORNA LIMITI DOPO COMPLETAMENTO
-                console.log('🔄 Aggiornamento limiti dopo completamento video...')
-                refreshLimits()
-              }
-            }
-          } catch (error) {
-            console.warn('⚠️ Controllo post-creazione fallito:', error)
-          }
-        }, 45000) // 45 secondi per dare tempo a Creatify di processare
-      }
+      console.log('📧 Email sarà inviata automaticamente al completamento tramite webhook')
 
       router.push('/dashboard')
 
@@ -295,55 +250,6 @@ export function CreateVideoSection() {
         description: error instanceof Error ? error.message : 'Unknown error occurred',
         duration: 8000
       })
-    }
-  }
-
-  // 🔄 FUNZIONE DI POLLING MIGLIORATA
-  const checkVideoStatus = async (videoJobId: string, projectId: number, attempt: number = 1, maxAttempts: number = 5) => {
-    try {
-      console.log(`🔍 Controllo status video ${videoJobId} (tentativo ${attempt}/${maxAttempts})`)
-
-      const statusResponse = await fetch(`/api/creatify/update-video-status/${videoJobId}`, {
-        method: 'POST'
-      })
-
-      if (statusResponse.ok) {
-        const statusResult = await statusResponse.json()
-        console.log('📊 Status result:', statusResult)
-
-        if (statusResult.success && statusResult.video?.status === 'completed') {
-          console.log('🎉 Video completato durante polling!')
-          toast.success('🎉 Video Ready!', {
-            description: 'Your video has been completed and is ready for download.',
-            duration: 5000
-          })
-
-          // 🔥 AGGIORNA LIMITI IMMEDIATAMENTE
-          console.log('🔄 Refresh limiti dopo rilevamento completamento...')
-          refreshLimits()
-
-          return true
-        }
-      }
-
-      // Continua polling se non completato
-      if (attempt < maxAttempts) {
-        setTimeout(() => {
-          checkVideoStatus(videoJobId, projectId, attempt + 1, maxAttempts)
-        }, 20000) // 20 secondi tra tentativi
-      }
-
-      return false
-    } catch (error) {
-      console.warn(`⚠️ Tentativo ${attempt} di controllo status fallito:`, error)
-
-      // Continua con il prossimo tentativo
-      if (attempt < maxAttempts) {
-        setTimeout(() => {
-          checkVideoStatus(videoJobId, projectId, attempt + 1, maxAttempts)
-        }, 20000)
-      }
-      return false
     }
   }
 
