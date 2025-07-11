@@ -15,6 +15,28 @@ interface UserLimits {
   error?: string
 }
 
+// 🔄 Sistema di eventi globale per sincronizzare hook
+const limitsEventBus = {
+  listeners: new Set<() => void>(),
+  
+  emit() {
+    this.listeners.forEach(listener => listener())
+  },
+  
+  subscribe(listener: () => void) {
+    this.listeners.add(listener)
+    return () => {
+      this.listeners.delete(listener)
+    }
+  }
+}
+
+// 🚀 Esporta per uso da altri hook
+export const refreshAllLimitsHooks = () => {
+  console.log('🔄 GLOBAL REFRESH: Sincronizzando tutti gli hook limiti...')
+  limitsEventBus.emit()
+}
+
 export function useUserLimits() {
   const { data: session } = useSession()
   const [limits, setLimits] = useState<UserLimits>({
@@ -34,6 +56,8 @@ export function useUserLimits() {
     }
 
     try {
+      console.log('🔄 USER-LIMITS: Fetching limits for user:', session.user.id)
+      
       const response = await fetch(`/api/subscriptions/check-limits/${session.user.id}`)
       
       if (!response.ok) {
@@ -41,6 +65,13 @@ export function useUserLimits() {
       }
 
       const data = await response.json()
+      
+      console.log('✅ USER-LIMITS: Limits updated:', {
+        plan: data.plan,
+        videos_used: data.videos_used,
+        videos_remaining: data.videos_remaining,
+        can_create_video: data.can_create_video
+      })
       
       setLimits({
         plan: data.plan,
@@ -54,7 +85,7 @@ export function useUserLimits() {
       })
 
     } catch (error) {
-      console.error('Error fetching user limits:', error)
+      console.error('❌ USER-LIMITS: Error fetching user limits:', error)
       setLimits(prev => ({
         ...prev,
         loading: false,
@@ -98,10 +129,27 @@ export function useUserLimits() {
     fetchLimits()
   }, [session?.user?.id])
 
+  // 🔄 SINCRONIZZAZIONE GLOBALE: Ascolta refresh da altri hook
+  useEffect(() => {
+    const unsubscribe = limitsEventBus.subscribe(() => {
+      console.log('🔄 USER-LIMITS: Ricevuto evento di refresh globale')
+      fetchLimits()
+    })
+    
+    return unsubscribe
+  }, [session?.user?.id])
+
   // Ricarica i limiti manualmente
   const refreshLimits = () => {
+    console.log('🔄 USER-LIMITS: Manual refresh triggered')
     setLimits(prev => ({ ...prev, loading: true }))
     fetchLimits()
+    
+    // 🚀 NOTIFICA ALTRI HOOK
+    setTimeout(() => {
+      console.log('🔄 USER-LIMITS: Notifying other hooks of refresh...')
+      limitsEventBus.emit()
+    }, 500) // Delay per evitare loop
   }
 
   return {

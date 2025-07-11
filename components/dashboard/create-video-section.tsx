@@ -264,6 +264,10 @@ export function CreateVideoSection() {
                   description: 'Your video has been completed and is ready for download.',
                   duration: 5000
                 })
+
+                // 🔥 AGGIORNA LIMITI DOPO COMPLETAMENTO
+                console.log('🔄 Aggiornamento limiti dopo completamento video...')
+                refreshLimits()
               }
             }
           } catch (error) {
@@ -313,6 +317,11 @@ export function CreateVideoSection() {
             description: 'Your video has been completed and is ready for download.',
             duration: 5000
           })
+
+          // 🔥 AGGIORNA LIMITI IMMEDIATAMENTE
+          console.log('🔄 Refresh limiti dopo rilevamento completamento...')
+          refreshLimits()
+
           return true
         }
       }

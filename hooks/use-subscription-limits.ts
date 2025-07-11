@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 import { enforceVideoLimits, trackLimitEvent, trackExtraVideoPurchase, trackBypassAttempt } from '@/lib/posthog-pricing-enforcement'
+import { refreshAllLimitsHooks } from './use-user-limits'
 
 interface SubscriptionLimits {
   plan: string
@@ -311,7 +312,14 @@ export function useSubscriptionLimits() {
 
   // Refresh dopo acquisto o upgrade
   const refreshLimits = () => {
+    console.log('🔄 SUBSCRIPTION-LIMITS: Manual refresh triggered')
     fetchLimits()
+    
+    // 🚀 SINCRONIZZA ALTRI HOOK (banner, ecc)
+    setTimeout(() => {
+      console.log('🔄 SUBSCRIPTION-LIMITS: Syncing with user-limits hook...')
+      refreshAllLimitsHooks()
+    }, 500) // Delay per evitare loop
   }
 
   useEffect(() => {
