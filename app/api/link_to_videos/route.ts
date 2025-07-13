@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🚀 LINK_TO_VIDEOS: Iniziando workflow di creazione video...')
     
-    // 🔐 Verifica autenticazione NextAuth
+    // Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       userEmail: session.user.email
     })
 
-    // 📋 Leggi payload dal wizard unificato
+    // Leggi payload dal wizard unificato
     const wizardData = await request.json()
     
     console.log('📋 LINK_TO_VIDEOS: Payload ricevuto dal wizard:')
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       videoLength: wizardData.videoLength
     })
 
-    // 🚨 VALIDAZIONE CRITICA DEI DATI
+    // VALIDAZIONE CRITICA DEI DATI
     if (!wizardData.projectName?.trim()) {
       throw new Error('Project name is required from wizard')
     }
@@ -44,14 +44,14 @@ export async function POST(request: NextRequest) {
       throw new Error('Either uploaded images or product URL is required')
     }
 
-    // 🎯 STEP 1: Crea progetto se non esiste
+    // STEP 1: Crea progetto se non esiste
     let projectId = wizardData.projectId
     console.log('📋 STEP 1: Gestione progetto...')
     
     if (!projectId) {
       console.log('📋 Creando nuovo progetto tramite NextJS...')
       
-      // 🔧 FIX: Usa BACKEND_URL corretto, non NEXT_PUBLIC che è per il frontend
+      // FIX: Usa BACKEND_URL corretto, non NEXT_PUBLIC che è per il frontend
       const nextjsApiUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/projects/create-for-wizard`
       console.log('📡 Project creation URL:', nextjsApiUrl)
       
@@ -100,21 +100,21 @@ export async function POST(request: NextRequest) {
       console.log('✅ STEP 1 SALTATO: Usando progetto esistente:', projectId)
     }
 
-    // 🚨 CONTROLLO CRITICO
+    // CONTROLLO CRITICO
     if (!projectId) {
       throw new Error('Failed to get project ID after creation')
     }
 
-    // 🎯 STEP 2: Mapping e validazione parametri
+    // STEP 2: Mapping e validazione parametri
     console.log('🔄 STEP 2: Mapping wizard data to Creatify parameters...')
     
     const mappedData = mapWizardToCreatifyParams(wizardData)
     console.log('✅ STEP 2 COMPLETATO: Strategia mappata:', mappedData)
 
-    // 🎯 STEP 3: Costruisci chiamata backend
+    // STEP 3: Costruisci chiamata backend
     console.log('📡 STEP 3: Preparazione chiamata backend...')
     
-    // 🔧 FIX: Usa BACKEND_URL corretto
+    // FIX: Usa BACKEND_URL corretto
     const backendUrl = new URL(`${process.env.BACKEND_URL || 'http://localhost:8000'}/api/creatify/link_to_videos`)
     backendUrl.searchParams.append('project_id', projectId.toString())
     backendUrl.searchParams.append('project_name', wizardData.projectName || 'Video Project')
@@ -122,14 +122,14 @@ export async function POST(request: NextRequest) {
     console.log('🌐 Backend URL costruito:', backendUrl.toString())
 
     const backendPayload = {
-      // 👤 Dati utente per autenticazione backend
+      // Dati utente per autenticazione backend
       user_id: session.user.id,
       user_email: session.user.email,
       
-      // 🎯 Strategia di creazione link
+      // Strategia di creazione link
       strategy: mappedData.strategy,
       
-      // 🔗 Parametri condizionali basati sulla strategia
+      // Parametri condizionali basati sulla strategia
       ...(mappedData.strategy === 'direct_url' ? {
         // STRATEGIA 1: URL diretto
         link: mappedData.link,
@@ -140,10 +140,10 @@ export async function POST(request: NextRequest) {
         use_direct_url: false
       }),
       
-      // 🎬 PARAMETRI VIDEO COMUNI (indipendenti dalla strategia)
+      // PARAMETRI VIDEO COMUNI (indipendenti dalla strategia)
       video_params: getVideoParams(wizardData),
       
-      // 🔧 Metadata per debug e tracking
+      // Metadata per debug e tracking
       wizard_metadata: {
         source: 'unified_video_wizard',
         creation_method: mappedData.strategy,
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
        link_url: 'link' in backendPayload ? (backendPayload as any).link : null
      })
 
-    // 🔄 STEP 4: Chiamata al backend con timeout
+    // STEP 4: Chiamata al backend con timeout
     console.log('📡 STEP 4: Esecuzione chiamata backend...')
     
     const controller = new AbortController()
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
         wizardMetadata: result.wizard_metadata
       })
 
-      // 🚨 VALIDAZIONE RISPOSTA BACKEND
+      // VALIDAZIONE RISPOSTA BACKEND
       if (!result.success) {
         console.error('❌ Backend returned success=false:', result)
         throw new Error(result.error || 'Backend non ha confermato successo')
@@ -231,7 +231,7 @@ export async function POST(request: NextRequest) {
         throw new Error('Backend response missing critical video_result.id')
       }
 
-      // 🎯 STEP 5: Costruisci risposta finale
+      // STEP 5: Costruisci risposta finale
       console.log('📋 STEP 5: Costruzione risposta finale...')
       
       const finalResponse = {
@@ -286,11 +286,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🎯 MAPPING FUNCTION: Wizard → Creatify link_to_videos parameters
+// MAPPING FUNCTION: Wizard → Creatify link_to_videos parameters
 function mapWizardToCreatifyParams(wizardData: any) {
   console.log('🔄 MAPPING: Determinando strategia di creazione...')
   
-  // 🔗 Determina strategia: URL prodotto vs Multiple immagini
+  // Determina strategia: URL prodotto vs Multiple immagini
   const hasProductUrl = wizardData.productUrl?.trim()
   const hasImages = wizardData.uploadedImageUrls?.length > 0
   
@@ -317,7 +317,7 @@ function mapWizardToCreatifyParams(wizardData: any) {
     console.log('📸 MAPPING: Strategia CREATE_LINK_WITH_PARAMS selezionata')
     console.log(`📸 Immagini da utilizzare (${wizardData.uploadedImageUrls.length}):`, wizardData.uploadedImageUrls)
     
-    // ✅ VALIDAZIONE STRICTA IMMAGINI
+    // VALIDAZIONE STRICTA IMMAGINI
     if (!Array.isArray(wizardData.uploadedImageUrls)) {
       console.error('❌ MAPPING ERROR: uploadedImageUrls non è un array:', typeof wizardData.uploadedImageUrls)
       throw new Error('uploadedImageUrls deve essere un array di URL validi')
@@ -376,7 +376,7 @@ function mapWizardToCreatifyParams(wizardData: any) {
 function getVideoParams(wizardData: any) {
   console.log('🎬 VIDEO_PARAMS: Generando parametri video...')
   
-  // 🎭 Mappa platform a aspect_ratio
+  // Mappa platform a aspect_ratio
   const aspectRatioMap: Record<string, string> = {
     'instagram': '9x16',  // Instagram Stories/Reels
     'tiktok': '9x16',     // TikTok verticale
@@ -384,7 +384,7 @@ function getVideoParams(wizardData: any) {
     'facebook': '1x1'     // Facebook quadrato
   }
 
-  // 📱 Mappa target audience per Creatify
+  // Mappa target audience per Creatify
   const audienceMap: Record<string, string> = {
     'young-adults': 'young adults',
     'giovani': 'young adults',
@@ -396,7 +396,7 @@ function getVideoParams(wizardData: any) {
     'anziani': 'seniors'
   }
 
-  // 🎨 Mappa template selection a visual_style
+  // Mappa template selection a visual_style
   const visualStyleMap: Record<string, string> = {
     'product_showcase_template': 'DynamicProductTemplate',
     'sales_funnel_template': 'SimpleAvatarOverlayTemplate',
@@ -406,7 +406,7 @@ function getVideoParams(wizardData: any) {
     'explainer_template': 'VanillaTemplate'
   }
 
-  // 📝 Mappa target audience a script_style
+  // Mappa target audience a script_style
   const scriptStyleMap: Record<string, string> = {
     'young-adults': 'TrendingTopicsV2',
     'giovani': 'TrendingTopicsV2',
@@ -418,7 +418,7 @@ function getVideoParams(wizardData: any) {
     'anziani': 'ProblemSolutionV2'
   }
 
-  // ✅ VALIDAZIONE STRICTA: video_length deve essere 15, 30, or 60 (come da documentazione)
+  // VALIDAZIONE STRICTA: video_length deve essere 15, 30, or 60 (come da documentazione)
   const rawVideoLength = wizardData.videoLength || 30
   let validVideoLength = 30 // default sicuro
   
@@ -433,53 +433,53 @@ function getVideoParams(wizardData: any) {
   console.log(`🔧 VIDEO_PARAMS: video_length ${rawVideoLength} → ${validVideoLength} (Creatify compliance)`)
 
   const params = {
-    // 📛 NOME DEL VIDEO - USA NOME PROGETTO DAL WIZARD
+    // NOME DEL VIDEO - USA NOME PROGETTO DAL WIZARD
     name: wizardData.projectName?.trim() || `Video ${new Date().toISOString().slice(0, 10)}`,
     
-    // 📱 PIATTAFORMA E FORMATO (Creatify default è 'tiktok', non 'instagram')
+    // PIATTAFORMA E FORMATO (Creatify default è 'tiktok', non 'instagram')
     target_platform: wizardData.platform || 'tiktok', 
     aspect_ratio: aspectRatioMap[wizardData.platform] || '9x16',
     
-    // 🎯 TARGET AUDIENCE
+    // TARGET AUDIENCE
     target_audience: audienceMap[wizardData.targetAudience] || wizardData.targetAudience || 'young adults',
     
-    // ⏱️ DURATA - CONFORME ALLA DOCUMENTAZIONE 
+    // DURATA - CONFORME ALLA DOCUMENTAZIONE 
     video_length: validVideoLength,
     
-    // 🌍 LINGUA (default inglese)
+    // LINGUA (default inglese)
     language: wizardData.language || 'en',
     
-    // 🎨 STILE VISUALE
+    // STILE VISUALE
     visual_style: wizardData.selectedTemplate ? 
       (visualStyleMap[wizardData.selectedTemplate] || 'AvatarBubbleTemplate') : 
       'AvatarBubbleTemplate',
     
-    // 📝 STILE SCRIPT basato su audience
+    // STILE SCRIPT basato su audience
     script_style: wizardData.scriptStyle || 
       scriptStyleMap[wizardData.targetAudience] || 
       'ProductHighlightsV2',
     
-    // 🎭 AVATAR OVERRIDE (se selezionato nel wizard)
+    // AVATAR OVERRIDE (se selezionato nel wizard)
     override_avatar: wizardData.selectedAvatar?.id || null,
     
-    // 🎤 VOICE OVERRIDE (se configurato)
+    // VOICE OVERRIDE (se configurato)
     override_voice: wizardData.selectedVoice?.id || null,
     
-    // 📝 SCRIPT PERSONALIZZATO (se fornito)
+    // SCRIPT PERSONALIZZATO (se fornito)
     override_script: wizardData.customScript?.trim() || null,
     
-    // 🎵 CONFIGURAZIONI AUDIO (volumi entro 0.0-1.0)
+    // CONFIGURAZIONI AUDIO (volumi entro 0.0-1.0)
     background_music_volume: Math.max(0, Math.min(1, wizardData.musicVolume || 0.3)),
     voiceover_volume: Math.max(0, Math.min(1, wizardData.voiceVolume || 0.8)),
     no_background_music: wizardData.backgroundMusic === false,
     
-    // 🎬 CONTROLLI CREATIVI (default abilitati)
+    // CONTROLLI CREATIVI (default abilitati)
     no_caption: false,
     no_emotion: false,
     no_cta: false,
     no_stock_broll: false,
     
-    // 📝 STILE SOTTOTITOLI (configurabile)
+    // STILE SOTTOTITOLI (configurabile)
     caption_style: wizardData.captionStyle || 'normal-white'
   }
 

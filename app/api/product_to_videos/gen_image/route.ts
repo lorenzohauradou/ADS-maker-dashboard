@@ -3,19 +3,19 @@ import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // 🔐 Verifica autenticazione NextAuth
+    // Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    // 📋 Leggi payload dal wizard
+    // Leggi payload dal wizard
     const wizardData = await request.json()
     
     console.log('📸 PRODUCT_TO_VIDEOS: Payload ricevuto:', wizardData)
 
-    // 📡 Chiamata al backend Creatify service tramite endpoint dedicato
+    // Chiamata al backend Creatify service tramite endpoint dedicato
     const backendResponse = await fetch(
       `${process.env.BACKEND_URL}/api/creatify/create-from-images`,
       {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
           'x-user-email': session.user.email,
         },
         body: JSON.stringify({
-          existing_project_id: wizardData.existing_project_id,  // 🎯 Passa ID progetto esistente
+          existing_project_id: wizardData.existing_project_id,  // Passa ID progetto esistente
           image_data: {
             product_showcase_url: wizardData.product_showcase_url,
             type: wizardData.type || "product_avatar",
