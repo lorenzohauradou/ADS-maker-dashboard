@@ -3,10 +3,13 @@ import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: ====== REQUEST START ======')
+    
     // 🔐 Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
+      console.log('❌ UPLOAD_PRODUCT_IMAGES: Authentication failed')
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
@@ -21,6 +24,8 @@ export async function POST(request: NextRequest) {
     // 📡 Proxy al backend per gestire upload immagini
     const backendUrl = `${process.env.BACKEND_URL}/api/creatify/upload-images`
     console.log('📸 UPLOAD_PRODUCT_IMAGES: Full backend URL:', backendUrl)
+    
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: Making request to backend...')
     
     const backendResponse = await fetch(backendUrl, {
         method: 'POST',
@@ -57,7 +62,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Upload product images error:', error)
+    console.error('❌ UPLOAD_PRODUCT_IMAGES: Critical error:', error)
+    console.error('❌ UPLOAD_PRODUCT_IMAGES: Error stack:', error instanceof Error ? error.stack : 'No stack')
     return NextResponse.json({ 
       error: 'Failed to upload product images', 
       details: error instanceof Error ? error.message : 'Unknown error'
