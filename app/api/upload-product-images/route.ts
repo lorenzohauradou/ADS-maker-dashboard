@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
       // Upload su Supabase Storage
       const { data, error } = await supabase.storage
-        .from('product-images')
+        .from('uploads')
         .upload(filename, uint8Array, {
           contentType: image.type,
           cacheControl: '3600'
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
       // Ottieni URL pubblico
       const { data: { publicUrl } } = supabase.storage
-        .from('product-images')
+        .from('uploads')
         .getPublicUrl(filename)
 
       uploadedImages.push({
