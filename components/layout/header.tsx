@@ -1,7 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Menu, Sun, Moon, User, LogOut } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Play, Menu, Sun, Moon, User, LogOut, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/theme-provider"
 import { useSession, signOut } from "next-auth/react"
@@ -37,75 +38,99 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-xl border-b border-border/50">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+    <header className="fixed bg-transparent backdrop-blur-sm top-0 w-full z-50 bg-black border-b border-gray-800/50">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo - OpusClip style */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
             <Image
               src="/fastadslogo.png"
               alt="FAST ADS AI Logo"
-              width={40}
-              height={40}
+              width={32}
+              height={32}
               className="object-contain w-full h-full"
             />
           </div>
-          <span className="text-base sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <span className="text-xl font-bold text-white">
             FAST ADS AI
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-10">
-          <a
-            href="#showcase"
-            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
-          >
-            Showcase
-          </a>
-          <a
-            href="#features"
-            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
-          >
-            Features
-          </a>
-          <a
-            href="#workflow"
-            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
-          >
-            How it Works
-          </a>
+        {/* Navigation - OpusClip style */}
+        <nav className="hidden lg:flex items-center space-x-8">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors text-sm font-medium">
+              Features
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-gray-900 border-gray-700">
+              <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-gray-800">
+                <Link href="#features">All Features</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors text-sm font-medium">
+              Solutions
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-gray-900 border-gray-700">
+              <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-gray-800">
+                <Link href="#showcase">Showcase</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors text-sm font-medium">
+              Resources
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-gray-900 border-gray-700">
+              <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-gray-800">
+                <Link href="/blog">Blog</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-gray-800">
+                <Link href="#workflow">How it Works</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Link
-            href="/blog"
-            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
-          >
-            Blog
-          </Link>
-          <a
             href="#pricing"
-            className="text-muted-foreground hover:text-foreground hover:scale-105 transition-all duration-200 text-lg font-medium"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
           >
             Pricing
-          </a>
+          </Link>
+
+          {/* FastAdsSearch with New badge - OpusClip style */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard/ai-image-studio"
+              className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+            >
+              FastAdsSearch
+            </Link>
+            <Badge className="bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded">
+              New
+            </Badge>
+          </div>
         </nav>
 
+        {/* Auth Section - OpusClip style */}
         <div className="flex items-center space-x-4">
-          {/* Theme Toggle */}
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-xl hover:bg-accent">
-            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-          </Button>
-
-          {/* Auth Section */}
           {status === "loading" ? (
-            <div className="w-8 h-8 animate-spin rounded-full border-2 border-muted border-t-foreground"></div>
+            <div className="w-6 h-6 animate-spin rounded-full border-2 border-gray-600 border-t-white"></div>
           ) : session ? (
             // User is authenticated
             <>
               <Button
-                variant="outline"
-                className="text-foreground hover:bg-accent rounded-xl px-4 py-2 hidden sm:flex items-center gap-2"
+                variant="ghost"
+                className="text-gray-300 hover:text-white text-sm font-medium hidden sm:block"
                 asChild
               >
                 <Link href="/dashboard">
-                  <Play className="w-4 h-4" />
                   Dashboard
                 </Link>
               </Button>
@@ -113,34 +138,34 @@ export function Header() {
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
                       <AvatarImage src={session.user?.image || ""} alt={session.user?.name || ""} />
-                      <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                      <AvatarFallback className="bg-gray-700 text-white text-xs">
                         {getUserInitials(session.user?.name, session.user?.email)}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-56 bg-gray-900 border-gray-700" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
+                      <p className="text-sm font-medium leading-none text-white">
                         {session.user?.name || "User"}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">
+                      <p className="text-xs leading-none text-gray-400">
                         {session.user?.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <DropdownMenuItem asChild className="text-gray-300 hover:text-white hover:bg-gray-800">
                     <Link href="/dashboard" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-400 hover:text-red-300 hover:bg-gray-800">
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
@@ -148,72 +173,74 @@ export function Header() {
               </DropdownMenu>
             </>
           ) : (
-            // User is not authenticated
+            // User is not authenticated - OpusClip style
             <>
-              <Button variant="ghost" className="text-muted-foreground hover:text-foreground text-lg hidden sm:block" asChild>
-                <Link href="/login">Login</Link>
+              <Button
+                variant="ghost"
+                className="text-gray-300 hover:text-white text-sm font-medium hidden sm:block"
+                asChild
+              >
+                <Link href="/login">Sign in</Link>
               </Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl px-3 py-2 sm:px-6 sm:py-3 shadow-lg hover:shadow-xl transition-all duration-300 text-white text-sm sm:text-base" asChild>
+              <Button
+                className="bg-white text-black hover:bg-gray-100 text-sm font-medium px-4 py-2 rounded-full transition-all"
+                asChild
+              >
                 <Link href="/login">
-                  <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  Try Free
+                  Sign up - It's FREE
                 </Link>
               </Button>
             </>
           )}
 
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <Menu className="w-6 h-6" />
+          <Button variant="ghost" size="icon" className="lg:hidden text-gray-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Menu className="w-5 h-5" />
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - OpusClip style */}
       {isMenuOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border">
+        <div className="lg:hidden bg-black border-b border-gray-800">
           <nav className="container mx-auto px-4 py-4 space-y-4">
-            <a href="#showcase" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
-              Showcase
-            </a>
-            <a href="#features" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
+            <a href="#features" className="block text-gray-300 hover:text-white transition-colors text-sm">
               Features
             </a>
-            <a href="#workflow" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
-              How it Works
+            <a href="#showcase" className="block text-gray-300 hover:text-white transition-colors text-sm">
+              Solutions
             </a>
-            <Link href="/blog" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
-              Blog
+            <Link href="/blog" className="block text-gray-300 hover:text-white transition-colors text-sm">
+              Resources
             </Link>
-            <a href="#pricing" className="block text-muted-foreground hover:text-foreground transition-colors duration-200 text-lg">
+            <a href="#pricing" className="block text-gray-300 hover:text-white transition-colors text-sm">
               Pricing
             </a>
+            <Link href="/dashboard/ai-image-studio" className="block text-gray-300 hover:text-white transition-colors text-sm">
+              FastAdsSearch
+            </Link>
 
             {session ? (
               <>
-                <Button
-                  variant="ghost"
-                  className="text-foreground hover:text-foreground text-lg w-full justify-start"
-                  asChild
-                >
-                  <Link href="/dashboard">Dashboard</Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-red-600 hover:text-red-700 text-lg w-full justify-start"
+                <Link href="/dashboard" className="block text-gray-300 hover:text-white transition-colors text-sm">
+                  Dashboard
+                </Link>
+                <button
                   onClick={handleSignOut}
+                  className="block text-red-400 hover:text-red-300 transition-colors text-sm w-full text-left"
                 >
                   Logout
-                </Button>
+                </button>
               </>
             ) : (
-              <Button
-                variant="ghost"
-                className="text-muted-foreground hover:text-foreground text-lg w-full justify-start"
-                asChild
-              >
-                <Link href="/login">Login</Link>
-              </Button>
+              <>
+                <Link href="/login" className="block text-gray-300 hover:text-white transition-colors text-sm">
+                  Sign in
+                </Link>
+                <Link href="/login" className="block text-white bg-gray-800 hover:bg-gray-700 transition-colors text-sm py-2 px-4 rounded">
+                  Sign up - It's FREE
+                </Link>
+              </>
             )}
           </nav>
         </div>

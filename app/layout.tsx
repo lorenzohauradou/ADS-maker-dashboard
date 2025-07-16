@@ -1,10 +1,17 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/components/providers/session-provider'
 import { PostHogProviderWrapper } from '@/components/providers/posthog-provider'
 import { GoogleAnalytics } from '@/components/analytics/google-analytics'
 import { FacebookPixel } from '@/components/analytics/facebook-pixel'
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -237,7 +244,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}>
         <AuthProvider>
           <PostHogProviderWrapper>
             <ThemeProvider>

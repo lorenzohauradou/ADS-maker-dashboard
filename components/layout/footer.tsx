@@ -1,154 +1,188 @@
-import { Twitter, Linkedin, Mail } from "lucide-react"
+import { Twitter, Linkedin, Youtube, Instagram, Globe } from "lucide-react"
 import Image from "next/image"
 
 export function Footer() {
   const links = {
+    company: [
+      { name: "About us", href: "/about" },
+      { name: "Contact Us", href: "#contact" },
+    ],
     product: [
-      { name: "Features", href: "#features" },
-      { name: "Pricing", href: "#pricing" },
+      { name: "AI Video Creation", href: "#ai-video" },
       { name: "Dropshipping Ads", href: "/dropshipping-video-ads" },
       { name: "TikTok Ads", href: "/tiktok-video-ads" },
-    ],
-    company: [
-      { name: "About Us", href: "/about" },
-      { name: "Blog", href: "/blog" },
       { name: "Instagram Ads", href: "/instagram-video-ads" },
-      { name: "Contact", href: "#contact" },
     ],
-    support: [
-      { name: "Help Center", href: "#help" },
-      { name: "Documentation", href: "#docs" },
-      { name: "Status", href: "#status" },
-      { name: "Community", href: "#community" },
+    resources: [
+      { name: "Blog", href: "/blog" },
+      { name: "Help center", href: "#help" },
+      { name: "Learning center", href: "#learning" },
     ],
-    legal: [
-      { name: "Privacy", href: "#privacy" },
-      { name: "Terms", href: "#terms" },
-      { name: "Cookies", href: "#cookies" },
-      { name: "GDPR", href: "#gdpr" },
+    bestPractices: [
+      { name: "How to Create Viral Video Ads: The Ultimate Guide for 2024", href: "#guide-2024" },
+      { name: "AI Video Marketing: Best Practices", href: "#ai-marketing-guide" },
+    ],
+    trustAndLegal: [
+      { name: "Terms and Conditions", href: "#terms" },
+      { name: "Privacy Policy", href: "#privacy" },
+      { name: "Cookies Preferences", href: "#cookies" },
     ],
   }
 
   return (
-    <footer className="bg-muted/50 border-t border-border">
-      <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
-        {/* Mobile: Stack tutto verticalmente, Tablet: 2 colonne, Desktop: 5 colonne */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
-
-          {/* Brand Section - Su mobile prende tutta la larghezza, su desktop 1 colonna */}
-          <div className="sm:col-span-2 lg:col-span-1 text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start space-x-2 mb-4">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-                <Image
-                  src="/fastadslogo.png"
-                  alt="FAST ADS AI Logo"
-                  width={32}
-                  height={32}
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                FAST ADS AI
-              </span>
+    <footer className="px-4 py-8">
+      <div className="container mx-auto">
+        <div className="bg-[#1F1F1F] rounded-3xl p-8 lg:p-12">
+          {/* Language Selector */}
+          <div className="flex justify-end mb-8">
+            <div className="flex items-center space-x-2 text-gray-300">
+              <Globe className="w-4 h-4" />
+              <span className="text-sm">English</span>
             </div>
-            <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto sm:mx-0">
-              The AI that transforms your images into professional video ads in minutes.
-            </p>
-            <div className="flex justify-center sm:justify-start space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg">
+          </div>
+
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
+
+            {/* Company */}
+            <div>
+              <h3 className="font-semibold text-white mb-6 text-base">Company</h3>
+              <ul className="space-y-4">
+                {links.company.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Product */}
+            <div>
+              <h3 className="font-semibold text-white mb-6 text-base">Product</h3>
+              <ul className="space-y-4">
+                {links.product.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h3 className="font-semibold text-white mb-6 text-base">Resources</h3>
+              <ul className="space-y-4">
+                {links.resources.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Best Practices */}
+            <div>
+              <h3 className="font-semibold text-white mb-6 text-base">Best Practices</h3>
+              <ul className="space-y-4">
+                {links.bestPractices.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm leading-relaxed"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Trust and Legal */}
+            <div>
+              <h3 className="font-semibold text-white mb-6 text-base">Trust and Legal</h3>
+              <ul className="space-y-4">
+                {links.trustAndLegal.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="border-t border-gray-600 pt-8 flex flex-col lg:flex-row justify-between items-center">
+
+            {/* Left side - Logo and Copyright */}
+            <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-8">
+              {/* Logo */}
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/fastadslogo.png"
+                    alt="FAST ADS AI Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  FAST ADS AI
+                </span>
+              </div>
+
+              {/* Copyright */}
+              <p className="text-gray-400 text-sm">
+                © 2025 Fast Ads AI by FastAds Inc. All rights reserved.
+              </p>
+            </div>
+
+            {/* Right side - Social Icons */}
+            <div className="flex items-center space-x-4 mt-4 lg:mt-0">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <Youtube className="w-5 h-5" />
+                <span className="sr-only">YouTube</span>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                </svg>
+                <span className="sr-only">TikTok</span>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Twitter className="w-5 h-5" />
                 <span className="sr-only">Twitter</span>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Linkedin className="w-5 h-5" />
                 <span className="sr-only">LinkedIn</span>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg">
-                <Mail className="w-5 h-5" />
-                <span className="sr-only">Email</span>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                <Instagram className="w-5 h-5" />
+                <span className="sr-only">Instagram</span>
               </a>
             </div>
           </div>
-
-          {/* Link Sections - Su mobile ogni sezione prende tutta la larghezza */}
-
-          {/* Product Links */}
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-foreground mb-3 sm:mb-4 text-base">Product</h3>
-            <ul className="space-y-2 sm:space-y-3">
-              {links.product.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm block py-1 hover:underline"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-foreground mb-3 sm:mb-4 text-base">Company</h3>
-            <ul className="space-y-2 sm:space-y-3">
-              {links.company.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm block py-1 hover:underline"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support Links */}
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-foreground mb-3 sm:mb-4 text-base">Support</h3>
-            <ul className="space-y-2 sm:space-y-3">
-              {links.support.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm block py-1 hover:underline"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div className="text-center sm:text-left">
-            <h3 className="font-semibold text-foreground mb-3 sm:mb-4 text-base">Legal</h3>
-            <ul className="space-y-2 sm:space-y-3">
-              {links.legal.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm block py-1 hover:underline"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Copyright Section - Responsive layout */}
-        <div className="border-t border-border mt-8 sm:mt-10 lg:mt-12 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <p className="text-muted-foreground text-sm text-center sm:text-left">
-            © 2024 FAST ADS AI. All rights reserved.
-          </p>
-          <p className="text-muted-foreground text-xs text-center sm:text-right">
-            Made with ❤️
-          </p>
         </div>
       </div>
     </footer>

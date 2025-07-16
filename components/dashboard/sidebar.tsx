@@ -31,7 +31,6 @@ import {
   // Layout,
   User,
   Image as ImageIcon,
-  BarChart3,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"

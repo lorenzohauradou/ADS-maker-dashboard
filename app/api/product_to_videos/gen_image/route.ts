@@ -3,21 +3,22 @@ import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    // Leggi payload dal wizard
-    const wizardData = await request.json()
+    const body = await request.json()
     
-    console.log('📸 PRODUCT_TO_VIDEOS: Payload ricevuto:', wizardData)
+    console.log('📸 PRODUCT_TO_VIDEOS GEN_IMAGE: Payload ricevuto:', body)
 
-    // Chiamata al backend Creatify service tramite endpoint dedicato
+    if (!body.product_url) {
+      return NextResponse.json({ error: 'product_url is required' }, { status: 400 })
+    }
+
     const backendResponse = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/create-from-images`,
+      `${process.env.BACKEND_URL}/api/creatify/product_to_videos/gen_image/`,
       {
         method: 'POST',
         headers: {
@@ -26,15 +27,16 @@ export async function POST(request: NextRequest) {
           'x-user-email': session.user.email,
         },
         body: JSON.stringify({
-          existing_project_id: wizardData.existing_project_id,  // Passa ID progetto esistente
-          image_data: {
-            product_showcase_url: wizardData.product_showcase_url,
-            type: wizardData.type || "product_avatar",
-            aspect_ratio: wizardData.aspect_ratio || "9x16",
-            image_prompt: wizardData.image_prompt || "Professional product showcase",
-            override_avatar: wizardData.override_avatar
-          },
-          flow_type: 'images_only'
+          product_url: body.product_url,
+          type: body.type || "product_avatar",
+          aspect_ratio: body.aspect_ratio || "9x16",
+          image_prompt: body.image_prompt || "Professional product showcase with clean background",
+          override_avatar: body.override_avatar || null,
+          product_showcase_url: body.product_showcase_url || null,
+          webhook_url: body.webhook_url || null,
+          project_id: body.project_id,
+          user_id: body.user_id,
+          user_email: body.user_email
         }),
       }
     )
@@ -47,14 +49,18 @@ export async function POST(request: NextRequest) {
 
     const result = await backendResponse.json()
     
-    console.log('✅ PRODUCT_TO_VIDEOS: Successo:', result)
+    console.log('✅ PRODUCT_TO_VIDEOS GEN_IMAGE: Scene preview generated successfully:', {
+      id: result.id,
+      status: result.status,
+      hasPhoto: !!result.generated_photo_url
+    })
     
     return NextResponse.json(result)
     
   } catch (error) {
-    console.error('❌ Product to videos error:', error)
+    console.error('❌ Product to videos gen_image error:', error)
     return NextResponse.json({ 
-      error: 'Failed to create video from images', 
+      error: 'Failed to generate scene preview', 
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }

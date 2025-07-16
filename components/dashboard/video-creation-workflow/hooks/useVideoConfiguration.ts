@@ -4,7 +4,7 @@ import { PLATFORMS } from "../constants/video-platforms"
 
 const DEFAULT_CONFIG: VideoConfiguration = {
     target_platform: "instagram",
-    target_audience: "giovani adulti",
+    target_audience: "young_adults",
     language: "en",
     video_length: 15,
     aspect_ratio: "9x16",

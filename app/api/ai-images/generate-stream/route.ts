@@ -3,7 +3,6 @@ import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Verifica autenticazione
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
@@ -15,14 +14,13 @@ export async function POST(request: NextRequest) {
     
     const stream = new ReadableStream({
       async start(controller) {
-        // Funzione helper per inviare eventi SSE
         const sendEvent = (data: any) => {
           const message = `data: ${JSON.stringify(data)}\n\n`
           controller.enqueue(encoder.encode(message))
         }
 
         try {
-          // 🚀 FASE 1: Inizializzazione
+          // FASE 1: Inizializzazione
           sendEvent({
             type: 'progress',
             progress: 5,
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest) {
 
           await new Promise(resolve => setTimeout(resolve, 500))
 
-          // 🔍 FASE 2: Analisi immagine
+          // FASE 2: Analisi immagine
           sendEvent({
             type: 'progress',
             progress: 15,
@@ -42,7 +40,7 @@ export async function POST(request: NextRequest) {
 
           await new Promise(resolve => setTimeout(resolve, 800))
 
-          // 🎨 FASE 3: Preparazione prompt
+          // FASE 3: Preparazione prompt
           sendEvent({
             type: 'progress',
             progress: 25,
@@ -52,7 +50,7 @@ export async function POST(request: NextRequest) {
 
           await new Promise(resolve => setTimeout(resolve, 600))
 
-          // 🎯 FASE 4: Inizio generazione
+          // FASE 4: Inizio generazione
           sendEvent({
             type: 'progress',
             progress: 35,
@@ -62,7 +60,7 @@ export async function POST(request: NextRequest) {
 
           await new Promise(resolve => setTimeout(resolve, 1000))
 
-          // 🔄 FASE 5: Generazione in corso (con simulazione partial images)
+          // FASE 5: Generazione in corso (con simulazione partial images)
           const generationSteps = [
             { progress: 45, message: '🎨 Elaborazione dettagli...', stage: 'processing' },
             { progress: 60, message: '✨ Applicazione stile...', stage: 'styling' },
@@ -78,7 +76,7 @@ export async function POST(request: NextRequest) {
             await new Promise(resolve => setTimeout(resolve, 1500))
           }
 
-          // 🚀 CHIAMATA REALE ALL'API BACKEND
+          // CHIAMATA REALE ALL'API BACKEND
           console.log('🎨 Starting real AI generation...')
           
           const headers: Record<string, string> = {
@@ -100,7 +98,7 @@ export async function POST(request: NextRequest) {
 
           const result = await backendResponse.json()
 
-          // ✅ FASE 6: Completamento
+          // FASE 6: Completamento
           sendEvent({
             type: 'complete',
             progress: 100,

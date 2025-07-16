@@ -29,12 +29,12 @@ export function DeleteConfirmationDialog({
     title,
     description,
     itemName,
-    itemType = "elemento",
+    itemType = "item",
     isLoading = false
 }: DeleteConfirmationDialogProps) {
-    const displayTitle = title || `Elimina ${itemType}`
+    const displayTitle = title || `Delete ${itemType}`
     const displayDescription = description ||
-        `Sei sicuro di voler eliminare ${itemName ? `"${itemName}"` : `questo ${itemType}`}? Questa azione non può essere annullata.`
+        `Are you sure you want to delete ${itemName ? `"${itemName}"` : `this ${itemType}`}? This action cannot be undone.`
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -62,7 +62,7 @@ export function DeleteConfirmationDialog({
                         className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-900 dark:text-white border-slate-300 dark:border-zinc-600 rounded-xl py-2.5 font-medium transition-all duration-200"
                         disabled={isLoading}
                     >
-                        Annulla
+                        Cancel
                     </AlertDialogCancel>
 
                     {/* Delete Button */}
@@ -74,12 +74,12 @@ export function DeleteConfirmationDialog({
                         {isLoading ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                Eliminando...
+                                Deleting...
                             </>
                         ) : (
                             <>
                                 <Trash2 className="w-4 h-4" />
-                                Elimina
+                                Delete
                             </>
                         )}
                     </AlertDialogAction>

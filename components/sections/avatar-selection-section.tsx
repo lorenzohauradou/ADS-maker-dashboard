@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Play, User, Sparkles, Crown, CheckCircle, ArrowRight } from "lucide-react"
+import { Play, CheckCircle2 } from "lucide-react"
 import Image from "next/image"
 
 export function AvatarSelectionSection() {
@@ -18,9 +18,7 @@ export function AvatarSelectionSection() {
             description: "Warm professional voice, perfect for B2B and services",
             image: "/avatar0.png",
             accent: "American",
-            specialties: ["B2B", "Professional Services", "Tech"],
-            styles: 5,
-            isNew: false,
+            specialties: ["B2B", "Professional", "Tech"],
             popular: true,
         },
         {
@@ -31,8 +29,6 @@ export function AvatarSelectionSection() {
             image: "/avatar1.png",
             accent: "Spanish",
             specialties: ["E-commerce", "Retail", "Lifestyle"],
-            styles: 4,
-            isNew: false,
             popular: false,
         },
         {
@@ -42,9 +38,7 @@ export function AvatarSelectionSection() {
             description: "Energy and dynamism for young and innovative products",
             image: "/avatar2.png",
             accent: "American",
-            specialties: ["Fitness", "Beauty", "Social Media"],
-            styles: 6,
-            isNew: false,
+            specialties: ["Fitness", "Beauty", "Social"],
             popular: false,
         },
         {
@@ -55,9 +49,7 @@ export function AvatarSelectionSection() {
             image: "/avatar3.png",
             accent: "Italian",
             specialties: ["Luxury", "Finance", "Automotive"],
-            styles: 7,
             isNew: true,
-            popular: false,
         },
         {
             id: 5,
@@ -67,8 +59,6 @@ export function AvatarSelectionSection() {
             image: "/avatar4.png",
             accent: "American",
             specialties: ["Startup", "Apps", "Innovation"],
-            styles: 5,
-            isNew: false,
             popular: false,
         },
         {
@@ -79,8 +69,6 @@ export function AvatarSelectionSection() {
             image: "/avatar5.png",
             accent: "American",
             specialties: ["Healthcare", "Wellness", "Family"],
-            styles: 4,
-            isNew: false,
             popular: false,
         },
         {
@@ -91,8 +79,6 @@ export function AvatarSelectionSection() {
             image: "/avatar6.png",
             accent: "British",
             specialties: ["Finance", "Insurance", "Legal"],
-            styles: 3,
-            isNew: false,
             popular: false,
         },
         {
@@ -103,9 +89,7 @@ export function AvatarSelectionSection() {
             image: "/avatar7.png",
             accent: "American",
             specialties: ["Sports", "Fitness", "Outdoor"],
-            styles: 4,
             isNew: true,
-            popular: false,
         },
         {
             id: 9,
@@ -115,9 +99,7 @@ export function AvatarSelectionSection() {
             image: "/avatar8.png",
             accent: "British",
             specialties: ["Luxury", "Fashion", "Beauty"],
-            styles: 8,
             isNew: true,
-            popular: false,
         },
     ]
 
@@ -126,180 +108,125 @@ export function AvatarSelectionSection() {
     }
 
     return (
-        <section id="avatars" className="py-16 md:py-24 px-4 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-600/10 dark:bg-blue-600/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-600/10 dark:bg-purple-600/5 rounded-full blur-3xl"></div>
-
-            <div className="container mx-auto relative z-10">
+        <section id="avatars" className="py-24 px-4 bg-black">
+            <div className="container mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="text-center mb-16">
-                    <Badge
-                        variant="secondary"
-                        className="mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
-                    >
-                        <User className="w-4 h-4 mr-2" />
-                        Professional AI Avatars
-                    </Badge>
-
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                        Choose Your{" "}
-                        <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 dark:from-purple-400 dark:via-pink-400 dark:to-orange-400 bg-clip-text text-transparent">
+                <div className="text-center mb-20">
+                    <h2 className="text-5xl md:text-6xl font-medium mb-6 text-white leading-tight">
+                        Choose Your
+                        <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                             AI Avatar
                         </span>
                     </h2>
-
-                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-                        Over <strong>100+ ultra-realistic AI avatars</strong>, each specialized for your industry.
-                        Human-like voice, natural gestures, and unique personalities for every type of business.
+                    <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                        Professional AI avatars with human-like voices and natural expressions.
+                        Select the perfect spokesperson for your brand.
                     </p>
-
-                    <div className="flex flex-wrap justify-center gap-4 mb-8">
-                        <Badge variant="outline" className="bg-white/50 dark:bg-zinc-800/50">
-                            🎭 Natural gestures
-                        </Badge>
-                        <Badge variant="outline" className="bg-white/50 dark:bg-zinc-800/50">
-                            🎙️ Human voice
-                        </Badge>
-                        <Badge variant="outline" className="bg-white/50 dark:bg-zinc-800/50">
-                            🌍 Multilingual
-                        </Badge>
-                        <Badge variant="outline" className="bg-white/50 dark:bg-zinc-800/50">
-                            ⚡ Instant generation
-                        </Badge>
-                    </div>
                 </div>
 
                 {/* Avatar Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                     {avatars.map((avatar) => (
                         <Card
                             key={avatar.id}
-                            className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 ${selectedAvatar === avatar.id
-                                ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20'
-                                : 'border-border hover:border-purple-300 dark:hover:border-purple-700'
+                            className={`group cursor-pointer transition-all duration-300 hover:shadow-xl border-0 bg-[#111]/80 hover:bg-[#151515] p-8 rounded-2xl ${selectedAvatar === avatar.id
+                                ? 'ring-2 ring-blue-400 bg-[#151515] shadow-lg'
+                                : ''
                                 }`}
                             onClick={() => handleAvatarSelect(avatar.id)}
                         >
-                            <div className="relative overflow-hidden">
-                                {/* Avatar Image/Video - Takes most of the card */}
-                                <div className="relative w-full h-80 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
+                            {/* Avatar Image */}
+                            <div className="relative mb-6 flex justify-center">
+                                <div className="relative w-24 h-24">
                                     <Image
                                         src={avatar.image}
                                         alt={avatar.name}
-                                        width={320}
-                                        height={320}
-                                        className="w-full h-full object-cover object-center"
+                                        fill
+                                        className="rounded-full object-cover border-4 border-[#151515] shadow-lg"
                                         priority
                                     />
 
-                                    {/* Top badges */}
-                                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                                        {avatar.popular && (
-                                            <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs px-2 py-1">
-                                                <Crown className="w-3 h-3 mr-1" />
-                                                Popular
-                                            </Badge>
-                                        )}
-                                        {avatar.isNew && (
-                                            <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs px-2 py-1">
-                                                New
-                                            </Badge>
-                                        )}
-                                    </div>
-
-                                    {/* Bottom left - Styles count */}
-                                    <div className="absolute bottom-3 left-3">
-                                        <Badge variant="secondary" className="bg-black/70 text-white text-xs">
-                                            {avatar.styles} styles
-                                        </Badge>
-                                    </div>
-
-                                    {/* Top right - Selection indicator */}
+                                    {/* Selection indicator */}
                                     {selectedAvatar === avatar.id && (
-                                        <div className="absolute top-3 right-3">
-                                            <CheckCircle className="w-6 h-6 text-purple-600 bg-white dark:bg-zinc-900 rounded-full" />
+                                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                            <CheckCircle2 className="w-5 h-5 text-white" />
                                         </div>
                                     )}
+                                </div>
 
-                                    {/* Hover overlay */}
-                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="bg-white/90 hover:bg-white text-black"
+                                {/* Badges */}
+                                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 flex gap-2">
+                                    {avatar.popular && (
+                                        <Badge className="bg-gradient-to-r from-orange-400/20 to-pink-400/20 text-orange-300 border border-orange-500/20 text-xs px-3 py-1 rounded-full">
+                                            Popular
+                                        </Badge>
+                                    )}
+                                    {avatar.isNew && (
+                                        <Badge className="bg-gradient-to-r from-green-400/20 to-blue-400/20 text-blue-300 border border-blue-500/20 text-xs px-3 py-1 rounded-full">
+                                            New
+                                        </Badge>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Avatar Info */}
+                            <div className="text-center">
+                                <h3 className="text-xl font-semibold text-white mb-2">{avatar.name}</h3>
+                                <p className="text-sm text-blue-400 font-medium mb-3">{avatar.category} • {avatar.accent}</p>
+                                <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+                                    {avatar.description}
+                                </p>
+
+                                {/* Specialties */}
+                                <div className="flex flex-wrap justify-center gap-1 mb-6">
+                                    {avatar.specialties.map((specialty, index) => (
+                                        <span
+                                            key={index}
+                                            className="text-xs bg-white/5 text-gray-400 px-2 py-1 rounded-full border border-white/10"
                                         >
-                                            <Play className="w-4 h-4 mr-2" />
-                                            Preview
-                                        </Button>
-                                    </div>
+                                            {specialty}
+                                        </span>
+                                    ))}
                                 </div>
 
-                                {/* Bottom info - Minimal */}
-                                <div className="p-4 bg-white dark:bg-zinc-900">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <h3 className="font-bold text-lg text-foreground">{avatar.name}</h3>
-                                            <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                                <span>{avatar.accent === 'British' ? '🇬🇧' : avatar.accent === 'Spanish' ? '🇪🇸' : '🇺🇸'}</span>
-                                                {avatar.accent}
-                                            </p>
-                                        </div>
-                                        {selectedAvatar === avatar.id && (
-                                            <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs">
-                                                Selected
-                                            </Badge>
-                                        )}
-                                    </div>
-                                </div>
+                                {/* Preview Button */}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full border-white/10 text-gray-300 hover:border-blue-400 hover:text-blue-400 transition-colors bg-transparent"
+                                >
+                                    <Play className="w-4 h-4 mr-2" />
+                                    Preview Voice
+                                </Button>
                             </div>
                         </Card>
                     ))}
                 </div>
 
-                {/* CTA Section */}
-                <div className="text-center">
-                    <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm relative overflow-hidden">
-                        {/* Background decoration */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
-                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-500/10 rounded-full blur-xl"></div>
-
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-center mb-4">
-                                <Sparkles className="w-6 h-6 text-purple-500 mr-3" />
-                                <span className="text-lg font-semibold text-foreground">
-                                    Ready to Create Professional Videos?
+                <div className="text-center mt-16">
+                    <div className="rounded-3xl relative overflow-hidden max-w-7xl mx-auto">
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover opacity-50"
+                            src="/gradient_bg.mp4"
+                        />
+                        <div className="relative z-10 p-16 text-center backdrop-blur-sm bg-black/30 flex flex-col items-center justify-center">
+                            <h3 className="text-3xl font-semibold mb-6 text-white">
+                                Ready to create your first video?
+                            </h3>
+                            <p className="text-[#d1d5db] mb-8 max-w-2xl mx-auto">
+                                While your competitors wait weeks for their videos, you can have yours ready in 1 minute.
+                                <span className="hidden md:block">
+                                    Start now and get an immediate competitive advantage.
                                 </span>
-                            </div>
-                            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                                Choose your favorite AI avatar and start creating video ads that convert.
-                                Every avatar is optimized for your specific industry with personalized scripts.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Button
-                                    size="lg"
-                                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4"
-                                >
-                                    <Play className="w-5 h-5 mr-2" />
-                                    Start Free Now
-                                </Button>
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="border-border text-foreground hover:bg-accent px-8 py-4"
-                                >
-                                    View All Avatars
-                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                </Button>
-                            </div>
-                            <div className="text-center mt-4">
-                                <Badge
-                                    variant="secondary"
-                                    className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
-                                >
-                                    🚀 No credit card required
-                                </Badge>
-                            </div>
+                            <Button className="bg-white text-black hover:bg-gray-100 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-medium">
+                                <Play className="w-4 md:w-5 h-4 md:h-5 mr-2" />
+                                Create Your <span className="hidden md:inline">Viral</span> Video
+                            </Button>
                         </div>
                     </div>
                 </div>

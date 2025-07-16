@@ -32,72 +32,72 @@ interface VoiceAudioStepProps {
 
 const VOICE_OPTIONS = [
     {
-        id: "sarah_it",
+        id: "sarah_en",
         name: "Sarah",
         gender: "female",
-        language: "Italiano",
-        accent: "Neutrale",
-        style: "Professionale",
+        language: "English",
+        accent: "Neutral",
+        style: "Professional",
         icon: "👩‍💼",
         color: "blue",
         premium: false,
-        description: "Voce femminile professionale e chiara"
+        description: "Professional and clear female voice"
     },
     {
-        id: "marco_it",
-        name: "Marco",
+        id: "mark_en",
+        name: "Mark",
         gender: "male",
-        language: "Italiano",
-        accent: "Neutrale",
+        language: "English",
+        accent: "Neutral",
         style: "Friendly",
         icon: "👨‍💼",
         color: "green",
         premium: false,
-        description: "Voce maschile amichevole e coinvolgente"
+        description: "Friendly and engaging male voice"
     },
     {
-        id: "giulia_it",
-        name: "Giulia",
+        id: "julia_en",
+        name: "Julia",
         gender: "female",
-        language: "Italiano",
-        accent: "Milano",
-        style: "Energico",
+        language: "English",
+        accent: "American",
+        style: "Energetic",
         icon: "⚡",
         color: "purple",
         premium: true,
-        description: "Voce femminile energica e moderna"
+        description: "Energetic and modern female voice"
     },
     {
-        id: "alessandro_it",
-        name: "Alessandro",
+        id: "alex_en",
+        name: "Alex",
         gender: "male",
-        language: "Italiano",
-        accent: "Roma",
-        style: "Carismatico",
+        language: "English",
+        accent: "British",
+        style: "Charismatic",
         icon: "🎭",
         color: "orange",
         premium: true,
-        description: "Voce maschile carismatica e persuasiva"
+        description: "Charismatic and persuasive male voice"
     },
     {
-        id: "elena_it",
-        name: "Elena",
+        id: "emma_en",
+        name: "Emma",
         gender: "female",
-        language: "Italiano",
-        accent: "Toscana",
-        style: "Elegante",
+        language: "English",
+        accent: "Australian",
+        style: "Elegant",
         icon: "👑",
         color: "pink",
         premium: true,
-        description: "Voce femminile elegante e raffinata"
+        description: "Elegant and refined female voice"
     }
 ]
 
 const MUSIC_STYLES = [
-    { value: "upbeat", label: "Upbeat", icon: "🎉", desc: "Energico e motivazionale" },
-    { value: "corporate", label: "Corporate", icon: "💼", desc: "Professionale e moderno" },
-    { value: "chill", label: "Chill", icon: "😌", desc: "Rilassante e minimalista" },
-    { value: "electronic", label: "Electronic", icon: "🔊", desc: "Moderno e tecnologico" }
+    { value: "upbeat", label: "Upbeat", icon: "🎉", desc: "Energetic and motivational" },
+    { value: "corporate", label: "Corporate", icon: "💼", desc: "Professional and modern" },
+    { value: "chill", label: "Chill", icon: "😌", desc: "Relaxing and minimalist" },
+    { value: "electronic", label: "Electronic", icon: "🔊", desc: "Modern and technological" }
 ]
 
 export function VoiceAudioStep({

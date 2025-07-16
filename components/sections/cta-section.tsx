@@ -1,67 +1,48 @@
+"use client"
+
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
-import { Play, ArrowRight, Sparkles } from "lucide-react"
+import { Link2 } from "lucide-react"
 
 export function CTASection() {
+  const isMobile = useIsMobile()
   return (
-    <section className="py-20 px-4 bg-background">
-      <div className="container mx-auto">
-        <div className="bg-gradient-to-r from-card to-muted/50 rounded-3xl p-12 text-center border border-border relative overflow-hidden backdrop-blur-sm">
-          {/* Background decoration */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-          <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-purple-600/20 rounded-full blur-3xl"></div>
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-center mb-6">
-              <Sparkles className="w-8 h-8 text-yellow-500 mr-3" />
-              <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
-                Ready to Transform Your Marketing?
-              </span>
-            </div>
-
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Start Creating Professional
-              <br />
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Video Ads Today
-              </span>
+    <section className="py-12 md:py-20 px-4 bg-black">
+      <div className="container mx-auto max-w-4xl">
+        <div id="final-cta" className="rounded-2xl md:rounded-3xl relative overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            src="/gradient_bg.mp4"
+          />
+          <div className="relative z-10 p-8 md:p-12 text-center backdrop-blur-sm bg-black/30">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold font-sans mb-8 md:mb-10 text-white leading-tight">
+              Get started with Fast Ads
             </h2>
 
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of businesses that have already transformed their video marketing with Fast Ads AI. Your first video is free.
-            </p>
+            {/* CTA Buttons - responsive design */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
+              <div className="w-full md:w-auto flex items-center bg-[#3a3a3a] rounded-full px-4 py-2.5 md:px-6 md:py-3">
+                <Link2 className="w-4 h-4 text-[#9ca3af] mr-2 flex-shrink-0" />
+                <span className="text-[#d1d5db] text-sm flex-1 whitespace-nowrap">{isMobile ? "Upload image" : "Drop a product photo and ..."}</span>
+                <Button
+                  className="ml-2 bg-white text-black hover:bg-gray-100 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-sm font-medium transition-all"
+                >
+                  Try free
+                </Button>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 text-white"
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Create Your First Video Free
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-border text-foreground hover:bg-accent text-lg px-8 py-4"
-              >
-                Talk to Our Team
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                2-minute setup
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                No credit card required
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                Dedicated support
-              </span>
+              {/* Secondary CTA for mobile */}
+              <div className="w-full md:hidden">
+                <Button
+                  className="w-full bg-transparent text-white hover:bg-white/10 px-4 py-2.5 rounded-full text-sm font-medium transition-all border border-[#404040]"
+                >
+                  Get free ads
+                </Button>
+              </div>
             </div>
           </div>
         </div>

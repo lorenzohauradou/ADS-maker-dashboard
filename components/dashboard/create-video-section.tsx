@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Link2, ImageIcon, Crown, Lock } from "lucide-react"
+import { Link2, ImageIcon, Crown, Lock, Sparkles } from "lucide-react"
 import { useUserLimits } from "@/hooks/use-user-limits"
 import { useSubscriptionLimits } from "@/hooks/use-subscription-limits"
 import { UserLimitsBanner } from "./user-limits-banner"
@@ -280,48 +280,215 @@ export function CreateVideoSection() {
             with AI-powered automation
           </p>
 
-          {/* 🎯 DUE BOTTONI COME LO STILE ORIGINALE */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-3xl mx-auto">
+          {/* 🎯 THREE VISUAL CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
 
-            {/* 🖼️ PRODUCT TO VIDEO - APRE IL WIZARD */}
-            <Button
-              size="lg"
-              onClick={() => handleVideoCreationClick('image')}
-              className={`rounded-xl px-4 sm:px-6 lg:px-8 py-3 lg:py-4 text-sm sm:text-base lg:text-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white ${!can_create_video && !loading
-                ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+            {/* 🖼️ IMAGE TO VIDEOS CARD */}
+            <div
+              className={`relative group cursor-pointer transition-all duration-300 ${!can_create_video && !loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
                 }`}
-              disabled={loading}
+              onClick={() => !(!can_create_video && !loading) && handleVideoCreationClick('image')}
             >
-              {!can_create_video && !loading ? (
-                <>
-                  <Lock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  <span className="hidden sm:inline">Limit Reached - Buy Extra Video</span>
-                  <span className="sm:hidden">Limit Reached</span>
-                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-                </>
-              ) : (
-                <>
-                  <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  <span className="hidden sm:inline">Product to Video</span>
-                  <span className="sm:hidden">Product Video</span>
-                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 ml-2 text-yellow-300" />
-                </>
-              )}
-            </Button>
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200 dark:border-zinc-800">
+                {/* Preview Image */}
+                <div className="h-48 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 flex items-center justify-center relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
+                  <div className="relative z-10 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                      <ImageIcon className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-zinc-400 font-medium">
+                      Multiple Images → Professional Video
+                    </div>
+                  </div>
+                  {!can_create_video && !loading && (
+                    <div className="absolute top-3 right-3">
+                      <Lock className="w-5 h-5 text-amber-500" />
+                    </div>
+                  )}
+                </div>
 
-            {/* 🏷️ LIMIT REACHED NOTICE */}
-            {!can_create_video && !loading && (
-              <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                <div className="flex items-center justify-center space-x-2 text-amber-700 dark:text-amber-400">
-                  <Crown className="w-5 h-5" />
-                  <span className="font-medium">
-                    Monthly video limit reached - Upgrade or buy extra videos to continue
-                  </span>
+                {/* Card Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      Image to Videos
+                    </h3>
+                    <Crown className="w-5 h-5 text-yellow-500" />
+                  </div>
+
+                  <p className="text-slate-600 dark:text-zinc-400 text-sm mb-4 leading-relaxed">
+                    Upload multiple product images and create professional video ads with AI avatars and custom scripts.
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      Multiple images support
+                    </div>
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      AI avatar integration
+                    </div>
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      Custom scripts & voiceovers
+                    </div>
+                  </div>
+
+                  <div className={`text-center ${!can_create_video && !loading ? 'text-amber-600' : 'text-blue-600'
+                    }`}>
+                    <div className="text-sm font-medium">
+                      {!can_create_video && !loading ? 'Limit Reached' : 'Click to Start'}
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
+
+            {/* LINK TO VIDEOS CARD */}
+            <div
+              className={`relative group cursor-pointer transition-all duration-300 ${!can_create_video && !loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                }`}
+              onClick={() => !(!can_create_video && !loading) && handleVideoCreationClick('link')}
+            >
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200 dark:border-zinc-800">
+                {/* Preview Image */}
+                <div className="h-48 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 flex items-center justify-center relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10"></div>
+                  <div className="relative z-10 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                      <Link2 className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-zinc-400 font-medium">
+                      Website URL → Automated Video
+                    </div>
+                  </div>
+                  {!can_create_video && !loading && (
+                    <div className="absolute top-3 right-3">
+                      <Lock className="w-5 h-5 text-amber-500" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      Link to Videos
+                    </h3>
+                    <div className="flex items-center">
+                      <Crown className="w-5 h-5 text-yellow-500" />
+                    </div>
+                  </div>
+
+                  <p className="text-slate-600 dark:text-zinc-400 text-sm mb-4 leading-relaxed">
+                    Share your website URL and let AI analyze and create compelling video advertisements automatically.
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      Auto website analysis
+                    </div>
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      Product info extraction
+                    </div>
+                    <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      Automated script generation
+                    </div>
+                  </div>
+
+                  <div className={`text-center ${!can_create_video && !loading ? 'text-amber-600' : 'text-green-600'
+                    }`}>
+                    <div className="text-sm font-medium">
+                      {!can_create_video && !loading ? 'Limit Reached' : 'Click to Start'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PRODUCT TO VIDEOS CARD */}
+            <div
+              className={`relative group cursor-pointer transition-all duration-300 ${!can_create_video && !loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                }`}
+              onClick={() => {
+                if (!(!can_create_video && !loading)) {
+                  setOpen(false) // Close sidebar
+                  router.push('/dashboard/product-to-video')
+                }
+              }}
+            >
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-slate-200 dark:border-zinc-800 relative">
+                {/* Premium Badge */}
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                    NEW
+                  </div>
+                </div>
+
+                {/* Preview Image */}
+                <div className="h-48 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 flex items-center justify-center relative overflow-hidden">
+                  <video
+                    className="absolute inset-0 w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  >
+                    <source src="/ptv_preview.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10"></div>
+                  <div className="relative z-10 text-center">
+                    <div className="text-xs text-slate-600 dark:text-zinc-400 font-medium">
+                      Single Image → Cinematic Scene
+                    </div>
+                  </div>
+                  {!can_create_video && !loading && (
+                    <div className="absolute top-3 left-3">
+                      <Lock className="w-5 h-5 text-amber-500" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      Product to Video
+                    </h3>
+                    <Crown className="w-5 h-5 text-yellow-500" />
+                  </div>
+
+                  <p className="text-slate-600 dark:text-zinc-400 text-sm mb-4 leading-relaxed">
+                    Upload a single product image and transform it into a professional cinematic scene with AI-generated backgrounds and avatars.
+                  </p>
+
+                  <div className={`text-center ${!can_create_video && !loading ? 'text-amber-600' : 'text-purple-600'
+                    }`}>
+                    <div className="text-sm font-medium">
+                      {!can_create_video && !loading ? 'Limit Reached' : 'Click to Start'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* LIMIT REACHED NOTICE */}
+          {!can_create_video && !loading && (
+            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 max-w-3xl mx-auto">
+              <div className="flex items-center justify-center space-x-2 text-amber-700 dark:text-amber-400">
+                <Crown className="w-5 h-5" />
+                <span className="font-medium">
+                  Monthly video limit reached - Upgrade or buy extra videos to continue
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 🧙‍♂️ WIZARD UNIFICATO */}

@@ -1,37 +1,35 @@
 "use client"
 
 import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { ChevronDown, ChevronUp, HelpCircle, Zap } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 export function FaqSection() {
-    const [openIndex, setOpenIndex] = useState<number | null>(0)
+    const [openIndex, setOpenIndex] = useState<number | null>(null)
 
     const faqs = [
         {
-            question: "How long does it really take to create a video?",
-            answer: "The complete process takes 3-5 minutes: 30 seconds to upload images, 1-2 minutes for AI analysis, 1-2 minutes for video generation, and 30 seconds for download. It's literally faster than making coffee!"
+            question: "How does FastAdsAI work?",
+            answer: "Simply upload your product images, and our AI analyzes them to create professional video ads in minutes. The AI generates scripts, voiceovers, and optimizes everything for maximum engagement on social platforms."
         },
         {
-            question: "Which types of businesses work best?",
-            answer: "FAST ADS AI is optimized for e-commerce, SaaS, professional services, mobile apps, restaurants, and retail. The AI automatically recognizes your product type and adapts voice, script, and style accordingly. If you sell physical products or digital services, it will work perfectly."
+            question: "What types of products can I create ads for?",
+            answer: "FastAdsAI works with any physical or digital product: e-commerce items, SaaS tools, mobile apps, services, and more. Our AI automatically adapts the style and messaging to your specific product category."
         },
         {
-            question: "Does the voice really sound human?",
-            answer: "Yes! We use the most advanced TTS technology available. The voice is indistinguishable from a professional actor, with natural intonation, correct pauses, and emphasis on key points. Many clients ask us if we use real voice actors!"
+            question: "Which platforms are the videos optimized for?",
+            answer: "Videos are automatically optimized for TikTok, Instagram (Reels, Stories, Feed), YouTube Shorts, Facebook, LinkedIn, and other social platforms with perfect dimensions and engagement-focused content."
         },
         {
-            question: "Is there a watermark in the free plan?",
-            answer: "The free plan does NOT include any watermark. This plan is designed to let you test the quality."
+            question: "Can I customize the voiceover and text?",
+            answer: "Yes! You can edit scripts, choose from multiple AI voices, adjust tone and style, and customize all text elements. Our AI provides intelligent suggestions while giving you full creative control."
         },
         {
-            question: "Which social platforms can I publish videos to?",
-            answer: "Videos are automatically optimized for Instagram (Feed, Stories, Reels), TikTok, YouTube (Shorts and standard videos), Facebook, LinkedIn, and Pinterest. Each format has perfect dimensions and duration to maximize engagement."
+            question: "Is FastAdsAI free to use?",
+            answer: "We offer a free plan to test the quality with no watermarks. Paid plans include unlimited video generation, premium voices, advanced customization, and priority processing for faster results."
         },
         {
-            question: "Do you have English-speaking support team?",
-            answer: "Absolutely! Our support team speaks English - French - Italian and understands the global market perfectly. We're available via email, chat, and phone during business hours."
+            question: "I have more questions!",
+            answer: "Our support team is here to help! Contact us via email at support@fastadsai.com or through our live chat. We typically respond within 2 hours during business hours."
         },
     ]
 
@@ -40,96 +38,48 @@ export function FaqSection() {
     }
 
     return (
-        <section className="py-20 px-4 relative overflow-hidden bg-muted/20">
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-muted/30 to-background"></div>
-            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/10 dark:bg-blue-600/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-600/10 dark:bg-purple-600/5 rounded-full blur-3xl"></div>
-
-            <div className="container mx-auto relative z-10">
+        <section className="py-20 px-4 bg-black">
+            <div className="container mx-auto max-w-4xl">
                 <div className="text-center mb-16">
-                    <Badge
-                        variant="secondary"
-                        className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 backdrop-blur-sm"
-                    >
-                        <HelpCircle className="w-4 h-4 mr-2" />
-                        Frequently Asked Questions
-                    </Badge>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        Everything You Need to{" "}
-                        <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                            Know
-                        </span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                        Got questions?
                     </h2>
-                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Answers to the most common questions about our AI video ads. Can't find what you're looking for? Contact us!
-                    </p>
                 </div>
 
-                <div className="max-w-4xl mx-auto space-y-4">
+                <div className="space-y-6">
                     {faqs.map((faq, index) => (
-                        <Card
+                        <div
                             key={index}
-                            className="bg-card/80 border-border backdrop-blur-sm hover:shadow-lg transition-all duration-300"
+                            className="border border-gray-700 rounded-2xl bg-[#1A1A1A] overflow-hidden transition-all duration-300 hover:border-gray-600"
                         >
                             <button
                                 onClick={() => toggleFaq(index)}
-                                className="w-full p-6 text-left focus:outline-none focus:ring-2rounded-lg"
+                                className="w-full p-6 text-left focus:outline-none"
                             >
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-semibold text-foreground pr-4">
+                                    <h3 className="text-lg font-medium text-white pr-4">
                                         {faq.question}
                                     </h3>
                                     <div className="flex-shrink-0">
-                                        {openIndex === index ? (
-                                            <ChevronUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                        ) : (
-                                            <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                                        )}
+                                        <ChevronDown
+                                            className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openIndex === index ? 'rotate-180' : ''
+                                                }`}
+                                        />
                                     </div>
                                 </div>
                             </button>
 
                             {openIndex === index && (
-                                <div className="px-6 pb-6">
-                                    <div className="border-l-2 border-blue-500 pl-4">
-                                        <p className="text-muted-foreground leading-relaxed">
+                                <div className="px-6 pb-6 border-t border-gray-700">
+                                    <div className="pt-4">
+                                        <p className="text-gray-300 leading-relaxed">
                                             {faq.answer}
                                         </p>
                                     </div>
                                 </div>
                             )}
-                        </Card>
+                        </div>
                     ))}
-                </div>
-
-                {/* Bottom CTA */}
-                <div className="text-center mt-16">
-                    <div className="bg-gradient-to-r from-card/80 to-muted/50 rounded-2xl p-8 border border-border backdrop-blur-sm">
-                        <div className="flex items-center justify-center mb-4">
-                            <Zap className="w-6 h-6 text-yellow-500 mr-3" />
-                            <span className="text-lg font-semibold text-foreground">
-                                Have more questions?
-                            </span>
-                        </div>
-                        <p className="text-muted-foreground mb-6">
-                            Our team is here to help you. We respond within 2 hours during business hours.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a
-                                href="mailto:support@adsmaker.ai"
-                                className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors duration-200"
-                            >
-                                📧 support@adsmaker.ai
-                            </a>
-                            <a
-                                href="https://wa.me/3394464650"
-                                className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-colors duration-200"
-                            >
-                                💬 WhatsApp Business
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

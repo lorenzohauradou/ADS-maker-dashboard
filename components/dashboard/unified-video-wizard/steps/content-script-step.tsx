@@ -30,10 +30,10 @@ interface ContentScriptStepProps {
 }
 
 const AUDIENCES = [
-    { value: "giovani adulti", label: "Giovani Adulti (18-35)", icon: "🎯", desc: "Millennials e Gen Z" },
-    { value: "famiglie", label: "Famiglie", icon: "👨‍👩‍👧‍👦", desc: "Genitori con bambini" },
-    { value: "professionisti", label: "Professionisti", icon: "💼", desc: "Business e carriera" },
-    { value: "anziani", label: "Anziani (55+)", icon: "👵", desc: "Età matura" }
+    { value: "young_adults", label: "Young Adults (18-35)", icon: "🎯", desc: "Millennials and Gen Z" },
+    { value: "families", label: "Families", icon: "👨‍👩‍👧‍👦", desc: "Parents with children" },
+    { value: "professionals", label: "Professionals", icon: "💼", desc: "Business and career" },
+    { value: "seniors", label: "Seniors (55+)", icon: "👵", desc: "Mature age" }
 ]
 
 const LANGUAGES = [

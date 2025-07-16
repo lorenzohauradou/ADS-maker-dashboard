@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Play, Eye, Heart, Share2, TrendingUp, Volume2, VolumeX, MousePointer2 } from "lucide-react"
+import { Play, Eye, Heart, Share2, Volume2, VolumeX, MousePointer2 } from "lucide-react"
 
 export function ShowcaseSection() {
   const [audioStates, setAudioStates] = useState<Record<number, boolean>>({})
@@ -30,7 +30,6 @@ export function ShowcaseSection() {
       views: "2.4M",
       likes: "89K",
       videoSrc: "/output_ventilatore_avatar.mp4",
-      gradient: "from-blue-500 to-cyan-500",
     },
     {
       id: 2,
@@ -39,7 +38,6 @@ export function ShowcaseSection() {
       views: "3.1M",
       likes: "124K",
       videoSrc: "/output.mp4",
-      gradient: "from-green-500 to-emerald-500",
     },
     {
       id: 3,
@@ -48,7 +46,6 @@ export function ShowcaseSection() {
       views: "1.8M",
       likes: "67K",
       videoSrc: "/output_aspirapolvere.mp4",
-      gradient: "from-purple-500 to-pink-500",
     },
     {
       id: 4,
@@ -57,7 +54,6 @@ export function ShowcaseSection() {
       views: "956K",
       likes: "43K",
       videoSrc: "/maschera.mp4",
-      gradient: "from-orange-500 to-red-500",
     },
     {
       id: 5,
@@ -66,7 +62,6 @@ export function ShowcaseSection() {
       views: "1.2M",
       likes: "78K",
       videoSrc: "/Veg-cutter.mp4",
-      gradient: "from-indigo-500 to-purple-500",
     },
   ]
 
@@ -114,34 +109,17 @@ export function ShowcaseSection() {
   }
 
   return (
-    <section id="showcase" className="pt-8 md:pt-16 pb-16 md:pb-32 px-4 relative overflow-hidden bg-background">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"></div>
-      <div className="absolute top-1/4 left-1/4 w-48 md:w-96 h-48 md:h-96 bg-blue-600/10 dark:bg-blue-600/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-48 md:w-96 h-48 md:h-96 bg-purple-600/10 dark:bg-purple-600/5 rounded-full blur-3xl"></div>
-
-      <div className="container mx-auto relative z-10">
-        <div className="text-center mb-12 md:mb-20">
-          <Badge
-            variant="secondary"
-            className="mb-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
-          >
-            <TrendingUp className="w-4 h-4 mr-2" />
-            Viral Projects Created with FAST ADS AI
-          </Badge>
-
-          <h2 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight">
-            Videos that{" "}
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient">
-              Convert
-            </span>
+    <section id="showcase" className="py-20 px-4 bg-[#000000]">
+      <div className="container mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold mb-6 text-white leading-tight">
+            Videos that Convert
             <br />
-            <span className="text-lg md:text-3xl lg:text-4xl text-muted-foreground font-normal">Created in minutes</span>
+            <span className="text-lg md:text-3xl lg:text-4xl text-[#9ca3af] font-normal">Created in minutes</span>
           </h2>
 
-          {/* Badge per interazione audio */}
           {showAudioHint && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 dark:bg-blue-400/10 border border-blue-600/20 dark:border-blue-400/20 rounded-full text-blue-600 dark:text-blue-400 text-sm animate-pulse mt-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2a2a2a] border border-[#3a3a3a] rounded-full text-[#d1d5db] text-sm">
               <Volume2 className="w-4 h-4" />
               <span className="hidden sm:inline">Click on video to hear audio</span>
               <span className="sm:hidden">Tap for audio</span>
@@ -150,7 +128,6 @@ export function ShowcaseSection() {
           )}
         </div>
 
-        {/* Video Showcase - Fan Layout for All Devices */}
         <div className="relative">
           <div className="relative h-[400px] sm:h-[500px] lg:h-[700px] flex items-center justify-center perspective-1000 overflow-visible">
             <div className="relative w-full max-w-7xl flex items-center justify-center">
@@ -163,10 +140,6 @@ export function ShowcaseSection() {
 
                 // Special positioning for center-left and center-right cards on desktop
                 let yOffset = Math.abs(offsetFromCenter) * (isDesktop ? 20 : 10) // More vertical offset for desktop
-                if (isDesktop && (offsetFromCenter === -1 || offsetFromCenter === 1)) {
-                  // Move center-left and center-right cards much lower on desktop
-                  yOffset += 120 // Additional 120px down for these specific cards
-                }
 
                 const rotation = offsetFromCenter * (isDesktop ? 8 : 4) // More rotation for desktop
                 const scale = index === centerIndex ? (isDesktop ? 1.1 : 1.05) : 0.95 // Center element larger on desktop
@@ -183,12 +156,8 @@ export function ShowcaseSection() {
                     onClick={(e) => handleCardClick(project, e)}
                   >
                     <div className="relative">
-                      {/* Video Card - Responsive sizes */}
-                      <div
-                        className={`w-40 sm:w-48 lg:w-56 h-64 sm:h-80 lg:h-96 rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br ${project.gradient} p-1 shadow-xl sm:shadow-2xl group-hover:shadow-2xl sm:group-hover:shadow-4xl transition-all duration-500`}
-                      >
-                        <div className="w-full h-full bg-card dark:bg-card rounded-2xl sm:rounded-3xl overflow-hidden relative border border-border/50">
-                          {/* Video */}
+                      <div className="w-40 sm:w-48 lg:w-56 h-64 sm:h-80 lg:h-96 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#2a2a2a] border border-[#3a3a3a] shadow-xl sm:shadow-2xl group-hover:shadow-2xl sm:group-hover:shadow-4xl transition-all duration-500">
+                        <div className="w-full h-full overflow-hidden relative">
                           <video
                             src={project.videoSrc}
                             autoPlay
@@ -198,14 +167,12 @@ export function ShowcaseSection() {
                             className="w-full h-full object-cover"
                           />
 
-                          {/* Overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
-                          {/* Audio Toggle Indicator */}
                           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
                             <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${audioStates[project.id]
-                              ? 'bg-green-500/80 border-green-400 backdrop-blur-sm'
-                              : 'bg-white/20 border-white/50 backdrop-blur-sm'
+                              ? 'bg-white/20 border-white'
+                              : 'bg-black/20 border-[#6b7280]'
                               }`}>
                               {audioStates[project.id] ? (
                                 <Volume2 className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
@@ -215,11 +182,10 @@ export function ShowcaseSection() {
                             </div>
                             {/* Pulse animation for muted videos */}
                             {!audioStates[project.id] && showAudioHint && (
-                              <div className="absolute inset-0 w-8 sm:w-10 h-8 sm:h-10 rounded-full border-2 border-blue-400 animate-ping"></div>
+                              <div className="absolute inset-0 w-8 sm:w-10 h-8 sm:h-10 rounded-full border-2 border-white/50 animate-ping"></div>
                             )}
                           </div>
 
-                          {/* Click to Play Audio Hint */}
                           {!audioStates[project.id] && (
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 sm:px-4 py-2 border border-white/30">
@@ -233,17 +199,12 @@ export function ShowcaseSection() {
                             </div>
                           )}
 
-                          {/* Content */}
                           <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                            <Badge
-                              variant="secondary"
-                              className="mb-2 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white"
-                            >
+                            <Badge className="mb-2 text-xs bg-white/20 backdrop-blur-sm border-white/30 text-white">
                               {project.category}
                             </Badge>
-                            <h3 className="text-white font-semibold text-xs sm:text-sm mb-2 line-clamp-2">{project.title}</h3>
+                            <h3 className="text-white font-medium text-xs sm:text-sm mb-2 line-clamp-2">{project.title}</h3>
 
-                            {/* Stats */}
                             <div className="flex items-center justify-between text-xs text-white/80">
                               <div className="flex items-center space-x-2 sm:space-x-3">
                                 <span className="flex items-center">
@@ -261,8 +222,7 @@ export function ShowcaseSection() {
                         </div>
                       </div>
 
-                      {/* Floating Elements */}
-                      <div className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 w-5 sm:w-6 h-5 sm:h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 animate-bounce">
+                      <div className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 w-5 sm:w-6 h-5 sm:h-6 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 animate-bounce">
                         <span className="text-xs">🔥</span>
                       </div>
                     </div>
@@ -273,16 +233,12 @@ export function ShowcaseSection() {
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center mt-12 md:mt-20">
-          <p className="text-sm md:text-base text-muted-foreground mb-6">
+        <div className="text-center mt-16">
+          <p className="text-sm md:text-base text-[#9ca3af] mb-6">
             These videos have generated over{" "}
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">$2.5M in sales</span> for our clients
+            <span className="text-white font-medium">$2.5M in sales</span> for our clients
           </p>
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 text-white"
-          >
+          <Button className="bg-white text-black hover:bg-gray-100 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-medium">
             <Play className="w-4 md:w-5 h-4 md:h-5 mr-2" />
             Create Your Viral Video
           </Button>

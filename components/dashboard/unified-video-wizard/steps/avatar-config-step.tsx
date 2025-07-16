@@ -389,8 +389,6 @@ export function AvatarConfigStep({ avatarType, selectedAvatar, onAvatarSelect, o
                 <p className="text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto text-lg">
                     Choose from our professional presenters or use an avatar you created personally.
                 </p>
-
-                {/* 🎭 Badge Piano e Limiti */}
                 {avatarLimits && (
                     <div className="flex justify-center gap-2 flex-wrap">
                         <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">
