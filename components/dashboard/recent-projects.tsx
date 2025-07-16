@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Project } from "@/types/project"
 import { useVideoControls } from "@/hooks/useVideoControls"
-import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
+import { VideoPreviewModal } from "./video-preview-modal"
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
 import { toast } from "sonner"
 

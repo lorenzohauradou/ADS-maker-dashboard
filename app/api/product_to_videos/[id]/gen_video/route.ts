@@ -30,7 +30,7 @@ export async function POST(
           'x-user-email': session.user.email,
         },
         body: JSON.stringify({
-          motion_style: body.motion_style || 'talking',
+          motion_style: body.motion_style || 'talking', // Backend will use saved config if available
           video_prompt: body.video_prompt || 'Professional product presentation with engaging narration',
           webhook_url: body.webhook_url || null,
           user_id: body.user_id,

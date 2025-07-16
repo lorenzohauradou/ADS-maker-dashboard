@@ -814,6 +814,7 @@ export default function ProductToVideoPage() {
                                                     setState(prev => ({
                                                         ...prev,
                                                         videoType: 'product_shot' as any,
+                                                        motionStyle: 'display', // ✅ Set motion style (not used for product_anyshot but good fallback)
                                                         showVideoTypeDropdown: false,
                                                         hoverPreview: null
                                                     }))
@@ -832,6 +833,7 @@ export default function ProductToVideoPage() {
                                                     setState(prev => ({
                                                         ...prev,
                                                         videoType: 'avatar_showcase' as any,
+                                                        motionStyle: 'display', // Set correct motion style for avatar showcase
                                                         showVideoTypeDropdown: false,
                                                         hoverPreview: null
                                                     }))

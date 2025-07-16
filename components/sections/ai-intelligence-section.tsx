@@ -6,10 +6,10 @@ export function AIIntelligenceSection() {
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold mb-6 text-white leading-tight">
                         AI that enhances
                         <br />
-                        your video
+                        your products
                     </h2>
                     <p className="text-lg md:text-xl text-[#9ca3af] max-w-4xl mx-auto leading-relaxed">
-                        The most powerful AI editing models that work on any video. Built for speed, accuracy, and
+                        The most powerful AI editing models that work on any product image. Built for speed, accuracy, and
                         creative flexibility.
                     </p>
                 </div>
@@ -67,12 +67,6 @@ export function AIIntelligenceSection() {
                                         />
                                     </div>
                                 </div>
-
-                                <p className="text-[#9ca3af] text-sm leading-relaxed">
-                                    Every other AI clipping tool only works with video podcasts. ClipAnything is the only
-                                    AI clipping model that turns any genre — vlogs, gaming, sports, interviews, explainer
-                                    videos — into viral clips in 1 click.
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -97,12 +91,6 @@ export function AIIntelligenceSection() {
                                         </div>
                                     </div>
                                 </div>
-
-                                <p className="text-[#9ca3af] text-sm leading-relaxed">
-                                    The only AI reframe model that resizes any video for any platform and keeps moving
-                                    subjects centered with AI object tracking. If you want more control, use manual
-                                    tracking to instruct AI exactly what to follow.
-                                </p>
                             </div>
                         </div>
                     </div>

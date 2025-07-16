@@ -23,7 +23,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react"
-import { VideoPreviewModal } from "./video-creation-workflow/video-preview-modal"
+import { VideoPreviewModal } from "./video-preview-modal"
 import { format } from 'date-fns';
 import { Project } from "@/types/project";
 import { useVideoControls } from "@/hooks/useVideoControls"

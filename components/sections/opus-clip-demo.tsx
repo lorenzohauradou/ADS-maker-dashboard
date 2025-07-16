@@ -47,9 +47,9 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
             videoSrc: {
                 LinkedIn: "/redbull_op.mp4",
                 Instagram: "/rb_op.mp4",
-                YouTube: "/output.mp4",
-                TikTok: "/ptv_preview.mp4",
-                X: "/gradient_bg.mp4"
+                YouTube: "/redbull_watermarked.mp4",
+                TikTok: "/redbull_watermarked.mp4",
+                X: "/redbull_watermarked.mp4"
             }
         },
         {

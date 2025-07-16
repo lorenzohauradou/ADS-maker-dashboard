@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Play, Menu, Sun, Moon, User, LogOut, ChevronDown } from "lucide-react"
+import { Menu, User, LogOut, ChevronDown } from "lucide-react"
 import { useState } from "react"
-import { useTheme } from "@/components/theme-provider"
 import { useSession, signOut } from "next-auth/react"
 import {
   DropdownMenu,
@@ -20,7 +19,6 @@ import Link from "next/link"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
   const { data: session, status } = useSession()
 
   const handleSignOut = async () => {
@@ -187,7 +185,7 @@ export function Header() {
                 asChild
               >
                 <Link href="/login">
-                  Sign up - It's FREE
+                  Sign up free
                 </Link>
               </Button>
             </>
@@ -238,7 +236,7 @@ export function Header() {
                   Sign in
                 </Link>
                 <Link href="/login" className="block text-white bg-gray-800 hover:bg-gray-700 transition-colors text-sm py-2 px-4 rounded">
-                  Sign up - It's FREE
+                  Sign up - <span className="hidden md:block">It's</span> FREE
                 </Link>
               </>
             )}
