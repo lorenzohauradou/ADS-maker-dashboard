@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,47 +20,82 @@ export async function POST(request: NextRequest) {
     console.log('📸 UPLOAD_PRODUCT_IMAGES: FormData ricevuta')
     console.log('📸 UPLOAD_PRODUCT_IMAGES: User ID:', session.user.id)
     console.log('📸 UPLOAD_PRODUCT_IMAGES: User Email:', session.user.email)
-    console.log('📸 UPLOAD_PRODUCT_IMAGES: Backend URL:', process.env.BACKEND_URL)
 
-    // 📡 Proxy al backend per gestire upload immagini
-    const backendUrl = `${process.env.BACKEND_URL}/api/creatify/upload-images`
-    console.log('📸 UPLOAD_PRODUCT_IMAGES: Full backend URL:', backendUrl)
-    
-    console.log('📸 UPLOAD_PRODUCT_IMAGES: Making request to backend...')
-    
-    const backendResponse = await fetch(backendUrl, {
-        method: 'POST',
-        headers: {
-          'x-user-id': session.user.id,
-          'x-user-email': session.user.email,
-        },
-        body: formData, // Passa FormData direttamente
-      }
+    // 🗄️ Inizializza Supabase client
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
-    console.log('📸 UPLOAD_PRODUCT_IMAGES: Backend response status:', backendResponse.status, backendResponse.statusText)
 
-    if (!backendResponse.ok) {
-      const errorText = await backendResponse.text()
-      console.error('❌ Backend upload error response:', errorText)
-      
-      let errorData: any = {}
-      try {
-        errorData = JSON.parse(errorText)
-      } catch (e) {
-        console.error('❌ Failed to parse backend error as JSON')
-        errorData = { error: errorText }
-      }
-      
-      console.error('❌ Backend upload error data:', errorData)
-      throw new Error(errorData.detail || errorData.error || `HTTP ${backendResponse.status}: ${backendResponse.statusText}`)
+    const images = formData.getAll('images') as File[]
+    
+    if (images.length === 0) {
+      throw new Error('Nessuna immagine fornita')
     }
 
-    const result = await backendResponse.json()
+    const uploadedImages = []
+
+    // Upload di ogni immagine su Supabase Storage
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i]
+      
+      // Validazione file
+      if (!image.type.startsWith('image/')) {
+        throw new Error(`File ${image.name} non è un'immagine`)
+      }
+
+      if (image.size > 50 * 1024 * 1024) { // 50MB
+        throw new Error('File troppo grande (max 50MB)')
+      }
+
+      // Genera nome file unico
+      const timestamp = Date.now()
+      const randomId = Math.random().toString(36).substring(2)
+      const fileExtension = image.name.split('.').pop() || 'jpg'
+      const filename = `product-images/${session.user.id}/${timestamp}_${randomId}.${fileExtension}`
+
+      // Converti File a ArrayBuffer
+      const arrayBuffer = await image.arrayBuffer()
+      const uint8Array = new Uint8Array(arrayBuffer)
+
+      // Upload su Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(filename, uint8Array, {
+          contentType: image.type,
+          cacheControl: '3600'
+        })
+
+      if (error) {
+        console.error('❌ Supabase upload error:', error)
+        throw new Error(`Errore upload: ${error.message}`)
+      }
+
+      // Ottieni URL pubblico
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filename)
+
+      uploadedImages.push({
+        filename: data.path,
+        url: publicUrl,
+        original_filename: image.name
+      })
+
+      console.log(`📸 Immagine ${i + 1} caricata: ${data.path}`)
+    }
+
+    // Estrai solo gli URL per il frontend
+    const image_urls = uploadedImages.map(img => img.url)
     
-    console.log('✅ UPLOAD_PRODUCT_IMAGES: Successo:', result)
+    console.log('✅ UPLOAD_PRODUCT_IMAGES: Successo:', image_urls)
     
-    return NextResponse.json(result)
+    return NextResponse.json({
+      success: true,
+      message: `${image_urls.length} immagini caricate con successo`,
+      image_urls,
+      uploaded_images: uploadedImages
+    })
     
   } catch (error) {
     console.error('❌ UPLOAD_PRODUCT_IMAGES: Critical error:', error)
