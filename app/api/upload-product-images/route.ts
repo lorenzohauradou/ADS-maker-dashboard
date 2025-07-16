@@ -14,11 +14,15 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     
     console.log('📸 UPLOAD_PRODUCT_IMAGES: FormData ricevuta')
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: User ID:', session.user.id)
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: User Email:', session.user.email)
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: Backend URL:', process.env.BACKEND_URL)
 
     // 📡 Proxy al backend per gestire upload immagini
-    const backendResponse = await fetch(
-      `${process.env.BACKEND_URL}/api/creatify/upload-images`,
-      {
+    const backendUrl = `${process.env.BACKEND_URL}/api/creatify/upload-images`
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: Full backend URL:', backendUrl)
+    
+    const backendResponse = await fetch(backendUrl, {
         method: 'POST',
         headers: {
           'x-user-id': session.user.id,
@@ -27,11 +31,23 @@ export async function POST(request: NextRequest) {
         body: formData, // Passa FormData direttamente
       }
     )
+    
+    console.log('📸 UPLOAD_PRODUCT_IMAGES: Backend response status:', backendResponse.status, backendResponse.statusText)
 
     if (!backendResponse.ok) {
-      const errorData = await backendResponse.json()
-      console.error('❌ Backend upload error:', errorData)
-      throw new Error(errorData.detail || errorData.error || `HTTP ${backendResponse.status}`)
+      const errorText = await backendResponse.text()
+      console.error('❌ Backend upload error response:', errorText)
+      
+      let errorData: any = {}
+      try {
+        errorData = JSON.parse(errorText)
+      } catch (e) {
+        console.error('❌ Failed to parse backend error as JSON')
+        errorData = { error: errorText }
+      }
+      
+      console.error('❌ Backend upload error data:', errorData)
+      throw new Error(errorData.detail || errorData.error || `HTTP ${backendResponse.status}: ${backendResponse.statusText}`)
     }
 
     const result = await backendResponse.json()
