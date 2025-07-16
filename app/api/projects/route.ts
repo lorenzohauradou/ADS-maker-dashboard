@@ -4,12 +4,17 @@ import { fetchBackend, fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🏗️ PROJECTS: ====== CREATE PROJECT REQUEST START ======')
+    
     // Verifica autenticazione NextAuth
     const session = await auth()
     
     if (!session?.user?.id || !session?.user?.email) {
+      console.log('❌ PROJECTS: Authentication failed')
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
+    
+    console.log('🏗️ PROJECTS: User authenticated:', session.user.email)
 
     const formData = await request.formData()
     const backendFormData = new FormData()
@@ -23,6 +28,9 @@ export async function POST(request: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout
     
     try {
+    console.log('🏗️ PROJECTS: Making request to backend...')
+    console.log('🏗️ PROJECTS: Backend URL:', `${process.env.BACKEND_URL}/api/projects/`)
+    
     const response = await fetch(`${process.env.BACKEND_URL}/api/projects/`, {
       method: 'POST',
       headers: {
