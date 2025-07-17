@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { fetchBackend, fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
+import { fetchBackendJson, TIMEOUTS } from '@/lib/backend-fetch'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,12 +16,24 @@ export async function POST(request: NextRequest) {
     
     console.log('🏗️ PROJECTS: User authenticated:', session.user.email)
 
+    console.log('🏗️ PROJECTS: Reading FormData...')
     const formData = await request.formData()
+    
+    console.log('🏗️ PROJECTS: FormData keys:', Array.from(formData.keys()))
+    console.log('🏗️ PROJECTS: FormData entries count:', Array.from(formData.entries()).length)
+    
     const backendFormData = new FormData()
 
     for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`🏗️ PROJECTS: ${key} = File(${value.name}, ${value.size} bytes)`)
+      } else {
+        console.log(`🏗️ PROJECTS: ${key} = ${value}`)
+      }
       backendFormData.append(key, value)
     }
+    
+    console.log('🏗️ PROJECTS: FormData processing complete')
     
     // 📡 Chiamata diretta per FormData (utility non compatibile)
     const controller = new AbortController()

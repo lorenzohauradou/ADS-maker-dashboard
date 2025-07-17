@@ -46,7 +46,7 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
             image: "/ai_redbull.png",
             videoSrc: {
                 LinkedIn: "/redbull_op.mp4",
-                Instagram: "/rb_op.mp4",
+                Instagram: "/redbull_watermarked.mp4",
                 YouTube: "/redbull_watermarked.mp4",
                 TikTok: "/redbull_watermarked.mp4",
                 X: "/redbull_watermarked.mp4"
@@ -67,11 +67,11 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
     ]
 
     const generatedClips: GeneratedClip[] = [
-        { platform: "LinkedIn", score: 95, icon: { source: "/inlogo.png", width: 32, height: 32 }, width: "w-64", height: "h-40" },
-        { platform: "Instagram", score: 99, icon: { source: "/instalogo.png", width: 28, height: 28 }, width: "w-48", height: "h-48" },
-        { platform: "YouTube", score: 97, icon: { source: "/ytlogo.png", width: 24, height: 24 }, width: "w-64", height: "h-40" },
-        { platform: "TikTok", score: 98, icon: { source: "/tiktoklogo.png", width: 24, height: 24 }, width: "w-48", height: "h-48" },
-        { platform: "X", score: 97, icon: { source: "/xlogo.png", width: 24, height: 24 }, width: "w-64", height: "h-40" },
+        { platform: "LinkedIn", score: 95, icon: { source: "/inlogo.png", width: 32, height: 32 }, width: "w-72", height: "h-48" },
+        { platform: "Instagram", score: 99, icon: { source: "/instalogo.png", width: 28, height: 28 }, width: "w-56", height: "h-64" },
+        { platform: "YouTube", score: 97, icon: { source: "/ytlogo.png", width: 24, height: 24 }, width: "w-64", height: "h-48" },
+        { platform: "TikTok", score: 98, icon: { source: "/tiktoklogo.png", width: 24, height: 24 }, width: "w-56", height: "h-64" },
+        { platform: "X", score: 97, icon: { source: "/xlogo.png", width: 24, height: 24 }, width: "w-64", height: "h-56" },
     ]
 
     const handleGetClips = () => {
@@ -83,25 +83,25 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
         // Reset button expansion
         setTimeout(() => {
             setButtonExpanded(false)
-        }, 200)
+        }, 150)
 
-        // Show results sliding from left
+        // Show results sliding from left (ridotto da 400 a 300)
         setTimeout(() => {
             setShowResults(true)
             setIsAnimating(false)
-        }, 400)
+        }, 300)
 
-        // Start exit animation and prepare next product
+        // Start exit animation and prepare next product (ridotto da 4000 a 2500)
         setTimeout(() => {
             setClipsExiting(true)
 
-            // While clips exit to right, show new product
+            // While clips exit to right, show new product (ridotto da 500 a 400)
             setTimeout(() => {
                 setShowResults(false)
                 setClipsExiting(false)
                 setCurrentProduct((prev) => (prev + 1) % products.length)
-            }, 500)
-        }, 4000)
+            }, 400)
+        }, 1800)
     }
 
     useEffect(() => {
@@ -111,9 +111,9 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
                 handleGetClips()
                 setTimeout(() => {
                     setIsClicking(false)
-                }, 200)
-            }, 800)
-        }, 1000)
+                }, 150)
+            }, 400)
+        }, 500)
 
         return () => clearTimeout(timer)
     }, [currentProduct])
@@ -132,7 +132,7 @@ export function OpusClipDemo({ className }: OpusClipDemoProps) {
                     <div className="flex justify-center mb-12 h-[280px]">
                         {!isAnimating && !showResults && (
                             <div className="relative group animate-in fade-in slide-in-from-top duration-500">
-                                <div className="w-[250px] h-[250px] bg-gray-800/60 rounded-2xl overflow-hidden border border-gray-600/40 shadow-2xl backdrop-blur-sm">
+                                <div className="w-[250px] h-[250px] bg-transparent rounded-2xl overflow-hidden shadow-2xl">
                                     <Image
                                         src={currentProductData.image}
                                         alt={currentProductData.name}
