@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Globe, ExternalLink } from "lucide-react"
 
 interface LinkInputAreaProps {
     onUrlChange: (url: string) => void
@@ -42,7 +41,7 @@ export function LinkInputArea({ onUrlChange, productUrl, placeholder = "e.g. ama
 
                 {/* Supported Platforms */}
                 <div className="flex flex-col items-center space-y-4">
-                    <p className="text-gray-400 text-lg">Creatify supports:</p>
+                    <p className="text-gray-400 text-lg">FastAds supports:</p>
                     <div className="flex items-center justify-center gap-3 flex-wrap">
                         {supportedPlatforms.map((platform, index) => (
                             <div key={index} className="flex items-center">
